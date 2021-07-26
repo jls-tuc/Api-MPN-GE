@@ -16,17 +16,15 @@ export class Auth {
   // Crea el token con los datos de sesión
 
   static generarToken(user: Iusuario) {
-    return jwt.sign(
-      {
-        id: user.id,
-        datosPersonales: user.datosPersonales,
-        datosElectorales: user.datosElectoral,
-        role: user.role,
-      },
-      `${JWTKEY}`,
-      {
-        expiresIn: this.expiresIn,
-      }
-    );
+    const payload = {
+      id: user.id,
+      datosPersonales: user.datosPersonales,
+      datosElectorales: user.datosElectoral,
+      role: user.role,
+    };
+
+    return jwt.sign(payload, `${JWTKEY}`, {
+      expiresIn: this.expiresIn,
+    });
   }
 }

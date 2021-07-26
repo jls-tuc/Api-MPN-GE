@@ -10,7 +10,7 @@ export const getAfiliado = async (req: Request, res: Response) => {
         err,
       });
     }
-    return res.status(400).json({
+    return res.status(200).json({
       ok: true,
       data,
     });

@@ -19,7 +19,7 @@ export const registro = async (req: Request, res: Response, next) => {
 
   const user: Iusuario = new usuarios(req.body);
   await user.save();
-  return res.status(400).json({
+  return res.status(200).json({
     ok: true,
     user,
   });
@@ -29,8 +29,9 @@ export const registro = async (req: Request, res: Response, next) => {
 
 export const login = async (req: Request, res: Response): Promise<Response> => {
   moment.locale('es');
+
   if (!req.body.usuario || !req.body.password) {
-    return res.status(400).json({ msg: 'Es necesario el usuario y el password para realizar iniciar secion' });
+    return res.status(400).json({ msg: 'Es necesario el usuario y el password para iniciar secion' });
   }
 
   const user: Iusuario = await usuarios.findOne({ usuario: req.body.usuario });
@@ -42,13 +43,28 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
 
   if (isMatch) {
     user.lastLogin = moment().format('YYYY/MM/DD;HH:MM');
+
     await user.save();
-    return res.status(400).json({
+    return res.status(200).json({
       ok: true,
       token: Auth.generarToken(user),
     });
   }
   return res.status(400).json({
     msg: 'El password ingresado es incorrecto',
+  });
+};
+
+export const renewToken = async (req, res: Response) => {
+  console.log('renew', req.id);
+
+  const user: Iusuario = await usuarios.findOne({ _id: req.id });
+  // Generar el TOKEN - JWT
+  const token = await Auth.generarToken(user);
+
+  res.json({
+    ok: true,
+    token,
+    user,
   });
 };

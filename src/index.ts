@@ -2,6 +2,8 @@ import express, { Application } from 'express';
 
 import cors from 'cors';
 import morgan from 'morgan';
+import passport from 'passport';
+import passportM from './middlewares/validar-jwt';
 require('dotenv').config();
 // servidores
 import dbArsat from './conexiones/dbMongo';
@@ -13,6 +15,7 @@ import provLocRoute from './modulos/routes/comunes/provLoc';
 //modulo eleccion
 import padronNqnRoute from './modulos/routes/elecciones/padronNqn.route';
 import afiliadoNqnRoute from './modulos/routes/elecciones/afiliado.route';
+import { Iusuario } from './Auth/models/authUsers.model';
 
 class ServerSPS {
   private app: Application;
@@ -41,6 +44,10 @@ class ServerSPS {
     this.app.use(morgan('dev'));
     //cors
     this.app.use(cors());
+    this.app.use(passport.initialize());
+    this.app.use(passport.session());
+    passport.use(passportM);
+
     //express
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(express.json({ limit: '50mb' }));
