@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { validateLogin } from '../../middlewares/validar-jwt';
+import passport from 'passport';
+import { validateLogin } from '../../middlewares/passport-jwt';
 import { registro, login, renewToken } from '../controllers/authUsers.controller';
 
 const route = Router();

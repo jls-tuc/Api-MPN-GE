@@ -14,7 +14,7 @@
   "vueIndentScriptAndStyle": false,
   "singleQuote": true,
   "endOfLine": "lf",
-  "tabWidth": 2,
+  "tabWidth": 3,
   "trailingComma": "es5",
   "printWidth": 120
 }

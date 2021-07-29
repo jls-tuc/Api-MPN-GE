@@ -33,9 +33,10 @@ export interface Iusuario extends Document {
     idReferente: String;
     nombreReferente: String;
   };
+  comparePassword: (password: string) => Promise<Boolean>;
 }
 
-const userSchema = new Schema(
+const userSchema = new Schema<Iusuario>(
   {
     usuario: {
       type: String,
@@ -106,5 +107,9 @@ userSchema.pre('save', function (next) {
     })
     .catch((err) => next(err));
 });
+
+userSchema.methods.comparePassword = async function (password: string): Promise<Boolean> {
+  return await bcrypt.compare(password, this.password);
+};
 
 export const usuarios = model<Iusuario>('authUsers', userSchema, 'authUsers');
