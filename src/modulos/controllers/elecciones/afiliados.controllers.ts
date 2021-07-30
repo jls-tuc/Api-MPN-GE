@@ -10,6 +10,12 @@ export const getAfiliado = async (req: Request, res: Response) => {
             err,
          });
       }
+      if (data === null) {
+         return res.status(200).json({
+            ok: false,
+            msg: 'No existe en el padron',
+         });
+      }
       return res.status(200).json({
          ok: true,
          data,
