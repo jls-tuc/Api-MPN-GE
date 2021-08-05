@@ -93,16 +93,12 @@ export const getUsuarios = async (req: Request, res: Response) => {
 };
 
 export const getUserByID = async (req: Request, res: Response) => {
-   await usuarios.find({ referentes: { idReferente: req.body.id } }, (err, data) => {
-      if (err) {
-         res.status(300).json({
-            ok: false,
-            err,
-         });
-      }
-      res.status(200).json({
-         ok: true,
-         data,
-      });
+   console.log('REQQ', req.body);
+   const resp = await usuarios.find({ 'referentes.idReferente': '6109d55397b1741c88e8185f' });
+
+   console.log('data', resp);
+   res.status(200).json({
+      ok: true,
+      resp,
    });
 };
