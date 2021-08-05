@@ -21,7 +21,6 @@ export class Auth {
       const payload = {
          id: user.id,
          datosPersonales: user.datosPersonales,
-         datosElectorales: user.datosElectoral,
          role: user.role,
       };
 

@@ -6,13 +6,20 @@ export const getAfiliado = async (req: Request, res: Response) => {
       if (err) {
          return res.status(300).json({
             ok: false,
-            msg: 'Verificar Datos',
+            msg: 'Verificar los datos ingresados',
             err,
          });
       }
-      return res.status(200).json({
-         ok: true,
-         data,
-      });
+      if (data) {
+         return res.status(200).json({
+            ok: true,
+            data,
+         });
+      } else {
+         return res.status(200).json({
+            ok: false,
+            msg: 'El Numero de documento no existe en el padron.',
+         });
+      }
    });
 };
