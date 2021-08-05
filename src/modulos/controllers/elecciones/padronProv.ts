@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { padron, Ipadron } from '../../models/elecciones/padronNeuquen';
+import { padronProv, IpadronProv } from '../../models/elecciones/padronProv';
 
 export const getPerPadron = async (req: Request, res: Response) => {
    //console.log('documento', req.query);
-   await padron.findOne({ documento: req.query.documento }, (err, data) => {
+   await padronProv.findOne({ documento: req.query.documento }, (err, data) => {
       if (err) {
          return res.status(300).json({
             ok: false,

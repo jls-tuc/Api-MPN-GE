@@ -14,7 +14,9 @@ import personaRoute from './modulos/routes/personas/persona';
 import provLocRoute from './modulos/routes/comunes/provLoc';
 //modulo eleccion
 import padronNqnRoute from './modulos/routes/elecciones/padronNqn.route';
+import padronProvRoute from './modulos/routes/elecciones/padronProv.route';
 import afiliadoNqnRoute from './modulos/routes/elecciones/afiliado.route';
+import votoProvRoute from './modulos/routes/elecciones/votoProv.route';
 import { Iusuario } from './Auth/models/authUsers.model';
 
 class ServerSPS {
@@ -76,7 +78,9 @@ class ServerSPS {
       this.app.use(this.apiPath, provLocRoute);
       //modulo Elecciones
       this.app.use(this.apiPath, padronNqnRoute);
+      this.app.use(this.apiPath, padronProvRoute);
       this.app.use(this.apiPath, afiliadoNqnRoute);
+      this.app.use(this.apiPath, votoProvRoute);
    }
 }
 
