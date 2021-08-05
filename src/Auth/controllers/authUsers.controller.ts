@@ -93,7 +93,7 @@ export const getUsuarios = async (req: Request, res: Response) => {
 };
 
 export const getUserByID = async (req: Request, res: Response) => {
-   //console.log('REQQ', req.query.id);
+   // console.log('REQQ', req.query.id);
    const resp = await usuarios.find({ 'referentes.idReferente': req.query.id });
 
    //console.log('data', resp);
