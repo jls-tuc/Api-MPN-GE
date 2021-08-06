@@ -119,7 +119,6 @@ export const getUsuarios = async (req: Request, res: Response) => {
 export const getUserByID = async (req: Request, res: Response) => {
    //console.log('REQQ', req.query.id);
    const resplanilla: any = await usuarios.find({ 'referentes.idReferente': req.query.id });
-
    const resp = [];
 
    for (let data of resplanilla) {
@@ -138,8 +137,7 @@ export const getUserByID = async (req: Request, res: Response) => {
       });
    }
    // console.log('data', resp);
-
-   res.status(200).json({
+  res.status(200).json({
       ok: true,
       resp,
    });
