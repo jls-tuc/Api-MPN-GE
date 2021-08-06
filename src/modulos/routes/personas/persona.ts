@@ -1,7 +1,8 @@
 import { Router } from 'express';
+import cache from '../../../middlewares/cache';
 import { getPersonaRenaper } from '../../controllers/personas/persona';
-
+import { validateLogin } from '../../../middlewares/passport-jwt';
 const route = Router();
-route.get('/persona', getPersonaRenaper);
+route.get('/persona', validateLogin, cache, getPersonaRenaper);
 
 export default route;
