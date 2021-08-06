@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { getAfiliado } from '../../controllers/elecciones/afiliados.controllers';
-import passport from 'passport';
+import { validateLogin } from '../../../middlewares/passport-jwt';
 const route = Router();
 
-route.get('/afiliadoNpn', passport.authenticate('jwt', { session: false }), getAfiliado);
+route.get('/afiliadoNpn', validateLogin, getAfiliado);
 
 export default route;

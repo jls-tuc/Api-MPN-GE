@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import { getPerPadron } from '../../controllers/elecciones/padronProv';
-import passport from 'passport';
+
+import { validateLogin } from '../../../middlewares/passport-jwt';
 
 const route = Router();
 
-route.get('/padronProv', passport.authenticate('jwt', { session: false }), getPerPadron);
+route.get('/padronProv', validateLogin, getPerPadron);
 
 export default route;

@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
 import { usuarios, Iusuario } from '../models/authUsers.model';
 import { Auth } from '../../helpers/jwt';
-import { validateLogin } from '../../middlewares/passport-jwt';
-const bcrypt = require('bcrypt');
 
 const moment = require('moment');
 
@@ -78,26 +76,68 @@ export const renewToken = async (req, res: Response) => {
 };
 
 export const getUsuarios = async (req: Request, res: Response) => {
-   await usuarios.find((err, data) => {
+   await usuarios.find({}, (err, data) => {
       if (err) {
          res.status(300).json({
             ok: false,
             err,
          });
       }
+      const resp = [];
+
+      for (let res of data) {
+         resp.push({
+            _id: res._id,
+            role: res.role,
+            activo: res.activo,
+            datosPersonales: {
+               nombres: res.datosPersonales.nombres,
+               apellido: res.datosPersonales.apellido,
+               dni: res.datosPersonales.dni,
+               telefono: res.datosPersonales.telefono,
+               email: res.datosPersonales.email,
+               localidad: res.datosPersonales.localidad,
+               foto: res.datosPersonales.foto,
+            },
+            referentes: ([] = res.referentes),
+         });
+      }
       res.status(200).json({
          ok: true,
-         data,
+         resp,
       });
    });
+   /*  setTimeout(() => {
+         res.status(200).json({
+            ok: true,
+            resp,
+         });
+      }, 3000);
+   }); */
 };
 
 export const getUserByID = async (req: Request, res: Response) => {
-   // console.log('REQQ', req.query.id);
-   const resp = await usuarios.find({ 'referentes.idReferente': req.query.id });
+   //console.log('REQQ', req.query.id);
+   const resplanilla: any = await usuarios.find({ 'referentes.idReferente': req.query.id });
+   const resp = [];
 
-   //console.log('data', resp);
-   res.status(200).json({
+   for (let data of resplanilla) {
+      resp.push({
+         _id: data._id,
+         role: data.role,
+         datosPersonales: {
+            nombres: data.datosPersonales.nombres,
+            apellido: data.datosPersonales.apellido,
+            dni: data.datosPersonales.dni,
+            telefono: data.datosPersonales.telefono,
+            email: data.datosPersonales.email,
+            localidad: data.datosPersonales.localidad,
+         },
+         referentes: ([] = data.referentes),
+      });
+   }
+   // console.log('data', resp);
+  res.status(200).json({
       ok: true,
       resp,
    });
