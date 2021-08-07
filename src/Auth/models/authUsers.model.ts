@@ -12,7 +12,7 @@ export interface Iusuario extends Document {
    lastLogin: String;
    role: String;
    idCoordinador: String;
-   referentes: [{ idReferente: String }];
+   idReferente: String;
    datosPersonales: {
       nombres: String;
       apellido: String;
@@ -55,8 +55,7 @@ const userSchema = new Schema<Iusuario>(
       lastLogin: { type: String },
       role: { type: String, lowercase: true },
       idCoordinador: { type: String, lowercase: true },
-
-      referentes: [{ idReferente: { type: String } }],
+      idReferente: { type: String },
       datosPersonales: {
          nombres: { type: String, lowercase: true },
          apellido: { type: String, lowercase: true },

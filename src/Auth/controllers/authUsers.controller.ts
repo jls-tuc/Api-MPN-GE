@@ -16,19 +16,18 @@ export const registro = async (req: Request, res: Response, next) => {
             msg: 'El referente ya se encuentra cargado',
          });
       } else {
-         let idRef = userExist.referentes.filter((data) => data.idReferente === req.body.referentes.idReferente);
-         if (idRef.length) {
+         if (userExist.role === 'user-resp') {
             res.status(200).json({
                ok: false,
                msg: 'El responsable de la planilla ya se encuentra asignado al referente seleccionado',
             });
          } else {
-            userExist.referentes.push(req.body.referentes);
-            await userExist.save();
-            return res.status(200).json({
-               ok: true,
-               userExist,
-            });
+            if (userExist.role === 'user-coord') {
+               res.status(200).json({
+                  ok: false,
+                  msg: 'El usuario seleccionado es coordinador',
+               });
+            }
          }
       }
    }
@@ -63,7 +62,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
       await user.save();
       return res.status(200).json({
          ok: true,
-         foto:user.datosPersonales.foto,
+         foto: user.datosPersonales.foto,
          token: Auth.generarToken(user),
       });
    }
@@ -92,6 +91,7 @@ export const getUsuarios = async (req: Request, res: Response) => {
             role: res.role,
             activo: res.activo,
             idCoordinador: res.idCoordinador,
+            idReferente: res.idReferente,
             datosPersonales: {
                nombres: res.datosPersonales.nombres,
                apellido: res.datosPersonales.apellido,
@@ -102,7 +102,6 @@ export const getUsuarios = async (req: Request, res: Response) => {
                foto: res.datosPersonales.foto,
                areaResponsable: res.datosPersonales.areaResponsable,
             },
-            referentes: ([] = res.referentes),
          });
       }
       res.status(200).json({
@@ -110,19 +109,18 @@ export const getUsuarios = async (req: Request, res: Response) => {
          resp,
       });
 
-      setTimeout(() => {
+      /* setTimeout(() => {
          res.status(200).json({
             ok: true,
             resp,
          });
-      }, 3000);
+      }, 3000); */
    });
 };
 
 export const getUserByID = async (req: Request, res: Response) => {
-   console.log('REQQ', req.query);
    const resplanilla: any = await usuarios.find({ 'referentes.idReferente': req.query.id });
-   console.log('reee', resplanilla);
+
    const resp = [];
 
    for (let data of resplanilla) {
@@ -130,6 +128,7 @@ export const getUserByID = async (req: Request, res: Response) => {
          _id: data._id,
          role: data.role,
          idCoordinador: data.idCoordinador,
+         idReferente: data.idReferente,
          datosPersonales: {
             nombres: data.datosPersonales.nombres,
             apellido: data.datosPersonales.apellido,
@@ -139,7 +138,6 @@ export const getUserByID = async (req: Request, res: Response) => {
             localidad: data.datosPersonales.localidad,
             areaResponsable: data.datosPersonales.areaResponsable,
          },
-         referentes: ([] = data.referentes),
       });
    }
    // console.log('data', resp);
