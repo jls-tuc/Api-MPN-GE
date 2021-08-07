@@ -63,6 +63,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
       await user.save();
       return res.status(200).json({
          ok: true,
+         foto:user.datosPersonales.foto,
          token: Auth.generarToken(user),
       });
    }
@@ -90,6 +91,7 @@ export const getUsuarios = async (req: Request, res: Response) => {
             _id: res._id,
             role: res.role,
             activo: res.activo,
+            idCoordinador: res.idCoordinador,
             datosPersonales: {
                nombres: res.datosPersonales.nombres,
                apellido: res.datosPersonales.apellido,
@@ -98,6 +100,7 @@ export const getUsuarios = async (req: Request, res: Response) => {
                email: res.datosPersonales.email,
                localidad: res.datosPersonales.localidad,
                foto: res.datosPersonales.foto,
+               areaResponsable: res.datosPersonales.areaResponsable,
             },
             referentes: ([] = res.referentes),
          });
@@ -106,25 +109,27 @@ export const getUsuarios = async (req: Request, res: Response) => {
          ok: true,
          resp,
       });
-   });
-   /*  setTimeout(() => {
+
+      setTimeout(() => {
          res.status(200).json({
             ok: true,
             resp,
          });
       }, 3000);
-   }); */
+   });
 };
 
 export const getUserByID = async (req: Request, res: Response) => {
-   //console.log('REQQ', req.query.id);
+   console.log('REQQ', req.query);
    const resplanilla: any = await usuarios.find({ 'referentes.idReferente': req.query.id });
+   console.log('reee', resplanilla);
    const resp = [];
 
    for (let data of resplanilla) {
       resp.push({
          _id: data._id,
          role: data.role,
+         idCoordinador: data.idCoordinador,
          datosPersonales: {
             nombres: data.datosPersonales.nombres,
             apellido: data.datosPersonales.apellido,
@@ -132,12 +137,13 @@ export const getUserByID = async (req: Request, res: Response) => {
             telefono: data.datosPersonales.telefono,
             email: data.datosPersonales.email,
             localidad: data.datosPersonales.localidad,
+            areaResponsable: data.datosPersonales.areaResponsable,
          },
          referentes: ([] = data.referentes),
       });
    }
    // console.log('data', resp);
-  res.status(200).json({
+   res.status(200).json({
       ok: true,
       resp,
    });

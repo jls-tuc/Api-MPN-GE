@@ -18,9 +18,16 @@ export class Auth {
    // Crea el token con los datos de sesión
 
    static generarToken(user: Iusuario) {
+      let { nombres, apellido, localidad, email, telefono, areaResponsable } = user.datosPersonales;
+
       const payload = {
          id: user.id,
-         datosPersonales: user.datosPersonales,
+         nombres,
+         apellido,
+         localidad,
+         email,
+         telefono,
+         areaResponsable,
          role: user.role,
       };
 

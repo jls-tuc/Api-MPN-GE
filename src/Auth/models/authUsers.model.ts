@@ -11,6 +11,7 @@ export interface Iusuario extends Document {
    fechaBajaUsuario: String;
    lastLogin: String;
    role: String;
+   idCoordinador: String;
    referentes: [{ idReferente: String }];
    datosPersonales: {
       nombres: String;
@@ -24,6 +25,7 @@ export interface Iusuario extends Document {
       localidad: String;
       email: String;
       telefono: String;
+      areaResponsable: String;
    };
 
    comparePassword: (password: string) => Promise<Boolean>;
@@ -52,6 +54,8 @@ const userSchema = new Schema<Iusuario>(
       fechaBajaUsuario: { type: String },
       lastLogin: { type: String },
       role: { type: String, lowercase: true },
+      idCoordinador: { type: String, lowercase: true },
+
       referentes: [{ idReferente: { type: String } }],
       datosPersonales: {
          nombres: { type: String, lowercase: true },
@@ -65,6 +69,7 @@ const userSchema = new Schema<Iusuario>(
          localidad: { type: String, lowercase: true },
          email: String,
          telefono: String,
+         areaResponsable: { type: String, lowercase: true },
       },
    },
    { timestamps: true }

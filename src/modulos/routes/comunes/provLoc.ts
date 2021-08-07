@@ -4,6 +4,6 @@ import { getProLoc } from '../../controllers/comunes/provLoca';
 import { validateLogin } from '../../../middlewares/passport-jwt';
 const route = Router();
 
-route.get('/provLoc', validateLogin, cache, getProLoc);
+route.get('/provLoc', cache, getProLoc);
 
 export default route;

@@ -6,7 +6,7 @@ import { registro, login, renewToken, getUsuarios, getUserByID } from '../contro
 
 const route = Router();
 
-route.post('/auth/registro', registro);
+route.post('/auth/registro', validateLogin, registro);
 route.post('/auth/login', login);
 route.get('/auth/renew', validateLogin, cache, renewToken);
 route.get('/auth/usuarios', validateLogin, cache, getUsuarios);
