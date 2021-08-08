@@ -12,7 +12,7 @@ export interface Iusuario extends Document {
    lastLogin: String;
    role: String;
    idCoordinador: String;
-   idReferente: String;
+   idReferente: any;
    datosPersonales: {
       nombres: String;
       apellido: String;

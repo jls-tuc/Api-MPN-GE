@@ -6,7 +6,7 @@ import passport from 'passport';
 import passportM from './middlewares/passport-jwt';
 require('dotenv').config();
 // servidores
-import optic2 from './conexiones/dbMongo';
+import dbArsat from './conexiones/dbMongo';
 // rutas
 import serverRoute from './modulos/routes/server';
 import authUserRoute from './Auth/routes/authUsers.routes';
@@ -33,7 +33,7 @@ class ServerSPS {
    }
 
    async listen() {
-      await optic2.optic2();
+      await dbArsat.dbArsat();
       //Servidor Express
       this.app.listen(this.port, () => {
          console.info(`Servidor funcionando en: \x1b[32m${this.port}\x1b[0m`);

@@ -9,7 +9,7 @@ export interface IvotoProv extends Document {
    telefono: String;
    tipo_voto: String;
    circuito: String;
-   resPlanilla: [{ idResPlanilla: String }];
+   resPlanilla: [{ idResPlanilla: any; idCoordinador: any; idReferente: any }];
 }
 
 const vSchema = new Schema<IvotoProv>({
@@ -20,7 +20,7 @@ const vSchema = new Schema<IvotoProv>({
    telefono: { type: String, lowecase: true },
    tipo_voto: { type: String, lowecase: true },
    circuito: { type: String, lowecase: true },
-   resPlanilla: [{ idResPlanilla: { type: String } }],
+   resPlanilla: [{ idResPlanilla: { type: String }, idCoordinador: { type: String }, idReferente: { type: String } }],
 });
 
 export const votoProv = model<IvotoProv>('votoProv', vSchema, 'votoProv');
