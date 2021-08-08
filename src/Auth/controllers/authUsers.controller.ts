@@ -119,7 +119,7 @@ export const getUsuarios = async (req: Request, res: Response) => {
 };
 
 export const getUserByID = async (req: Request, res: Response) => {
-   const resplanilla: any = await usuarios.find({ 'referentes.idReferente': req.query.id });
+   const resplanilla: any = await usuarios.find({ idReferente: req.query.id });
 
    const resp = [];
 

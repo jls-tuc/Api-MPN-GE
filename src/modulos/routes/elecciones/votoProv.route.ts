@@ -6,7 +6,7 @@ import { guardarVoto, getvotos, getOneVoto } from '../../controllers/elecciones/
 const router = Router();
 
 router.post('/votoProv', validateLogin, guardarVoto);
-router.get('/votoProv', validateLogin, getvotos);
+router.get('/votoProv/id', validateLogin, getvotos);
 router.get('/votoProv/dni', validateLogin, getOneVoto);
 
 export default router;
