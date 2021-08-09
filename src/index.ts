@@ -1,4 +1,6 @@
 import express, { Application } from 'express';
+import https from 'https';
+import fs from 'fs';
 
 import cors from 'cors';
 import morgan from 'morgan';
@@ -35,9 +37,17 @@ class ServerSPS {
    async listen() {
       await dbArsat.dbArsat();
       //Servidor Express
-      this.app.listen(this.port, () => {
-         console.info(`Servidor funcionando en: \x1b[32m${this.port}\x1b[0m`);
-      });
+      https
+         .createServer(
+            {
+               key: fs.readFileSync('c:/Certbot/live/paso2021nqn.com.ar/privKey.pem'),
+               cert: fs.readFileSync('C:/Certbot/live/paso2021nqn.com.ar/cert.pem'),
+            },
+            this.app
+         )
+         .listen(this.port, () => {
+            console.info(`Servidor funcionando en: \x1b[32m${this.port}\x1b[0m`);
+         });
    }
 
    middlewares() {

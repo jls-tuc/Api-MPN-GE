@@ -17,7 +17,7 @@ export class Auth {
 
    // Crea el token con los datos de sesión
 
-   static generarToken(user: Iusuario) {
+   static generarToken(user: Iusuario, menu: any) {
       let { nombres, apellido, localidad, email, telefono, areaResponsable } = user.datosPersonales;
 
       const payload = {
@@ -29,6 +29,7 @@ export class Auth {
          telefono,
          areaResponsable,
          role: user.role,
+         menu,
       };
 
       return jwt.sign(payload, `${JWTKEY}`, {

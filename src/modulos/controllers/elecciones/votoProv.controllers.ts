@@ -28,12 +28,12 @@ export const guardarVoto = async (req: Request, res: Response) => {
       });
    } else {
       console.log('no existe el voto');
-      /* const nVoto: IvotoProv = new votoProv(req.body);
+      const nVoto: IvotoProv = new votoProv(req.body);
       await nVoto.save();
       return res.status(200).json({
          ok: true,
          nVoto,
-      }); */
+      });
    }
 };
 
@@ -74,6 +74,22 @@ export const getOneVoto = async (req: Request, res: Response) => {
          return res.status(200).json({
             ok: false,
             msg: 'El Numero de documento no fue cargado.',
+         });
+      }
+   });
+};
+////////////Consutlas de graficas//////////////////////////
+export const getvotosGrafica = async (req: Request, res: Response) => {
+   await votoProv.find((err, data: IvotoProv) => {
+      if (err) {
+         res.status(300).json({
+            ok: false,
+            err,
+         });
+      } else {
+         res.status(200).json({
+            ok: true,
+            data,
          });
       }
    });

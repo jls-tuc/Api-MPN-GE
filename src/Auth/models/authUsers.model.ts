@@ -4,28 +4,28 @@ const uniqueValidator = require('mongoose-unique-validator');
 const bcrypt = require('bcrypt');
 
 export interface Iusuario extends Document {
-   usuario: String;
-   password: String;
+   usuario: string;
+   password: string;
    activo: boolean;
-   fechaAltaUsuario: String;
-   fechaBajaUsuario: String;
-   lastLogin: String;
-   role: String;
-   idCoordinador: String;
+   fechaAltaUsuario: string;
+   fechaBajaUsuario: string;
+   lastLogin: string;
+   role: string;
+   idCoordinador: string;
    idReferente: any;
    datosPersonales: {
-      nombres: String;
-      apellido: String;
-      dni: String;
-      sexo: String;
-      calle: String;
-      foto: String;
-      numero: Number;
-      provincia: String;
-      localidad: String;
-      email: String;
-      telefono: String;
-      areaResponsable: String;
+      nombres: string;
+      apellido: string;
+      dni: string;
+      sexo: string;
+      calle: string;
+      foto: string;
+      numero: string;
+      provincia: string;
+      localidad: string;
+      email: string;
+      telefono: string;
+      areaResponsable: string;
    };
 
    comparePassword: (password: string) => Promise<Boolean>;
