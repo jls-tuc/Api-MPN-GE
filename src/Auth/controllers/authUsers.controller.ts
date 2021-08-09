@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { usuarios, Iusuario } from '../models/authUsers.model';
 import { Auth } from '../../helpers/jwt';
+import { getMenu } from '../../helpers/menu-role';
 
 const moment = require('moment');
 
@@ -60,10 +61,11 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
       user.lastLogin = moment().format('YYYY/MM/DD;HH:MM');
 
       await user.save();
+      const menu = getMenu(user.role);
       return res.status(200).json({
          ok: true,
          foto: user.datosPersonales.foto,
-         token: Auth.generarToken(user),
+         token: Auth.generarToken(user, menu),
       });
    }
    return res.status(400).json({

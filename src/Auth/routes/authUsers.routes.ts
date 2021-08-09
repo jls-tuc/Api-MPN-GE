@@ -8,8 +8,8 @@ const route = Router();
 
 route.post('/auth/registro', validateLogin, registro);
 route.post('/auth/login', login);
-route.get('/auth/renew', validateLogin, cache, renewToken);
-route.get('/auth/usuarios', validateLogin, cache, getUsuarios);
-route.get('/auth/usuario', validateLogin, cache, getUserByID);
+route.get('/auth/renew', validateLogin, renewToken);
+route.get('/auth/usuarios', validateLogin, getUsuarios);
+route.get('/auth/usuario', validateLogin, getUserByID);
 
 export default route;
