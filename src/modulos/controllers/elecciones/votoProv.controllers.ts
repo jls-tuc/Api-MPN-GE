@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { votoProv, IvotoProv } from '../../models/elecciones/votoProvisorio';
 
 export const guardarVoto = async (req: Request, res: Response) => {
-   console.log(`this.req.body`, req.body.resPlanilla.idResPlanilla);
+   // console.log(`this.req.body`, req.body.resPlanilla.idResPlanilla);
    const voto: IvotoProv = await votoProv.findOne({ dni: req.body.dni });
 
    if (voto) {
@@ -38,22 +38,33 @@ export const guardarVoto = async (req: Request, res: Response) => {
 };
 
 export const getvotos = async (req: Request, res: Response) => {
-   await votoProv.find({ 'resPlanilla.idResPlanilla': req.query.id }, (err, data) => {
-      if (err) {
-         res.status(300).json({
-            ok: false,
-            err,
-         });
-      } else {
-         const votosUnicos = Array.from(new Set(data));
-         let totalV = votosUnicos.length;
-         res.status(200).json({
-            ok: true,
-            votosUnicos,
-            totalV,
-         });
-      }
-   });
+   let votos: any;
+   if (req.query.consulta === 'Referente') {
+      votos = await votoProv.find({ 'resPlanilla.idReferente': req.query.valor }).lean();
+   } else if (req.query.consulta === 'Resplanilla') {
+      votos = await votoProv.find({ 'resPlanilla.idResPlanilla': req.query.valor }).lean();
+   } else if (req.query.consulta === 'Coord') {
+      votos = await votoProv.find({ 'resPlanilla.idCoordinador': req.query.valor }).lean();
+   } else {
+      return res.status(300).json({
+         ok: false,
+         msg: 'Faltan datos para la busqueda',
+      });
+   }
+   if (votos === null) {
+      res.status(300).json({
+         ok: false,
+         msg: 'Algo esta mal',
+      });
+   } else {
+      const votosUnicos = await Array.from(new Set(votos));
+      let totalV = votosUnicos.length;
+      res.status(200).json({
+         ok: true,
+         votosUnicos,
+         totalV,
+      });
+   }
 };
 
 export const getOneVoto = async (req: Request, res: Response) => {

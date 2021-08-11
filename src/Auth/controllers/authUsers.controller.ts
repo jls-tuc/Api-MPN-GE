@@ -131,15 +131,13 @@ export const getUserByID = async (req: Request, res: Response) => {
          role: data.role,
          idCoordinador: data.idCoordinador,
          idReferente: data.idReferente,
-         datosPersonales: {
-            nombres: data.datosPersonales.nombres,
-            apellido: data.datosPersonales.apellido,
-            dni: data.datosPersonales.dni,
-            telefono: data.datosPersonales.telefono,
-            email: data.datosPersonales.email,
-            localidad: data.datosPersonales.localidad,
-            areaResponsable: data.datosPersonales.areaResponsable,
-         },
+         nombres: data.datosPersonales.nombres,
+         apellido: data.datosPersonales.apellido,
+         dni: data.datosPersonales.dni,
+         telefono: data.datosPersonales.telefono,
+         email: data.datosPersonales.email,
+         localidad: data.datosPersonales.localidad,
+         areaResponsable: data.datosPersonales.areaResponsable,
       });
    }
    // console.log('data', resp);

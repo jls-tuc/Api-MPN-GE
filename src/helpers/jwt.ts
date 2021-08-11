@@ -22,6 +22,8 @@ export class Auth {
 
       const payload = {
          id: user.id,
+         idCoordinador: user.idCoordinador,
+         idReferente: user.idReferente,
          nombres,
          apellido,
          localidad,

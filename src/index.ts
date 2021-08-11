@@ -37,17 +37,17 @@ class ServerSPS {
    async listen() {
       await dbArsat.dbArsat();
       //Servidor Express
-      https
+      /*  https
          .createServer(
             {
                key: fs.readFileSync('c:/Certbot/live/paso2021nqn.com.ar/privKey.pem'),
                cert: fs.readFileSync('C:/Certbot/live/paso2021nqn.com.ar/cert.pem'),
             },
             this.app
-         )
-         .listen(this.port, () => {
-            console.info(`Servidor funcionando en: \x1b[32m${this.port}\x1b[0m`);
-         });
+         ) */
+      this.app.listen(this.port, () => {
+         console.info(`Servidor funcionando en: \x1b[32m${this.port}\x1b[0m`);
+      });
    }
 
    middlewares() {
@@ -61,7 +61,7 @@ class ServerSPS {
 
       //express
       this.app.use(express.urlencoded({ extended: true }));
-      this.app.use(express.json({ limit: '50mb' }));
+      this.app.use(express.json({ limit: '100mb' }));
 
       this.app.all('*', (req, res, next) => {
          //res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
