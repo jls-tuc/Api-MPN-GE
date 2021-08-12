@@ -105,3 +105,22 @@ export const getvotosGrafica = async (req: Request, res: Response) => {
       }
    });
 };
+////////actualizar
+
+export const actualizarVoto = async (req: Request, res: Response) => {
+   let votos: any = await votoProv.find({ 'resPlanilla.idReferente': req.body.idRef });
+   // console.log(votos);
+   for (let data of votos) {
+      // console.log(data);
+      let busqueda = data.resPlanilla.findIndex((idRef) => idRef.idReferente === req.body.idRef);
+      if (data.resPlanilla[busqueda].idCoordinador != undefined) {
+         data.resPlanilla[busqueda].idCoordinador = req.body.coord;
+         await data.save();
+      } else {
+         //  console.log(data.resPlanilla[busqueda].idCoordinador);
+      }
+   }
+   return res.status(200).json({
+      ok: true,
+   });
+};

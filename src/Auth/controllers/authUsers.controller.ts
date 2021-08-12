@@ -59,9 +59,9 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
 
    if (isMatch) {
       user.lastLogin = moment().format('YYYY/MM/DD;HH:MM');
-
       await user.save();
       const menu = getMenu(user.role);
+      console.log(user);
       return res.status(200).json({
          ok: true,
          foto: user.datosPersonales.foto,
@@ -144,5 +144,17 @@ export const getUserByID = async (req: Request, res: Response) => {
    res.status(200).json({
       ok: true,
       resp,
+   });
+};
+
+export const actualizar = async (req: Request, res: Response) => {
+   let userSin: any = await usuarios.find({ idCoordinador: req.body.id });
+
+   for (let data of userSin) {
+      data.idCoordinador = req.body.coord;
+      await data.save();
+   }
+   return res.status(200).json({
+      ok: true,
    });
 };
