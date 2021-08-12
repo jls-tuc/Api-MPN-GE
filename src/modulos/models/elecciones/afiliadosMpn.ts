@@ -11,6 +11,7 @@ export interface Iafiliado extends Document {
    domicilio: String;
    localidad: String;
    departamento: String;
+   dni: String;
 }
 
 const afiliadoSchema = new Schema(
