@@ -59,9 +59,9 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
 
    if (isMatch) {
       user.lastLogin = moment().format('YYYY/MM/DD;HH:MM');
-
       await user.save();
       const menu = getMenu(user.role);
+      console.log(user);
       return res.status(200).json({
          ok: true,
          foto: user.datosPersonales.foto,
@@ -160,20 +160,21 @@ export const getUsuariosGraf = async (req: Request, res: Response) => {
       let responsables = 0;
       let referentes = 0;
       for (let res of data) {
-         if (res.role === "user-coord") {
+         if (res.role === 'user-coord') {
             coordinadores++;
          } else {
-            if (res.role === "user-ref") {
+            if (res.role === 'user-ref') {
                referentes++;
             } else {
                responsables++;
             }
          }
-
       }
       res.status(200).json({
          ok: true,
-         coordinadores, referentes, responsables
+         coordinadores,
+         referentes,
+         responsables,
       });
 
       /* setTimeout(() => {
@@ -182,5 +183,17 @@ export const getUsuariosGraf = async (req: Request, res: Response) => {
             resp,
          });
       }, 3000); */
+   });
+};
+
+export const actualizar = async (req: Request, res: Response) => {
+   let userSin: any = await usuarios.find({ idCoordinador: req.body.id });
+
+   for (let data of userSin) {
+      data.idCoordinador = req.body.coord;
+      await data.save();
+   }
+   return res.status(200).json({
+      ok: true,
    });
 };
