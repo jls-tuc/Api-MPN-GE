@@ -147,6 +147,15 @@ export const getMenu = (role) => {
             icon: 'list_alt',
             state: 'elecciones/padrones',
          },
+         {
+            name: 'Calculos Totales',
+            type: 'dropDown',
+            tooltip: 'Documentation',
+            icon: 'person',
+            sub: [
+               { name: 'Ver', state: 'elecciones/calculototal' },
+            ],
+         },
       ];
       return menu;
    }

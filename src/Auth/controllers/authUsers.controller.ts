@@ -146,3 +146,41 @@ export const getUserByID = async (req: Request, res: Response) => {
       resp,
    });
 };
+//Estadistica
+export const getUsuariosGraf = async (req: Request, res: Response) => {
+   await usuarios.find({}, (err, data) => {
+      if (err) {
+         res.status(300).json({
+            ok: false,
+            err,
+         });
+      }
+      const resp = [];
+      let coordinadores = 0;
+      let responsables = 0;
+      let referentes = 0;
+      for (let res of data) {
+         if (res.role === "user-coord") {
+            coordinadores++;
+         } else {
+            if (res.role === "user-ref") {
+               referentes++;
+            } else {
+               responsables++;
+            }
+         }
+
+      }
+      res.status(200).json({
+         ok: true,
+         coordinadores, referentes, responsables
+      });
+
+      /* setTimeout(() => {
+         res.status(200).json({
+            ok: true,
+            resp,
+         });
+      }, 3000); */
+   });
+};
