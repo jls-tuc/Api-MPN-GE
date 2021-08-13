@@ -11,7 +11,7 @@ export interface Iusuario extends Document {
    fechaBajaUsuario: string;
    lastLogin: string;
    role: string;
-   idCoordinador: string;
+   idCoordinador: any;
    idReferente: any;
    datosPersonales: {
       nombres: string;
