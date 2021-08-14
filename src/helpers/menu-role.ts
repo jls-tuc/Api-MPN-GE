@@ -9,6 +9,7 @@ export const getMenu = (role) => {
             sub: [
                { name: 'Agregar', state: 'elecciones/referente' },
                { name: 'Ver', state: 'elecciones/referentes' },
+               { name: 'Estadisticas', state: 'elecciones/calculototalref' },
             ],
          },
          {

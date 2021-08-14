@@ -15,223 +15,232 @@ export const getRecalculando = async (req: Request, res: Response) => {
   for (let data of votos) {
     paso++;
     console.log(`Data :`, paso);
-    let dniAf = afiliados.find(res => res.dni === data.dni);
+    let dniAf = afiliados.find((res) => res.dni === data.dni);
     let sexo = data.genero;
     if (dniAf !== undefined) {
-
       for (let usuario of data.resPlanilla) {
         if (usuario.idCoordinador) {
-          let idCor = await votosGraf.findOne({ idUsuario: usuario.idCoordinador })
+          let idCor = await votosGraf.findOne({ idUsuario: usuario.idCoordinador });
           if (idCor !== null) {
             idCor.afiliado++;
-            if (sexo === "F") { idCor.femenino++ };
+            if (sexo === 'F') {
+              idCor.femenino++;
+            }
             idCor.votos++;
             await idCor.save();
           } else {
-            if (sexo === "F") {
+            if (sexo === 'F') {
               votosG = {
                 idUsuario: usuario.idCoordinador,
-                role: "user-coord",
-                coordinador: "",
-                referente: "",
+                role: 'user-coord',
+                coordinador: '',
+                referente: '',
                 femenino: 1,
                 afiliado: 1,
                 votos: 1,
-              }
+              };
             } else {
               votosG = {
                 idUsuario: usuario.idCoordinador,
-                role: "user-coord",
-                coordinador: "",
-                referente: "",
+                role: 'user-coord',
+                coordinador: '',
+                referente: '',
                 afiliado: 1,
                 femenino: 0,
                 votos: 1,
-              }
+              };
               let guardar = new votosGraf(votosG);
               await guardar.save();
             }
           }
           if (usuario.idReferente) {
-            let idRef = await votosGraf.findOne({ idUsuario: usuario.idReferente })
+            let idRef = await votosGraf.findOne({ idUsuario: usuario.idReferente });
             if (idRef !== null) {
               idRef.afiliado++;
-              if (sexo === "F") { idRef.femenino++ };
+              if (sexo === 'F') {
+                idRef.femenino++;
+              }
               idRef.votos++;
               await idRef.save();
             } else {
-              if (sexo === "F") {
+              if (sexo === 'F') {
                 votosG = {
                   idUsuario: usuario.idReferente,
-                  role: "user-ref",
+                  role: 'user-ref',
                   coordinador: usuario.idCoordinador,
-                  referente: "",
+                  referente: '',
                   afiliado: 1,
                   femenino: 1,
                   votos: 1,
-                }
+                };
               } else {
                 votosG = {
                   idUsuario: usuario.idReferente,
-                  role: "user-ref",
+                  role: 'user-ref',
                   coordinador: usuario.idCoordinador,
-                  referente: "",
+                  referente: '',
                   afiliado: 1,
                   femenino: 0,
                   votos: 1,
-                }
+                };
               }
               let guardar = new votosGraf(votosG);
+
               await guardar.save();
             }
           }
           if (usuario.idResPlanilla) {
-            let idRes = await votosGraf.findOne({ idUsuario: usuario.idResPlanilla })
+            let idRes = await votosGraf.findOne({ idUsuario: usuario.idResPlanilla });
             if (idRes !== null) {
               idRes.afiliado++;
-              if (sexo === "F") { idRes.femenino++ };
+              if (sexo === 'F') {
+                idRes.femenino++;
+              }
               idRes.votos++;
               await idRes.save();
             } else {
-              if (sexo === "F") {
+              if (sexo === 'F') {
                 votosG = {
                   idUsuario: usuario.idResPlanilla,
-                  role: "user-resp",
+                  role: 'user-resp',
                   coordinador: usuario.idCoordinador,
                   referente: usuario.idReferente,
                   afiliado: 1,
                   femenino: 1,
                   votos: 1,
-                }
+                };
               } else {
                 votosG = {
                   idUsuario: usuario.idResPlanilla,
-                  role: "user-resp",
+                  role: 'user-resp',
                   coordinador: usuario.idCoordinador,
                   referente: usuario.idReferente,
                   afiliado: 1,
                   femenino: 0,
                   votos: 1,
-                }
+                };
               }
               let guardar = new votosGraf(votosG);
               await guardar.save();
             }
           }
-
         }
       }
-    }
-    else {
+    } else {
       for (let usuario of data.resPlanilla) {
         if (usuario.idCoordinador) {
-          let idCor = await votosGraf.findOne({ idUsuario: usuario.idCoordinador })
+          let idCor = await votosGraf.findOne({ idUsuario: usuario.idCoordinador });
           if (idCor !== null) {
             idCor.votos++;
-            if (sexo === "F") { idCor.femenino++ };
+            if (sexo === 'F') {
+              idCor.femenino++;
+            }
             await idCor.save();
           } else {
-            if (sexo === "F") {
+            if (sexo === 'F') {
               votosG = {
                 idUsuario: usuario.idCoordinador,
-                role: "user-coord",
-                coordinador: "",
-                referente: "",
+                role: 'user-coord',
+                coordinador: '',
+                referente: '',
                 afiliado: 0,
                 femenino: 1,
                 votos: 1,
-              }
+              };
             } else {
               votosG = {
                 idUsuario: usuario.idCoordinador,
-                role: "user-coord",
-                coordinador: "",
-                referente: "",
+                role: 'user-coord',
+                coordinador: '',
+                referente: '',
                 afiliado: 0,
                 femenino: 0,
                 votos: 1,
-              }
+              };
             }
             let guardar = new votosGraf(votosG);
             await guardar.save();
           }
-        };
+        }
         if (usuario.idReferente) {
-          let idRef = await votosGraf.findOne({ idUsuario: usuario.idReferente })
+          let idRef = await votosGraf.findOne({ idUsuario: usuario.idReferente });
           if (idRef !== null) {
             idRef.votos++;
-            if (sexo === "F") { idRef.femenino++ };
+            if (sexo === 'F') {
+              idRef.femenino++;
+            }
             await idRef.save();
           } else {
-            if (sexo === "F") {
+            if (sexo === 'F') {
               votosG = {
                 idUsuario: usuario.idReferente,
-                role: "user-ref",
+                role: 'user-ref',
                 coordinador: usuario.idCoordinador,
-                referente: "",
+                referente: '',
                 afiliado: 0,
                 femenino: 1,
                 votos: 1,
-              }
+              };
             } else {
               votosG = {
                 idUsuario: usuario.idReferente,
-                role: "user-ref",
+                role: 'user-ref',
                 coordinador: usuario.idCoordinador,
-                referente: "",
+                referente: '',
                 afiliado: 0,
                 femenino: 0,
                 votos: 1,
-              }
+              };
             }
             let guardar = new votosGraf(votosG);
             await guardar.save();
           }
-        };
+        }
         if (usuario.idResPlanilla) {
-          let idRes = await votosGraf.findOne({ idUsuario: usuario.idResPlanilla })
+          let idRes = await votosGraf.findOne({ idUsuario: usuario.idResPlanilla });
           if (idRes !== null) {
-            if (sexo === "F") { idRes.femenino++ };
+            if (sexo === 'F') {
+              idRes.femenino++;
+            }
             idRes.votos++;
             await idRes.save();
           } else {
-            if (sexo === "F") {
+            if (sexo === 'F') {
               votosG = {
                 idUsuario: usuario.idResPlanilla,
-                role: "user-resp",
+                role: 'user-resp',
                 coordinador: usuario.idCoordinador,
                 referente: usuario.idReferente,
                 afiliado: 0,
                 femenino: 1,
                 votos: 1,
-              }
+              };
             } else {
               votosG = {
                 idUsuario: usuario.idResPlanilla,
-                role: "user-resp",
+                role: 'user-resp',
                 coordinador: usuario.idCoordinador,
                 referente: usuario.idReferente,
                 afiliado: 0,
                 femenino: 0,
                 votos: 1,
-              }
+              };
             }
             let guardar = new votosGraf(votosG);
             await guardar.save();
           }
         }
-
       }
     }
   }
 
   return res.status(200).json({
     ok: true,
-  })
+  });
 };
 ////////////Consutlas de graficas//////////////////////////
 export const getCalculoTotal = async (req: Request, res: Response) => {
-
+  console.log(`req`, req)
   let totales: any = await votosGraf.find().lean();
   let usuariosTot = await usuarios.find().lean();
   let data: any = [];
@@ -284,9 +293,43 @@ export const getCalculoTotal = async (req: Request, res: Response) => {
     data,
   })
 };
+export const getCalculoTotalCoord = async (req: Request, res: Response) => {
+  let usuariosTot;
+  let totalesCoord = await votosGraf.find({ coordinador: req.body.usr.id }).lean();
+
+  let data: any = [];
+  usuariosTot = await usuarios.find({ role: "user-ref", idCoordinador: req.body.usr.id }, { "_id": 1, "datosPersonales.apellido": 1, "datosPersonales.nombres": 1 }).lean();
+  if (usuariosTot.length !== 0) {
+    for (let usuario of usuariosTot) {
+      for (let usuarioVoto of totalesCoord) {
+        let id = usuario._id.toString();
+        if (id === usuarioVoto.idUsuario) {
+
+          let totalnoafiliados = usuarioVoto.votos - usuarioVoto.afiliado;
+          data.push({
+            nombrecompleto: usuario.datosPersonales.apellido + " " + usuario.datosPersonales.nombres,
+            organizacion: req.body.usr.areaResponsable,
+            totalafiliados: usuarioVoto.afiliado,
+            totalnoafiliados: totalnoafiliados,
+            totalvotos: usuarioVoto.votos,
+            id: usuarioVoto.idUsuario
+          }
+          );
+        }
+      }
+
+    }
+
+  }
+  ;
+  res.status(200).json({
+    ok: true,
+    data,
+  })
+};
 
 export const getvotosGrafica = async (req: Request, res: Response) => {
-  console.log(`req.body`, req.body.role)
+  console.log(`req.body`, req.body.data)
   let votosTotal = 0;
   let afiliados = 0;
   let femenino = 0;
