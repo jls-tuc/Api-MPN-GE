@@ -2,16 +2,16 @@ import { Schema, model, Document } from 'mongoose';
 const uniqueValidator = require('mongoose-unique-validator');
 
 export interface Iafiliado extends Document {
-   apellido: String;
-   nombre: String;
-   genero: String;
-   tipo_ejemplar: String;
-   circuito: String;
-   fec_afiliacion: String;
-   domicilio: String;
-   localidad: String;
-   departamento: String;
-   dni: String;
+   apellido: string;
+   nombre: string;
+   genero: string;
+   tipo_ejemplar: string;
+   circuito: string;
+   fec_afiliacion: string;
+   domicilio: string;
+   localidad: string;
+   departamento: string;
+   dni: any;
 }
 
 const afiliadoSchema = new Schema(

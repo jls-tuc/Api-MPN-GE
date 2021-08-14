@@ -8,7 +8,7 @@ import passport from 'passport';
 import passportM from './middlewares/passport-jwt';
 require('dotenv').config();
 // servidores
-import dbArsat from './conexiones/dbMongo';
+import local from './conexiones/dbMongo';
 // rutas
 import serverRoute from './modulos/routes/server';
 import authUserRoute from './Auth/routes/authUsers.routes';
@@ -19,6 +19,7 @@ import padronNqnRoute from './modulos/routes/elecciones/padronNqn.route';
 import padronProvRoute from './modulos/routes/elecciones/padronProv.route';
 import afiliadoNqnRoute from './modulos/routes/elecciones/afiliado.route';
 import votoProvRoute from './modulos/routes/elecciones/votoProv.route';
+import scriptRoute from './util/ScripTs/Scripts.route';
 
 class ServerSPS {
    private app: Application;
@@ -35,7 +36,7 @@ class ServerSPS {
    }
 
    async listen() {
-      await dbArsat.dbArsat();
+      await local.local();
       //Servidor Express
       /*  https
          .createServer(
@@ -90,6 +91,9 @@ class ServerSPS {
       this.app.use(this.apiPath, padronProvRoute);
       this.app.use(this.apiPath, afiliadoNqnRoute);
       this.app.use(this.apiPath, votoProvRoute);
+
+      //// scriptss
+      this.app.use(this.apiPath, scriptRoute);
    }
 }
 

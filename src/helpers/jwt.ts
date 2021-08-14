@@ -13,7 +13,7 @@ export class Auth {
     * @memberOf Auth
     */
 
-   static expiresIn = 60 * 60 * 24 * 2; /* 2 días */
+   static expiresIn = 60 * 60 * 5;
 
    // Crea el token con los datos de sesión
 
