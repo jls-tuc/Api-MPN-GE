@@ -1,5 +1,4 @@
 import { Schema, model } from 'mongoose';
-import { Interface } from 'readline';
 
 const IvotosCalc = new Schema<IvotosCalc>({
    idUsuario: { type: String, lowecase: true, unique: true },
@@ -7,7 +6,7 @@ const IvotosCalc = new Schema<IvotosCalc>({
    coordinador: { type: String, lowecase: true },
    referente: { type: String, lowecase: true },
    afiliado: { type: Number, lowecase: true },
-   femenino: { type: Number },
+   femenino: { type: Number, lowecase: true },
    votos: { type: Number },
 });
 export interface IvotosCalc extends Document {

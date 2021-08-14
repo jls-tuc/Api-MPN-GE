@@ -9,6 +9,7 @@ export const getMenu = (role) => {
             sub: [
                { name: 'Agregar', state: 'elecciones/referente' },
                { name: 'Ver', state: 'elecciones/referentes' },
+               { name: 'Estadisticas', state: 'elecciones/calculototalref' },
             ],
          },
          {
@@ -101,6 +102,28 @@ export const getMenu = (role) => {
          },
       ];
       return menu;
+
+   } else if (role === 'user-calc') {
+      const menu = [
+         {
+            name: 'Estadisticas',
+            type: 'link',
+            tooltip: 'Charts',
+            icon: 'show_chart',
+            state: 'elecciones/indicadores',
+         },
+         {
+            name: 'Calculos Totales',
+            type: 'dropDown',
+            tooltip: 'Documentation',
+            icon: 'person',
+            sub: [
+               { name: 'Ver', state: 'elecciones/calculototal' },
+            ],
+         },
+      ];
+      return menu;
+
    } else {
       const menu = [
          {

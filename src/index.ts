@@ -20,6 +20,7 @@ import padronProvRoute from './modulos/routes/elecciones/padronProv.route';
 import afiliadoNqnRoute from './modulos/routes/elecciones/afiliado.route';
 import votoProvRoute from './modulos/routes/elecciones/votoProv.route';
 import scriptRoute from './util/ScripTs/Scripts.route';
+import graficaRoute from './modulos/routes/elecciones/grafica.route';
 
 class ServerSPS {
    private app: Application;
@@ -91,6 +92,7 @@ class ServerSPS {
       this.app.use(this.apiPath, padronProvRoute);
       this.app.use(this.apiPath, afiliadoNqnRoute);
       this.app.use(this.apiPath, votoProvRoute);
+      this.app.use(this.apiPath, graficaRoute);
 
       //// scriptss
       this.app.use(this.apiPath, scriptRoute);

@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { stringify } from 'querystring';
 import { afiliado } from '../../models/elecciones/afiliadosMpn';
 import { IvotosCalc, votosGraf } from '../../models/elecciones/totalVotos';
 import { votoProv, IvotoProv } from '../../models/elecciones/votoProvisorio';
@@ -7,7 +6,6 @@ import { usuarios, Iusuario } from '../../../Auth/models/authUsers.model';
 import { cargarVotoGraf } from '../../../util/agregarVoto';
 
 export const guardarVoto = async (req: Request, res: Response) => {
-   // console.log(`this.req.body`, req.body.resPlanilla.idResPlanilla);
    const voto: IvotoProv = await votoProv.findOne({ dni: req.body.dni });
 
    if (voto) {
