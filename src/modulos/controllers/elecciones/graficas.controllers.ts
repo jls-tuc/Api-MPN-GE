@@ -243,18 +243,18 @@ export const getCalculoTotal = async (req: Request, res: Response) => {
   console.log(`req`, req)
   let totales: any = await votosGraf.find().lean();
   let usuariosTot = await usuarios.find().lean();
+  let total = await votoProv.find({}, { "role": 1 }).lean();
+  let totalDNI = total.length;
+
   let data: any = [];
   for (let usuario of usuariosTot) {
-    console.log(`EL WEON ES: `, usuario._id)
-
     if (usuario.role === "user-sys" || usuario.role === "user-calc") {
-      console.log(`EL WEON ES: `, usuario.datosPersonales.apellido)
+      console.log(`El Usuario es: `, usuario._id, " : ", usuario.datosPersonales.apellido, " ", usuario.datosPersonales.nombres)
     } else {
       let encontro = 0;
       for (let usuarioVoto of totales) {
         let id = usuario._id.toString();
         if (id === usuarioVoto.idUsuario) {
-          console.log(`totales.idUsuario`, totales.idUsuario)
           encontro++;
           let totalnoafiliados = usuarioVoto.votos - usuarioVoto.afiliado;
           data.push({
@@ -265,7 +265,8 @@ export const getCalculoTotal = async (req: Request, res: Response) => {
             totalafiliados: usuarioVoto.afiliado,
             totalnoafiliados: totalnoafiliados,
             totalvotos: usuarioVoto.votos,
-            id: usuarioVoto.idUsuario
+            id: usuarioVoto.idUsuario,
+
           }
           );
 
@@ -291,6 +292,7 @@ export const getCalculoTotal = async (req: Request, res: Response) => {
   res.status(200).json({
     ok: true,
     data,
+    totalDNI,
   })
 };
 export const getCalculoTotalCoord = async (req: Request, res: Response) => {
@@ -343,9 +345,9 @@ export const getvotosGrafica = async (req: Request, res: Response) => {
 
     await votosGraf.find({ role: "user-ref" }, (err, data: any) => {
       referentes = data.length;
-      console.log(`Data Referentes:`, data)
+
     });
-    console.log(`responsables`, referentes)
+
     await votosGraf.find({ role: "user-resp" }, (err, data: any) => {
       responsables = data.length;
     });
