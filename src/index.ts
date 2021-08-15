@@ -37,7 +37,7 @@ class ServerSPS {
    }
 
    async listen() {
-      await local.local();
+      await local.local(); // Base de datos!!!
       //Servidor Express
       /*  https
          .createServer(
