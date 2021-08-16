@@ -303,10 +303,11 @@ export const getCalculoTotalCoord = async (req: Request, res: Response) => {
   usuariosTot = await usuarios.find({ role: "user-ref", idCoordinador: req.body.usr.id }, { "_id": 1, "datosPersonales.apellido": 1, "datosPersonales.nombres": 1 }).lean();
   if (usuariosTot.length !== 0) {
     for (let usuario of usuariosTot) {
+      let encontro = 0;
       for (let usuarioVoto of totalesCoord) {
         let id = usuario._id.toString();
         if (id === usuarioVoto.idUsuario) {
-
+          encontro++;
           let totalnoafiliados = usuarioVoto.votos - usuarioVoto.afiliado;
           data.push({
             nombrecompleto: usuario.datosPersonales.apellido + " " + usuario.datosPersonales.nombres,
@@ -319,11 +320,23 @@ export const getCalculoTotalCoord = async (req: Request, res: Response) => {
           );
         }
       }
+      if (encontro === 0) {
+        let id = usuario._id.toString();
+        data.push({
+          nombrecompleto: usuario.datosPersonales.apellido + " " + usuario.datosPersonales.nombres,
+          organizacion: req.body.usr.areaResponsable,
+          totalafiliados: 0,
+          totalnoafiliados: 0,
+          totalvotos: 0,
+          id: id,
 
+        });
+      }
     }
 
   }
   ;
+  console.log(`data`, data)
   res.status(200).json({
     ok: true,
     data,
