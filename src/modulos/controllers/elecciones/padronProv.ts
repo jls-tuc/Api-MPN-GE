@@ -5,7 +5,7 @@ export const getPerPadron = async (req: Request, res: Response) => {
    //console.log('documento', req.query);
    await padronProv.findOne({ documento: req.query.documento }, (err, data) => {
       if (err) {
-         return res.status(300).json({
+         return res.status(204).json({
             ok: false,
             msg: 'Verificar los datos ingresados',
             err,
@@ -17,7 +17,7 @@ export const getPerPadron = async (req: Request, res: Response) => {
             data,
          });
       } else {
-         return res.status(200).json({
+         return res.status(204).json({
             ok: false,
             msg: 'El Numero de documento no existe en el padron.',
          });

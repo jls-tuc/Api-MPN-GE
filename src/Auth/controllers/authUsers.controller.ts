@@ -12,19 +12,19 @@ export const registro = async (req: Request, res: Response, next) => {
    if (userExist) {
       //pregunto si ya existe un idreferente en el array
       if (userExist.role === 'user-ref') {
-         res.status(200).json({
+         res.status(204).json({
             ok: false,
             msg: 'El referente ya se encuentra cargado',
          });
       } else {
          if (userExist.role === 'user-resp') {
-            res.status(200).json({
+            res.status(204).json({
                ok: false,
                msg: 'El responsable de la planilla ya se encuentra asignado al referente seleccionado',
             });
          } else {
             if (userExist.role === 'user-coord') {
-               res.status(200).json({
+               res.status(204).json({
                   ok: false,
                   msg: 'El usuario seleccionado es coordinador',
                });
@@ -59,9 +59,9 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
 
    if (isMatch) {
       user.lastLogin = moment().format('YYYY/MM/DD;HH:MM');
-
       await user.save();
       const menu = getMenu(user.role);
+      //console.log(user);
       return res.status(200).json({
          ok: true,
          foto: user.datosPersonales.foto,
@@ -74,13 +74,13 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
 };
 
 export const renewToken = async (req, res: Response) => {
-   console.log('req', req.user);
+   //  console.log('req', req.user);
 };
 
 export const getUsuarios = async (req: Request, res: Response) => {
    await usuarios.find({}, (err, data) => {
       if (err) {
-         res.status(300).json({
+         res.status(204).json({
             ok: false,
             err,
          });
@@ -160,20 +160,21 @@ export const getUsuariosGraf = async (req: Request, res: Response) => {
       let responsables = 0;
       let referentes = 0;
       for (let res of data) {
-         if (res.role === "user-coord") {
+         if (res.role === 'user-coord') {
             coordinadores++;
          } else {
-            if (res.role === "user-ref") {
+            if (res.role === 'user-ref') {
                referentes++;
             } else {
                responsables++;
             }
          }
-
       }
       res.status(200).json({
          ok: true,
-         coordinadores, referentes, responsables
+         coordinadores,
+         referentes,
+         responsables,
       });
 
       /* setTimeout(() => {

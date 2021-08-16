@@ -1,4 +1,5 @@
 import { Schema, model, Document } from 'mongoose';
+
 const uniqueValidator = require('mongoose-unique-validator');
 
 export interface IvotoProv extends Document {

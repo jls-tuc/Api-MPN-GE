@@ -2,7 +2,14 @@ import { Router } from 'express';
 import passport from 'passport';
 import cache from '../../middlewares/cache';
 import { validateLogin } from '../../middlewares/passport-jwt';
-import { registro, login, renewToken, getUsuarios, getUserByID, getUsuariosGraf } from '../controllers/authUsers.controller';
+import {
+   registro,
+   login,
+   renewToken,
+   getUsuarios,
+   getUserByID,
+   getUsuariosGraf,
+} from '../controllers/authUsers.controller';
 
 const route = Router();
 

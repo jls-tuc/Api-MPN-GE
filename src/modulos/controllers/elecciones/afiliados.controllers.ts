@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { afiliado } from '../../models/elecciones/afiliadosMpn';
+import { afiliado, Iafiliado } from '../../models/elecciones/afiliadosMpn';
 
 export const getAfiliado = async (req: Request, res: Response) => {
-   await afiliado.findOne({}, (err, data) => {
+   await afiliado.findOne({ dni: req.query.documento }, (err, data) => {
       if (err) {
-         return res.status(300).json({
+         return res.status(204).json({
             ok: false,
             msg: 'Verificar los datos ingresados',
             err,
@@ -16,7 +16,7 @@ export const getAfiliado = async (req: Request, res: Response) => {
             data,
          });
       } else {
-         return res.status(200).json({
+         return res.status(204).json({
             ok: false,
             msg: 'El Numero de documento no existe en el padron.',
          });
