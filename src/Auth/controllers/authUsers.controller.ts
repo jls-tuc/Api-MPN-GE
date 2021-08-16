@@ -12,19 +12,19 @@ export const registro = async (req: Request, res: Response, next) => {
    if (userExist) {
       //pregunto si ya existe un idreferente en el array
       if (userExist.role === 'user-ref') {
-         res.status(200).json({
+         res.status(204).json({
             ok: false,
             msg: 'El referente ya se encuentra cargado',
          });
       } else {
          if (userExist.role === 'user-resp') {
-            res.status(200).json({
+            res.status(204).json({
                ok: false,
                msg: 'El responsable de la planilla ya se encuentra asignado al referente seleccionado',
             });
          } else {
             if (userExist.role === 'user-coord') {
-               res.status(200).json({
+               res.status(204).json({
                   ok: false,
                   msg: 'El usuario seleccionado es coordinador',
                });
@@ -80,7 +80,7 @@ export const renewToken = async (req, res: Response) => {
 export const getUsuarios = async (req: Request, res: Response) => {
    await usuarios.find({}, (err, data) => {
       if (err) {
-         res.status(300).json({
+         res.status(204).json({
             ok: false,
             err,
          });

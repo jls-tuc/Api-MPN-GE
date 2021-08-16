@@ -12,7 +12,7 @@ export const guardarVoto = async (req: Request, res: Response) => {
    if (voto) {
       if (voto.resPlanilla.some((data) => data.idCoordinador === req.body.resPlanilla.idCoordinador)) {
          if (voto.resPlanilla.some((data) => data.idReferente === req.body.resPlanilla.idReferente)) {
-            return res.status(200).json({
+            return res.status(203).json({
                ok: false,
                msg: 'El Voto ya se encuentra cargado, dentro de su estructura',
             });
@@ -46,13 +46,13 @@ export const getvotos = async (req: Request, res: Response) => {
    } else if (req.query.consulta === 'Coord') {
       votos = await votoProv.find({ 'resPlanilla.idCoordinador': req.query.valor }).lean();
    } else {
-      return res.status(300).json({
+      return res.status(200).json({
          ok: false,
          msg: 'Faltan datos para la busqueda',
       });
    }
    if (votos === null) {
-      res.status(300).json({
+      res.status(200).json({
          ok: false,
          msg: 'Algo esta mal',
       });
@@ -69,7 +69,7 @@ export const getvotos = async (req: Request, res: Response) => {
 export const getOneVoto = async (req: Request, res: Response) => {
    await votoProv.findOne({ dni: req.body.dni }, (err, data: IvotoProv) => {
       if (err) {
-         res.status(300).json({
+         res.status(200).json({
             ok: false,
             msg: 'Verificar los datos ingresados',
             err,
@@ -92,7 +92,7 @@ export const getOneVoto = async (req: Request, res: Response) => {
 ///////////////////////cargar votosdeGrafff
 
 export const cargarVoto = async (req: Request, res: Response) => {
-   console.log('dataaaaaa');
+   //console.log('dataaaaaa');
    let data: any = req.body;
    let voto = await cargarVotoGraf(data);
    if (voto) {
@@ -100,7 +100,7 @@ export const cargarVoto = async (req: Request, res: Response) => {
          ok: true,
       });
    } else {
-      return res.status(300).json({
+      return res.status(400).json({
          ok: false,
       });
    }
@@ -151,7 +151,7 @@ export const getvotosGrafica = async (req: Request, res: Response) => {
    await votoProv.find((err, data: any) => {
       console.log(err);
       if (err) {
-         res.status(300).json({
+         res.status(200).json({
             ok: false,
             err,
          });

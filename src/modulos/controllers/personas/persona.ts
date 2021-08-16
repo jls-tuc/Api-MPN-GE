@@ -7,20 +7,20 @@ import * as personaSchema from '../../models/personas/persona';
 import { savePersona, resizeFoto } from './personaCtrl';
 
 export const getPersonaRenaper = async (req: Request, res: Response) => {
-   console.log('Query Persona: ', req.query);
+   // console.log('Query Persona: ', req.query);
 
    let persona: any = await personaSchema.persona.find({
       dni: req.query.dni,
       sexo: req.query.sexo,
    });
-   console.log('Encuentra persona: ', persona);
+   // console.log('Encuentra persona: ', persona);
    if (persona.length === 0) {
       persona = await getServicioRenaper({
          documento: req.query.dni,
          sexo: req.query.sexo,
       });
 
-      console.log('Encuentra persona RENAPER: ', persona);
+      //  console.log('Encuentra persona RENAPER: ', persona);
       if (persona && persona.datos.nroError === 0) {
          persona.datos.sexo = req.query.sexo;
          persona.datos.dni = req.query.dni;

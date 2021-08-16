@@ -240,7 +240,7 @@ export const getRecalculando = async (req: Request, res: Response) => {
 };
 ////////////Consutlas de graficas//////////////////////////
 export const getCalculoTotal = async (req: Request, res: Response) => {
-   //console.log(`req`, req)
+   // console.log(`req`, req)
    let totales: any = await votosGraf.find().lean();
    let usuariosTot = await usuarios.find().lean();
    let total = await votoProv.find({}, { role: 1 }).lean();
@@ -249,7 +249,7 @@ export const getCalculoTotal = async (req: Request, res: Response) => {
    let data: any = [];
    for (let usuario of usuariosTot) {
       if (usuario.role === 'user-sys' || usuario.role === 'user-calc') {
-         //  console.log(`El Usuario es: `, usuario._id, " : ", usuario.datosPersonales.apellido, " ", usuario.datosPersonales.nombres)
+         //   console.log(`El Usuario es: `, usuario._id, " : ", usuario.datosPersonales.apellido, " ", usuario.datosPersonales.nombres)
       } else {
          let encontro = 0;
          for (let usuarioVoto of totales) {
@@ -333,7 +333,7 @@ export const getCalculoTotalCoord = async (req: Request, res: Response) => {
          }
       }
    }
-   console.log(`data`, data);
+   //console.log(`data`, data)
    res.status(200).json({
       ok: true,
       data,
@@ -384,7 +384,7 @@ export const getvotosGrafica = async (req: Request, res: Response) => {
    } else {
       await votosGraf.find({ idUsuario: req.body.id }, (err, data: any) => {
          if (err) {
-            res.status(300).json({
+            res.status(400).json({
                ok: false,
                err,
             });
