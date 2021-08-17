@@ -73,12 +73,60 @@ export const getCalculoTotal = async (req: Request, res: Response) => {
 };
 export const getCalculoTotalCoord = async (req: Request, res: Response) => {
    let usuariosTot;
-   let totalesCoord = await votosGraf.find({ coordinador: req.body.usr.id }).lean();
+   let totalesRef = await votosGraf.find({ coordinador: req.body.usr.id }).lean();
 
    let data: any = [];
    usuariosTot = await usuarios
       .find(
          { role: 'user-ref', idCoordinador: req.body.usr.id },
+         { _id: 1, 'datosPersonales.apellido': 1, 'datosPersonales.nombres': 1 }
+      )
+      .lean();
+   if (usuariosTot.length !== 0) {
+      for (let usuario of usuariosTot) {
+         let encontro = 0;
+         for (let usuarioVoto of totalesRef) {
+            let id = usuario._id.toString();
+            if (id === usuarioVoto.idUsuario) {
+               encontro++;
+               let totalnoafiliados = usuarioVoto.votos - usuarioVoto.afiliado;
+               data.push({
+                  nombrecompleto: usuario.datosPersonales.apellido + ' ' + usuario.datosPersonales.nombres,
+                  organizacion: req.body.usr.areaResponsable,
+                  totalafiliados: usuarioVoto.afiliado,
+                  totalnoafiliados: totalnoafiliados,
+                  totalvotos: usuarioVoto.votos,
+                  id: usuarioVoto.idUsuario,
+               });
+            }
+         }
+         if (encontro === 0) {
+            let id = usuario._id.toString();
+            data.push({
+               nombrecompleto: usuario.datosPersonales.apellido + ' ' + usuario.datosPersonales.nombres,
+               organizacion: req.body.usr.areaResponsable,
+               totalafiliados: 0,
+               totalnoafiliados: 0,
+               totalvotos: 0,
+               id: id,
+            });
+         }
+      }
+   }
+   //console.log(`data`, data)
+   res.status(200).json({
+      ok: true,
+      data,
+   });
+};
+export const getCalculoTotalRef = async (req: Request, res: Response) => {
+   let usuariosTot;
+   let totalesCoord = await votosGraf.find({ referente: req.body.usr.id }).lean();
+
+   let data: any = [];
+   usuariosTot = await usuarios
+      .find(
+         { role: 'user-resp', idReferente: req.body.usr.id },
          { _id: 1, 'datosPersonales.apellido': 1, 'datosPersonales.nombres': 1 }
       )
       .lean();
