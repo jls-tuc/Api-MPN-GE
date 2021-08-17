@@ -19,7 +19,8 @@ export const getMenu = (role) => {
             icon: 'description',
             sub: [
                { name: 'Agregar', state: 'elecciones/planilla' },
-               { name: 'Ver', state: 'elecciones/verPlanillas' },
+               { name: 'Ver mi Planilla', state: 'elecciones/verPlanilla' },
+               { name: 'Ver Total Votos', state: 'elecciones/verPlanillas' },
             ],
          },
          {
@@ -48,6 +49,7 @@ export const getMenu = (role) => {
             sub: [
                { name: 'Agregar', state: 'elecciones/referente' },
                { name: 'Ver', state: 'elecciones/referentes' },
+               { name: 'Estadisticas', state: 'elecciones/calculototalresp' },
             ],
          },
          {
@@ -57,7 +59,8 @@ export const getMenu = (role) => {
             icon: 'description',
             sub: [
                { name: 'Agregar', state: 'elecciones/planilla' },
-               { name: 'Ver', state: 'elecciones/verPlanillas' },
+               { name: 'Ver mi Planilla', state: 'elecciones/verPlanilla' },
+               { name: 'Ver Total Votos', state: 'elecciones/verPlanillas' },
             ],
          },
          {
