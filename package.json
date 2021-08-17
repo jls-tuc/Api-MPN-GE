@@ -6,7 +6,8 @@
    "scripts": {
       "build": "tsc",
       "Run-dev": "tsc-watch --onSuccess \"node dist/app.js\"",
-      "startServProduc": "node dist/app.js"
+      "startServProduc": "node dist/app.js",
+      "pm2Run": " pm2 start  dist/app.js --watch --name 'apiMPN' "
    },
    "keywords": [],
    "author": "",
