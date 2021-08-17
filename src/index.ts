@@ -8,7 +8,7 @@ import passport from 'passport';
 import passportM from './middlewares/passport-jwt';
 require('dotenv').config();
 // servidores
-import local from './conexiones/dbMongo';
+import dbArsat from './conexiones/dbMongo';
 // rutas
 import serverRoute from './modulos/routes/server';
 import authUserRoute from './Auth/routes/authUsers.routes';
@@ -37,7 +37,7 @@ class ServerSPS {
    }
 
    async listen() {
-      await local.local(); // Base de datos!!!
+      await dbArsat.dbArsat(); // Base de datos!!!
       //Servidor Express
       /*  https
          .createServer(
