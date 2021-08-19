@@ -37,12 +37,17 @@ export const guardarVoto = async (req: Request, res: Response) => {
 };
 
 export const getvotos = async (req: Request, res: Response) => {
+   //  console.log(req.query);
    let votos: any;
-
+   let votosRef: any;
    if (req.query.consulta === 'Referente') {
       votos = await votoProv.find({ 'resPlanilla.idReferente': req.query.valor }).lean();
    } else if (req.query.consulta === 'Resplanilla') {
-      votos = await votoProv.find({ 'resPlanilla.idResPlanilla': req.query.valor }).lean();
+      let votosResplanilla = await votoProv.find({ 'resPlanilla.idResPlanilla': req.query.valor }).lean();
+      votosRef = votosResplanilla.length
+         ? (votos = votosResplanilla)
+         : await votoProv.find({ 'resPlanilla.idReferente': req.query.valor }).lean();
+      votos = votosRef;
    } else if (req.query.consulta === 'Coord') {
       votos = await votoProv.find({ 'resPlanilla.idCoordinador': req.query.valor }).lean();
    } else {
@@ -70,7 +75,11 @@ export const getvotosuser = async (req: Request, res: Response) => {
    let votos: any;
 
    if (req.query.consulta === 'Referente') {
-      votos = await votoProv.find({ 'resPlanilla.idResPlanilla': req.query.valor }).lean();
+      let votosResP = await votoProv.find({ 'resPlanilla.idResPlanilla': req.query.valor }).lean();
+      let votosRef = votosResP.length
+         ? (votos = votosResP)
+         : await votoProv.find({ 'resPlanilla.idReferente': req.query.valor }).lean();
+      votos = votosRef;
    } else if (req.query.consulta === 'Coord') {
       votos = await votoProv
          .find({ 'resPlanilla.idCoordinador': req.query.valor, 'resPlanilla.idReferente': '' })
