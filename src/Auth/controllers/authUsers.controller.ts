@@ -12,19 +12,19 @@ export const registro = async (req: Request, res: Response, next) => {
    if (userExist) {
       //pregunto si ya existe un idreferente en el array
       if (userExist.role === 'user-ref') {
-         res.status(204).json({
+         res.status(200).json({
             ok: false,
             msg: 'El referente ya se encuentra cargado',
          });
       } else {
          if (userExist.role === 'user-resp') {
-            res.status(204).json({
+            res.status(200).json({
                ok: false,
                msg: 'El responsable de la planilla ya se encuentra asignado al referente seleccionado',
             });
          } else {
             if (userExist.role === 'user-coord') {
-               res.status(204).json({
+               res.status(200).json({
                   ok: false,
                   msg: 'El usuario seleccionado es coordinador',
                });
@@ -58,6 +58,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
    const isMatch = await user.comparePassword(req.body.password);
 
    if (isMatch) {
+      // console.log(isMatch);
       user.lastLogin = moment().format('YYYY/MM/DD;HH:MM');
       await user.save();
       const menu = getMenu(user.role);
@@ -183,5 +184,89 @@ export const getUsuariosGraf = async (req: Request, res: Response) => {
             resp,
          });
       }, 3000); */
+   });
+};
+
+///referentesCardsss
+
+export const getUserRef = async (req: Request, res: Response) => {
+   //console.log(req.query);
+   let resp = await usuarios.find(
+      { idCoordinador: req.query.id, role: 'user-ref' },
+      {
+         __v: 0,
+         activo: 0,
+         createdAt: 0,
+         updatedAt: 0,
+         password: 0,
+         usuario: 0,
+         fechaAltaUsuario: 0,
+         fechaBajaUsuario: 0,
+         lastLogin: 0,
+         'datosPersonales.dni': 0,
+         'datosPersonales.email': 0,
+         'datosPersonales.calle': 0,
+         'datosPersonales.numero': 0,
+         'datosPersonales.provincia': 0,
+      }
+   );
+
+   res.status(200).json({
+      ok: true,
+      resp,
+   });
+};
+export const getUserResP = async (req: Request, res: Response) => {
+   //console.log(req.query);
+   let resp = await usuarios.find(
+      { idReferente: req.query.id, role: 'user-resp' },
+      {
+         __v: 0,
+         activo: 0,
+         createdAt: 0,
+         updatedAt: 0,
+         password: 0,
+         usuario: 0,
+         fechaAltaUsuario: 0,
+         fechaBajaUsuario: 0,
+         lastLogin: 0,
+         'datosPersonales.dni': 0,
+         'datosPersonales.email': 0,
+         'datosPersonales.calle': 0,
+         'datosPersonales.numero': 0,
+         'datosPersonales.provincia': 0,
+      }
+   );
+   // console.log(resp);
+   res.status(200).json({
+      ok: true,
+      resp,
+   });
+};
+export const getUserPlanillero = async (req: Request, res: Response) => {
+   //console.log(req.query);
+   let resp = await usuarios.find(
+      { _id: req.query.id },
+      {
+         __v: 0,
+         activo: 0,
+         createdAt: 0,
+         updatedAt: 0,
+         password: 0,
+         usuario: 0,
+         fechaAltaUsuario: 0,
+         fechaBajaUsuario: 0,
+         lastLogin: 0,
+         'datosPersonales.dni': 0,
+         'datosPersonales.email': 0,
+         'datosPersonales.calle': 0,
+         'datosPersonales.numero': 0,
+         'datosPersonales.provincia': 0,
+      }
+   );
+   // console.log(resp);
+   res.status(200).json({
+      ok: true,
+      resp,
    });
 };

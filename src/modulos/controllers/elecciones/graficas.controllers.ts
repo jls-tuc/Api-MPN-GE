@@ -72,6 +72,7 @@ export const getCalculoTotal = async (req: Request, res: Response) => {
    });
 };
 export const getCalculoTotalCoord = async (req: Request, res: Response) => {
+   //  console.log(req.body.usr);
    let usuariosTot;
    let totalesRef = await votosGraf.find({ coordinador: req.body.usr.id }).lean();
 
@@ -170,6 +171,82 @@ export const getCalculoTotalRef = async (req: Request, res: Response) => {
 
 export const getvotosGrafica = async (req: Request, res: Response) => {
    //console.log(`req.body`, req.body.data)
+   let usuariosTot = await usuarios.find({}, { role: 1 }).lean();
+   let votosTotal = 0;
+   let afiliados = 0;
+   let femenino = 0;
+   let masculino = 0;
+   let noafiliados = 0;
+   let referentes = 0;
+   let coordinadores = 0;
+   let responsables = 0;
+   let id;
+   if (req.body.role === 'user-sys' || req.body.role === 'user-calc') {
+      referentes = await (await usuarios.find({ role: 'user-ref' }, { role: 1 }).lean()).length;
+      responsables = await (await usuarios.find({ role: 'user-resp' }, { role: 1 }).lean()).length;
+      coordinadores = await (await usuarios.find({ role: 'user-coord' }, { role: 1 }).lean()).length;
+      //  console.log(`coordinadores`, coordinadores);
+      await votosGraf.find({ role: 'user-coord' }, (err, coord: any) => {
+         for (let voto of coord) {
+            votosTotal = votosTotal + voto.votos;
+            afiliados = afiliados + voto.afiliado;
+            femenino = femenino + voto.femenino;
+         }
+         masculino = votosTotal - femenino;
+         noafiliados = votosTotal - afiliados;
+         res.status(200).json({
+            ok: true,
+            votosTotal,
+            afiliados,
+            femenino,
+            masculino,
+            noafiliados,
+            coordinadores,
+            referentes,
+            responsables,
+         });
+      });
+   } else {
+      await votosGraf.find({ idUsuario: req.body.id }, (err, data: any) => {
+         if (err) {
+            res.status(400).json({
+               ok: false,
+               err,
+            });
+         } else {
+            //    console.log(`dataaaaaaaaaaa`, data)
+            if (data.length === 0) {
+               votosTotal = 0;
+               afiliados = 0;
+               femenino = 0;
+               masculino = 0;
+               noafiliados = 0;
+               id = req.body.id;
+            } else {
+               votosTotal = data[0].votos;
+               afiliados = data[0].afiliado;
+               femenino = data[0].femenino;
+               masculino = votosTotal - femenino;
+               noafiliados = votosTotal - afiliados;
+               id = data[0]._id;
+            }
+
+            res.status(200).json({
+               ok: true,
+               votosTotal,
+               afiliados,
+               femenino,
+               masculino,
+               noafiliados,
+               id,
+            });
+         }
+      });
+   }
+};
+
+/* export const getvotosGrafica = async (req: Request, res: Response) => {
+   //console.log(`req.body`, req.body.data)
    let votosTotal = 0;
    let afiliados = 0;
    let femenino = 0;
@@ -247,3 +324,4 @@ export const getvotosGrafica = async (req: Request, res: Response) => {
       });
    }
 };
+ */

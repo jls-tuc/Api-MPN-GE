@@ -68,24 +68,16 @@ export const getvotos = async (req: Request, res: Response) => {
 };
 export const getvotosuser = async (req: Request, res: Response) => {
    let votos: any;
-   console.log(`req.query`, req.query)
+
    if (req.query.consulta === 'Referente') {
       votos = await votoProv.find({ 'resPlanilla.idResPlanilla': req.query.valor }).lean();
-
    } else if (req.query.consulta === 'Coord') {
-      votos = await votoProv.find({ 'resPlanilla.idCoordinador': req.query.valor, 'resPlanilla.idReferente': "" }).lean();
-   } else {
-      return res.status(200).json({
-         ok: false,
-         msg: 'Faltan datos para la busqueda',
-      });
+      votos = await votoProv
+         .find({ 'resPlanilla.idCoordinador': req.query.valor, 'resPlanilla.idReferente': '' })
+         .lean();
    }
-   if (votos === null) {
-      res.status(200).json({
-         ok: false,
-         msg: 'Algo esta mal',
-      });
-   } else {
+   //console.log(votos);
+   if (votos.length) {
       const votosUnicos = await Array.from(new Set(votos));
       let totalV = votosUnicos.length;
       res.status(200).json({
@@ -93,7 +85,19 @@ export const getvotosuser = async (req: Request, res: Response) => {
          votosUnicos,
          totalV,
       });
+   } else {
+      votos = await votoProv.find({ 'resPlanilla.idReferente': req.query.valor }).lean();
    }
+
+   let votosfil = votos.filter((data) => data.resPlanilla.idResPlanilla === '');
+   // console.log(votosfil);
+   const votosUnicos = await Array.from(new Set(votosfil));
+   let totalV = votosUnicos.length;
+   res.status(200).json({
+      ok: true,
+      votosUnicos,
+      totalV,
+   });
 };
 export const getOneVoto = async (req: Request, res: Response) => {
    await votoProv.findOne({ dni: req.body.dni }, (err, data: IvotoProv) => {
@@ -165,10 +169,10 @@ export const getCalculoTotal = async (req: Request, res: Response) => {
             totalvotos: calc.votos,
          });
       } else {
-         console.log(`Usuario no Existe: `, calc.idUsuario);
+         // console.log(`Usuario no Existe: `, calc.idUsuario);
       }
    }
-   console.log(`Ya esta!!!`);
+   //  console.log(`Ya esta!!!`);
    res.status(200).json({
       ok: true,
       data,
@@ -176,7 +180,7 @@ export const getCalculoTotal = async (req: Request, res: Response) => {
 };
 
 export const getvotosGrafica = async (req: Request, res: Response) => {
-   console.log('estoy');
+   //  console.log('estoy');
    await votoProv.find((err, data: any) => {
       console.log(err);
       if (err) {
