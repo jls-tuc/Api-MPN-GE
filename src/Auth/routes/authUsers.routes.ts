@@ -9,6 +9,9 @@ import {
    getUsuarios,
    getUserByID,
    getUsuariosGraf,
+   getUserRef,
+   getUserResP,
+   getUserPlanillero,
 } from '../controllers/authUsers.controller';
 
 const route = Router();
@@ -19,5 +22,10 @@ route.get('/auth/renew', validateLogin, renewToken);
 route.get('/auth/usuarios', validateLogin, getUsuarios);
 route.get('/estadistica/graficagral', validateLogin, getUsuariosGraf);
 route.get('/auth/usuario', validateLogin, getUserByID);
+
+/////////router CardddReff
+route.get('/cards/ref', validateLogin, getUserRef);
+route.get('/cards/resp', validateLogin, getUserResP);
+route.get('/cards/planilla', validateLogin, getUserPlanillero);
 
 export default route;

@@ -13,7 +13,7 @@ import {
 const router = Router();
 
 router.post('/estadistica/graficatotal', validateLogin, getvotosGrafica);
-//router.get('/estadistica', getRecalculando);
+router.get('/estadistica', getRecalculando);
 router.get('/estadistica/calculototal', validateLogin, getCalculoTotal);
 router.post('/estadistica/calculototalref', validateLogin, getCalculoTotalCoord);
 router.post('/estadistica/calculototalresp', getCalculoTotalRef);
