@@ -16,11 +16,11 @@ import personaRoute from './modulos/routes/personas/persona';
 import provLocRoute from './modulos/routes/comunes/provLoc';
 //modulo eleccion
 import padronNqnRoute from './modulos/routes/elecciones/padronNqn.route';
-import padronProvRoute from './modulos/routes/elecciones/padronProv.route';
 import afiliadoNqnRoute from './modulos/routes/elecciones/afiliado.route';
-import votoProvRoute from './modulos/routes/elecciones/votoProv.route';
+import votoAdhRoute from './modulos/routes/elecciones/votoAdh.route';
 import scriptRoute from './util/ScripTs/Scripts.route';
 import graficaRoute from './modulos/routes/elecciones/grafica.route';
+import geoRoute from './modulos/routes/elecciones/geo/votosXEsc.route';
 
 class ServerSPS {
    private app: Application;
@@ -89,9 +89,9 @@ class ServerSPS {
       this.app.use(this.apiPath, provLocRoute);
       //modulo Elecciones
       this.app.use(this.apiPath, padronNqnRoute);
-      this.app.use(this.apiPath, padronProvRoute);
       this.app.use(this.apiPath, afiliadoNqnRoute);
-      this.app.use(this.apiPath, votoProvRoute);
+      this.app.use(this.apiPath, votoAdhRoute);
+      this.app.use(this.apiPath, geoRoute);
       this.app.use(this.apiPath, graficaRoute);
 
       //// scriptss
