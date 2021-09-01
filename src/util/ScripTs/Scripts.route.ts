@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { validateLogin } from '../../middlewares/passport-jwt';
-import { /* actualizar, */ actualizarVoto, geoVoto, nuevoVoto, usrConVotos } from './actualizarVotos';
+import { /* actualizar, */ actualizarVoto, geoVoto, nuevoVoto, usrConVotos, votosNQN } from './actualizarVotos';
 import { crearCapa } from './padronNuevo';
 
 const router = Router();
@@ -11,4 +11,6 @@ router.post('/script/votoadh', crearCapa);
 router.post('/script/listado', usrConVotos);
 router.post('/script/geoEsc', geoVoto);
 router.post('/script/votoAd', nuevoVoto);
+router.post('/script/votoNqn', votosNQN);
+
 export default router;

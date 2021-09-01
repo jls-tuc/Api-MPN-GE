@@ -3,20 +3,20 @@ import passport from 'passport';
 import cache from '../../middlewares/cache';
 import { validateLogin } from '../../middlewares/passport-jwt';
 import {
-   registro,
-   login,
-   renewToken,
-   getUsuarios,
-   getUserByID,
-   getUsuariosGraf,
-   getUserRef,
-   getUserResP,
-   getUserPlanillero,
+     registro,
+     login,
+     renewToken,
+     getUsuarios,
+     getUserByID,
+     getUsuariosGraf,
+     getUserRef,
+     getUserResP,
+     getUserPlanillero,
 } from '../controllers/authUsers.controller';
 
 const route = Router();
 
-route.post('/auth/registro', validateLogin, registro);
+route.post('/auth/registro', registro);
 route.post('/auth/login', login);
 route.get('/auth/renew', validateLogin, renewToken);
 route.get('/auth/usuarios', validateLogin, getUsuarios);

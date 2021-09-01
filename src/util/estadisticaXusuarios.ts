@@ -54,6 +54,7 @@ export const usrConVotos = async (data?: any) => {
                          };
                          const nPersona = new votoPersona(datos);
                          await nPersona.save();
+                         return true;
                     } else {
                          let datos: any = {
                               dni: us.datosPersonales.dni,
@@ -70,17 +71,25 @@ export const usrConVotos = async (data?: any) => {
 
                          const nPersona = new votoPersona(datos);
                          await nPersona.save();
+                         return true;
                     }
                } else {
                     let result = await crearVoto(afiliado, genero, datoEmp, us);
+                    if (result) {
+                         return true;
+                    }
                }
           }
      } else {
-          let dato: {
-               legajo: 'No existe registro';
-               servicio: 'No existe registro';
+          let dato = {
+               legajo: 'No existe registro',
+               servicio: 'No existe registro',
           };
-          await crearVoto(afiliado, genero, dato, us);
+
+          let result = await crearVoto(afiliado, genero, dato, us);
+          if (result) {
+               return true;
+          }
      }
 };
 
