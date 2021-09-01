@@ -9,6 +9,7 @@ import { savePersona } from '../../modulos/controllers/personas/personaCtrl';
 import { padron } from '../../modulos/models/elecciones/padronNeuquen';
 import { geoEscuela } from '../../modulos/models/elecciones/geo/votosXEsc';
 import { votoAdh } from '../../modulos/models/elecciones/votoAdhesion';
+import { votoNQN } from '../../modulos/models/comunes/votoNqn';
 
 ///////actualiza los datos en el array de votos, le asigna a los votos del IdCoordinador
 export const actualizarVoto = async (req: Request, res: Response) => {
@@ -233,7 +234,7 @@ export const actualizarVoto = async (req: Request, res: Response) => {
 }; */
 
 export const usrConVotos = async (req: Request, res: Response) => {
-     /*     console.log('entra');
+     console.log('entra');
 
      // console.log(totalVotos);
 
@@ -976,11 +977,11 @@ export const usrConVotos = async (req: Request, res: Response) => {
                     }
                }
           }
-     } */
+     }
 };
 
 export const geoVoto = async (req: Request, res: Response) => {
-     /* console.log('arranca');
+     console.log('arranca');
      let mesa: any;
      let total: number = 0;
 
@@ -1076,10 +1077,24 @@ export const geoVoto = async (req: Request, res: Response) => {
                     }
                }
           }
-     } */
+     }
 };
 
 export const nuevoVoto = async (req: Request, res: Response) => {
+     let total = 0;
+
+     let votos = await votoAdh.find({ nombreCompleto: null }, { dni: 1 });
+
+     for (let voto of votos) {
+          let dato: any = await padron.findOne({ documento: voto.dni }, { nombre: 1, apellido: 1 });
+          if (dato !== null) {
+               console.log(dato);
+               voto.nombreCompleto = dato.apellido + dato.nombre;
+               await voto.save();
+               console.log(total++);
+          }
+     }
+
      /*    console.log('estoy');
      let dniNoExiste = 0;
      let votosV: any = await votoProv.find();
@@ -1116,4 +1131,159 @@ export const nuevoVoto = async (req: Request, res: Response) => {
                await data.save();
           }
      } */
+};
+
+export const votosNQN = async (req: Request, res: Response) => {
+     console.log('estoyyyy');
+     let votosDuplicados: any = [];
+     let votosSin: any = [];
+     let votoNqn: any = await votoNQN.find({});
+     let usCoord: any;
+     let usRef: any;
+     let total = 0;
+
+     for (let vNqn of votoNqn) {
+          //console.log(vNqn);
+          let data = await votoAdh.findOne({ dni: vNqn.DNI }, { dni: 1, resPlanilla: 1 });
+          //console.log(data);
+
+          if (data !== null) {
+               for (let id of data.resPlanilla) {
+                    if (id.idCoordinador && id.idReferente && id.idResPlanilla) {
+                         let usuario = await usuarios.findById(id.idResPlanilla, {
+                              'datosPersonales.dni': 1,
+                              'datosPersonales.apellido': 1,
+                              'datosPersonales.nombres': 1,
+                         });
+
+                         if (usuario !== null) {
+                              usCoord = await usuarios.findById(id.idCoordinador, {
+                                   'datosPersonales.apellido': 1,
+                                   'datosPersonales.nombres': 1,
+                              });
+                              usRef = await usuarios.findById(id.idReferente, {
+                                   'datosPersonales.apellido': 1,
+                                   'datosPersonales.nombres': 1,
+                              });
+
+                              if (usCoord === null) {
+                                   usCoord = {
+                                        datosPersonales: {
+                                             nombres: '',
+                                             apellidos: '',
+                                        },
+                                   };
+                              } else if (usRef === null) {
+                                   usRef = {
+                                        datosPersonales: {
+                                             nombres: '',
+                                             apellidos: '',
+                                        },
+                                   };
+                              } else {
+                                   let votos = {
+                                        dni: data.dni,
+                                        ResPlanillaNombre: usuario.datosPersonales.nombres,
+                                        ResPlanillaApellido: usuario.datosPersonales.apellido,
+                                        ResPlanillaDni: usuario.datosPersonales.dni,
+                                        ReFNombre: usRef.datosPersonales.nombres,
+                                        ReFApellido: usRef.datosPersonales.apellido,
+                                        CoordNombre: usCoord.datosPersonales.nombres,
+                                        CoordApellido: usCoord.datosPersonales.apellido,
+                                   };
+
+                                   votosDuplicados.push(votos);
+                              }
+                         } else {
+                              let votos = {
+                                   dni: data.dni,
+                                   ResPlanillaNombre: '',
+                                   ResPlanillaApellido: '',
+                                   ResPlanillaDni: '',
+                              };
+
+                              votosDuplicados.push(votos);
+                         }
+                    } else if (id.idCoordinador && id.idReferente && id.idResPlanilla === '') {
+                         let usuario = await usuarios.findById(id.idReferente, {
+                              'datosPersonales.dni': 1,
+                              'datosPersonales.apellido': 1,
+                              'datosPersonales.nombres': 1,
+                         });
+
+                         if (usuario !== null) {
+                              usCoord = await usuarios.findById(id.idCoordinador, {
+                                   'datosPersonales.apellido': 1,
+                                   'datosPersonales.nombres': 1,
+                              });
+
+                              if (usCoord === null) {
+                                   usCoord = {
+                                        datosPersonales: {
+                                             nombres: '',
+                                             apellidos: '',
+                                        },
+                                   };
+                              } else {
+                                   let votos = {
+                                        dni: data.dni,
+                                        ReFNombre: usuario.datosPersonales.nombres,
+                                        ReFApellido: usuario.datosPersonales.apellido,
+                                        ReFDni: usuario.datosPersonales.dni,
+                                        CoordNombre: usCoord.datosPersonales.nombres,
+                                        CoordApellido: usCoord.datosPersonales.apellido,
+                                   };
+
+                                   votosDuplicados.push(votos);
+                              }
+                         } else {
+                              let votos = {
+                                   dni: data.dni,
+                                   ReFNombre: '',
+                                   ReFApellido: '',
+                                   ReFDni: '',
+                              };
+
+                              votosDuplicados.push(votos);
+                         }
+                    } else {
+                         let usuario = await usuarios.findById(id.idCoordinador, {
+                              'datosPersonales.dni': 1,
+                              'datosPersonales.apellido': 1,
+                              'datosPersonales.nombres': 1,
+                         });
+
+                         if (usuario !== null) {
+                              let votos = {
+                                   dni: data.dni,
+                                   CoordNombre: usuario.datosPersonales.nombres,
+                                   CoordApellido: usuario.datosPersonales.apellido,
+                                   CoordDni: usuario.datosPersonales.dni,
+                              };
+
+                              votosDuplicados.push(votos);
+                         } else {
+                              let votos = {
+                                   dni: data.dni,
+                                   CoordNombre: '',
+                                   CoordApellido: '',
+                                   CoordDni: '',
+                              };
+
+                              votosDuplicados.push(votos);
+                         }
+                    }
+               }
+
+               console.log(total++);
+          }
+
+          votosSin.push(vNqn);
+     }
+
+     res.status(200).json({
+          ok: true,
+          votosDuplicados,
+          votosSin,
+     });
 };

@@ -149,7 +149,7 @@ export const cargarVoto = async (req: Request, res: Response) => {
      let perVoto = await usrConVotos(data);
 
      let geoVoto = await geoVotoEsc(data);
-
+     console.log(voto, perVoto, geoVoto);
      if (voto && perVoto && geoVoto) {
           return res.status(200).json({
                ok: true,
