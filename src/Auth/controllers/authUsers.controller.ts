@@ -66,15 +66,15 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
           if (user.role === 'app-movil') {
                user.lastLogin = moment().format('YYYY/MM/DD;HH:MM');
                await user.save();
+               const menu = await getMenu(user.role);
                return res.status(200).json({
                     ok: true,
-                    token: AuthMovil.tokenAPP(user),
+                    token: AuthMovil.tokenAPP(user, menu),
                });
           } else {
                user.lastLogin = moment().format('YYYY/MM/DD;HH:MM');
                await user.save();
-               const menu = getMenu(user.role);
-               //console.log(user);
+               const menu = await getMenu(user.role);
                return res.status(200).json({
                     ok: true,
                     foto: user.datosPersonales.foto,

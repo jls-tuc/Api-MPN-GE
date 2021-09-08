@@ -41,6 +41,7 @@ export class Auth {
           });
      }
 }
+// tslint:disable-next-line: max-classes-per-file
 export class AuthMovil {
      /**
       *  TTL JWT Token
@@ -53,13 +54,14 @@ export class AuthMovil {
 
      // Crea el token con los datos de sesión
 
-     static tokenAPP(user: Iusuario) {
+     static tokenAPP(user: Iusuario, menu: any) {
           let { nombres, localidad } = user.datosPersonales;
 
           const payload = {
                id: user.id,
                nombres,
                localidad,
+               menu,
                role: user.role,
           };
 

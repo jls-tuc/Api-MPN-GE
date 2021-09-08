@@ -10,6 +10,7 @@ export interface IgeoEscuela extends Document {
      masculino: number;
      femenino: number;
      afiliado: number;
+     votaron: number;
      typeGeo: string;
      lon: string;
      lat: string;
@@ -24,7 +25,7 @@ const geoSchema = new Schema<IgeoEscuela>(
           masculino: { type: Number },
           femenino: { type: Number },
           afiliado: { type: Number },
-
+          votaron: { type: Number },
           typeGeo: String,
           lon: String,
           lat: String,
