@@ -10,6 +10,8 @@ import { padron } from '../../modulos/models/elecciones/padronNeuquen';
 import { geoEscuela } from '../../modulos/models/elecciones/geo/votosXEsc';
 import { votoAdh } from '../../modulos/models/elecciones/votoAdhesion';
 import { votoNQN } from '../../modulos/models/comunes/votoNqn';
+import { usrAppMovil } from '../usuariosApp';
+import moment from 'moment';
 
 ///////actualiza los datos en el array de votos, le asigna a los votos del IdCoordinador
 export const actualizarVoto = async (req: Request, res: Response) => {
@@ -1133,7 +1135,7 @@ export const nuevoVoto = async (req: Request, res: Response) => {
      } */
 };
 
-export const votosNQN = async (req: Request, res: Response) => {
+/* export const votosNQN = async (req: Request, res: Response) => {
      console.log('estoyyyy');
      let votosDuplicados: any = [];
      let votosSin: any = [];
@@ -1141,13 +1143,16 @@ export const votosNQN = async (req: Request, res: Response) => {
      let usCoord: any;
      let usRef: any;
      let total = 0;
+     let localidad = [];
 
      for (let vNqn of votoNqn) {
           //console.log(vNqn);
-          let data = await votoAdh.findOne({ dni: vNqn.DNI }, { dni: 1, resPlanilla: 1 });
+          let data = await votoAdh.findOne({ dni: vNqn.DNI }, { dni: 1, resPlanilla: 1, localidad: 1 });
           //console.log(data);
 
           if (data !== null) {
+               localidad.push(data.localidad);
+
                for (let id of data.resPlanilla) {
                     if (id.idCoordinador && id.idReferente && id.idResPlanilla) {
                          let usuario = await usuarios.findById(id.idResPlanilla, {
@@ -1280,10 +1285,141 @@ export const votosNQN = async (req: Request, res: Response) => {
 
           votosSin.push(vNqn);
      }
+     let locDup: any = await countLocalidad(localidad);
 
      res.status(200).json({
           ok: true,
+          locDup,
           votosDuplicados,
           votosSin,
      });
+}; */
+
+export const usuariosAppM = async (req: Request, res: Response) => {
+     let usrArr: any = await usrAppMovil.find();
+
+     for (let us of usrArr) {
+          // console.log(us);
+
+          let localidad: any = await padron.findOne({ establecimiento: us.establecimiento }, { localidad: 1 });
+          //console.log(localidad);
+          if (localidad !== null) {
+               let altUsr = {
+                    usuario: us.usuario,
+                    activo: 'true',
+                    password: us.password,
+                    fechaltaUsuario: moment().format('YYYY/MM/DD'),
+                    fechaajaUsuario: '',
+                    foto: 'sinfoto',
+                    datosersonales: {
+                         nombres: us.establecimiento,
+                         apellido: '',
+                         dni: '',
+                         calle: '',
+                         numero: '',
+                         localidad: localidad.localidad,
+                         email: '',
+                         telefono: '',
+                    },
+                    datosLaborales: {
+                         legajo: '',
+                         ministerio: '',
+                         area: '',
+                         servicioPuestoPrincipal: '',
+                    },
+                    role: 'app-movil',
+               };
+
+               const userExist: any = await usuarios.findOne({ usuario: us.usuario });
+               if (userExist) {
+                    //pregunto si ya existe un idreferente en el array
+                    if (userExist.role === 'user-ref') {
+                         res.status(200).json({
+                              ok: false,
+                              msg: 'El referente ya se encuentra cargado',
+                         });
+                    } else if (userExist.role === 'user-resp') {
+                         res.status(200).json({
+                              ok: false,
+                              msg: 'El responsable de la planilla ya se encuentra asignado al referente seleccionado',
+                         });
+                    } else if (userExist.role === 'user-coord') {
+                         res.status(200).json({
+                              ok: false,
+                              msg: 'El usuario seleccionado es coordinador',
+                         });
+                    } else {
+                         res.status(200).json({
+                              ok: false,
+                              msg: 'El usuario para la app Movil ya existe',
+                         });
+                    }
+               }
+
+               const user: Iusuario = new usuarios(altUsr);
+               await user.save();
+          }
+     }
+     return res.status(200).json({
+          ok: true,
+     });
+};
+
+/* export const votosNQN = async (req: Request, res: Response) => {
+     console.log('estoyyyy');
+
+     let votoNqn: any = await votoNQN.find({}).lean();
+     let total = 0;
+     let votoSisProv: any = await votoAdh.find({}, { dni: 1, localidad: 1 }).lean();
+     let totalSinDup = 0;
+     let totalDup = 0;
+     let localidades = [];
+     let locSindp = [];
+     let localidadRepetida = [];
+     let locMuni = [];
+     let totalMuni = 0;
+
+     for (let votoPrv of votoSisProv) {
+          localidades.push(votoPrv.localidad);
+
+          let data = await votoNqn.find((elemento) => elemento.DNI === votoPrv.dni);
+          s console.log('repqtido', data);
+          if (data !== undefined) {
+               localidadRepetida.push(votoPrv.localidad);
+               totalDup++;
+          } else {
+               locSindp.push(votoPrv.localidad);
+               totalSinDup++;
+          }
+          console.log(total++);
+     }
+
+     for (let vNqn of votoNqn) {
+          let data = await votoAdh.findOne({ dni: vNqn.DNI }, { dni: 1, resPlanilla: 1, localidad: 1 });
+          // console.log(data);
+          if (data !== null) {
+               locMuni.push(vNqn.LOCALIDAD);
+               totalMuni++;
+          }
+     }
+     let SinDupProv: any = await countLocalidad(locMuni);
+
+     res.status(200).json({
+          SinDupProv,
+
+          totalSinDup,
+          totalDup,
+          totalMuni,
+     });
+}; */
+
+const countLocalidad = async (localidades) => {
+     let data = localidades;
+     let locRepetidas = {};
+
+     data.forEach((element) => {
+          locRepetidas[element] = (locRepetidas[element] || 0) + 1;
+     });
+
+     return locRepetidas;
 };

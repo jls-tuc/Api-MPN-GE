@@ -130,6 +130,17 @@ export const getMenu = (role) => {
                },
           ];
           return menu;
+     } else if (role === 'app-movil') {
+          const menu = [
+               {
+                    name: 'Cargar Votos',
+                    type: 'link',
+                    tooltip: 'Charts',
+                    icon: 'show_chart',
+                    state: 'elecciones/cargarVoto',
+               },
+          ];
+          return menu;
      } else {
           const menu = [
                {

@@ -24,6 +24,9 @@ import graficaRoute from './modulos/routes/elecciones/grafica.route';
 import appMovil from './modulos/routes/elecciones/appMovil.route';
 import geoRoute from './modulos/routes/elecciones/geo/votosXEsc.route';
 
+//Votos12
+import votos12 from './modulos/routes/elecciones/voto-12/json-app.route';
+
 class ServerSPS {
      private app: Application;
      private port: string;
@@ -101,6 +104,8 @@ class ServerSPS {
           this.app.use(this.apiPath, graficaRoute);
           /// APP Movil
           this.app.use(this.apiPath, appMovil);
+          ///votos12
+          this.app.use(this.apiPath, votos12);
           //// scriptss
           this.app.use(this.apiPath, scriptRoute);
      }
