@@ -38,6 +38,13 @@ export const getCalculoTotal = async (req: Request, res: Response) => {
                     if (id === usuarioVoto.idUsuario) {
                          encontro++;
                          let totalnoafiliados = usuarioVoto.votos - usuarioVoto.afiliado;
+                         let promedio;
+                         if (usuarioVoto.votos === 0) {
+                              promedio = 0;
+                         } else {
+                              promedio = Math.trunc(usuarioVoto.afiliado * 100 / usuarioVoto.votos);
+                         }
+
                          data.push({
                               organizacion: usuario.datosPersonales.areaResponsable,
                               nombrecompleto: usuario.datosPersonales.apellido + ' ' + usuario.datosPersonales.nombres,
@@ -46,6 +53,7 @@ export const getCalculoTotal = async (req: Request, res: Response) => {
                               totalafiliados: usuarioVoto.afiliado,
                               totalnoafiliados: totalnoafiliados,
                               totalvotos: usuarioVoto.votos,
+                              votaron: promedio,
                               id: usuarioVoto.idUsuario,
                          });
                     }

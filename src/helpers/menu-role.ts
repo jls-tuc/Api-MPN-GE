@@ -180,13 +180,13 @@ export const getMenu = (role) => {
                     icon: 'show_chart',
                     state: 'elecciones/indicadores',
                },
-               {
+               /* {
                     name: 'Padrones',
                     type: 'link',
                     tooltip: 'Buscar',
                     icon: 'list_alt',
                     state: 'elecciones/padrones',
-               },
+               }, */
                {
                     name: 'Mapa',
                     type: 'link',
@@ -199,7 +199,8 @@ export const getMenu = (role) => {
                     type: 'dropDown',
                     tooltip: 'Documentation',
                     icon: 'person',
-                    sub: [{ name: 'Ver', state: 'elecciones/calculototal' }],
+                    sub: [{ name: 'Ver', state: 'elecciones/calculototal' },
+                    { name: 'Elecciones', state: 'elecciones/graficaeleccion' }],
                },
           ];
           return menu;
