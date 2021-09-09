@@ -9,6 +9,8 @@ const IvotosCalc = new Schema<IvotosCalc>({
      femenino: { type: Number, lowecase: true },
      votos: { type: Number },
      votaron: { type: Number },
+     votaronA: { type: Number },
+     votaronF: { type: Number },
 });
 export interface IvotosCalc extends Document {
      idUsuario: string;
@@ -19,5 +21,7 @@ export interface IvotosCalc extends Document {
      femenino: number;
      votos: number;
      votaron: number;
+     votaronA: number;
+     votaronF: number;
 }
 export const votosGraf = model<IvotosCalc>('votosGraf', IvotosCalc, 'votosGraf');

@@ -12,6 +12,7 @@ import { votoAdh } from '../../modulos/models/elecciones/votoAdhesion';
 import { votoNQN } from '../../modulos/models/comunes/votoNqn';
 import { usrAppMovil } from '../usuariosApp';
 import moment from 'moment';
+import { afiliado } from '../../modulos/models/elecciones/afiliadosMpn';
 
 ///////actualiza los datos en el array de votos, le asigna a los votos del IdCoordinador
 export const actualizarVoto = async (req: Request, res: Response) => {
@@ -400,7 +401,7 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                   //console.log(total[0].femenino);
                                                   vCoord.genero === 'F'
                                                        ? // console.log(vCoord);
-                                                         total[0].femenino++
+                                                       total[0].femenino++
                                                        : total[0].masculino++;
 
                                                   vCoord.afiliado === 'Es afiliado al MPN'
@@ -769,7 +770,7 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                   //console.log(total[0].femenino);
                                                   vCoord.genero === 'F'
                                                        ? // console.log(vCoord);
-                                                         total[0].femenino++
+                                                       total[0].femenino++
                                                        : total[0].masculino++;
 
                                                   vCoord.afiliado === 'Es afiliado al MPN'
@@ -1422,4 +1423,51 @@ const countLocalidad = async (localidades) => {
      });
 
      return locRepetidas;
+};
+export const migrarNqn = async (req: Request, res: Response) => {
+     console.log('Entro');
+
+     let votosNuevos = await votoNQN.find().lean();
+     let total = 0;
+     for (let votoNuevo of votosNuevos) {
+          let voto = await votoAdh.findOne({ dni: votoNuevo.DNI });
+
+          if (voto === null) {
+               let datosPadron: any = await padron.findOne(
+                    { documento: votoNuevo.DNI },
+                    { lat: 0, lon: 0, circuito: 0, ejemplar: 0, _id: 0 }
+               );
+               let padronAfi = await afiliado.findOne({ dni: votoNuevo.DNI });
+
+               let guardarData: any = {};
+
+               if (padronAfi !== null) {
+                    guardarData.afiliado = 'Es afiliado al MPN';
+               } else {
+                    guardarData.afiliado = '';
+               }
+               guardarData.dni = votoNuevo.DNI;
+               guardarData.sexo = datosPadron.genero;
+               guardarData.nombreCompleto = datosPadron.nombre;
+               guardarData.clase = datosPadron.clase;
+               guardarData.genero = datosPadron.genero;
+               guardarData.telefono = '';
+               guardarData.tipo_voto = 'Voto Adhesion';
+               guardarData.localidad = datosPadron.localidad;
+               guardarData.dom_establecimiento = datosPadron.dom_establecimiento;
+               guardarData.establecimiento = datosPadron.establecimiento;
+               guardarData.mesa = datosPadron.mesa;
+               guardarData.orden = datosPadron.orden;
+               (guardarData.realizoVoto = ''),
+                    (guardarData.resPlanilla = {
+                         idCoordinador: '6112cd081b7e004260bada04',
+                         idReferente: '',
+                         idResPlanilla: '',
+                    });
+
+               let gVoto = new votoAdh(guardarData);
+               await gVoto.save();
+               console.log(total++);
+          }
+     }
 };

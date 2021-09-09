@@ -164,7 +164,7 @@ export const cargarVoto = async (req: Request, res: Response) => {
 
 export const getCalculoTotal = async (req: Request, res: Response) => {
      let totales = await votosGraf.find().lean();
-
+     let totalDNI = await (await votoAdh.find({}, { documento: 1 }).lean()).length;
      let dato: any = {
           organizacion: String,
           nombreCompleto: String,
@@ -195,10 +195,11 @@ export const getCalculoTotal = async (req: Request, res: Response) => {
                // console.log(`Usuario no Existe: `, calc.idUsuario);
           }
      }
-     //  console.log(`Ya esta!!!`);
+     console.log(`Ya esta!!!`, data);
      res.status(200).json({
           ok: true,
           data,
+          totalDNI,
      });
 };
 
