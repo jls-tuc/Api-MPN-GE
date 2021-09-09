@@ -37,6 +37,14 @@ export const getMenu = (role) => {
                     icon: 'list_alt',
                     state: 'elecciones/padrones',
                },
+               {
+                    name: 'Calculos Totales',
+                    type: 'dropDown',
+                    tooltip: 'Documentation',
+                    icon: 'person',
+                    sub: [{ name: 'Ver', state: 'elecciones/calculototal' },
+                    { name: 'Elecciones', state: 'elecciones/graficaeleccion' }],
+               },
           ];
           return menu;
      } else if (role === 'user-ref') {
@@ -127,6 +135,14 @@ export const getMenu = (role) => {
                     tooltip: 'Charts',
                     icon: 'person_pin_circle',
                     state: 'elecciones/mapa',
+               },
+               {
+                    name: 'Calculos Totales',
+                    type: 'dropDown',
+                    tooltip: 'Documentation',
+                    icon: 'person',
+                    sub: [{ name: 'Ver', state: 'elecciones/calculototal' },
+                    { name: 'Elecciones', state: 'elecciones/graficaeleccion' }],
                },
           ];
           return menu;
