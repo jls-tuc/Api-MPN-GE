@@ -5,6 +5,6 @@ import { getEscuela } from '../../../controllers/elecciones/votos-12/json-app.co
 
 const router = Router();
 
-router.get('votos-12/votos/', validateAppMovilLogin, getEscuela);
+router.get('/votos-12/votos', validateAppMovilLogin, getEscuela);
 
 export default router;

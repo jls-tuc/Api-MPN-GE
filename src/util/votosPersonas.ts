@@ -9,6 +9,8 @@ export interface IPerVoto extends Document {
      servicio: string;
      votos: number;
      votaron: number;
+     votaronA: number;
+     votaronF: number;
      afiliado: number;
      femenino: number;
      masculino: number;
@@ -23,6 +25,8 @@ const _Schema = new Schema<IPerVoto>({
      servicio: { type: String, lowecase: true },
      votos: { type: Number },
      votaron: { type: Number },
+     votaronA: { type: Number },
+     votaronF: { type: Number },
      afiliado: { type: Number },
      femenino: { type: Number },
      masculino: { type: Number },

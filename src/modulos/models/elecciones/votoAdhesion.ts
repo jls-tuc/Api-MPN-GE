@@ -12,7 +12,7 @@ export interface IvotoAD extends Document {
      tipo_voto: string;
      afiliado: string;
      localidad: string;
-     dom_estableimiento: string;
+     dom_establecimiento: string;
      establecimiento: string;
      mesa: string;
      orden: string;
@@ -31,7 +31,7 @@ const vSchema = new Schema<IvotoAD>(
           tipo_voto: { type: String, lowecase: true },
           afiliado: { type: String, lowecase: true },
           localidad: { type: String, lowecase: true },
-          dom_estableimiento: { type: String, lowecase: true },
+          dom_establecimiento: { type: String, lowecase: true },
           establecimiento: { type: String, lowecase: true },
           mesa: { type: String, lowecase: true },
           orden: { type: String, lowecase: true },

@@ -31,7 +31,7 @@ export const getRecalculando = async (req: Request, res: Response) => {
 
      let data: any = [];
      for (let usuario of usuariosTot) {
-          if (usuario.role === 'user-sys' || usuario.role === 'user-calc') {
+          if (usuario.role === 'user-sys' || usuario.role === 'user-calc' || usuario.role === 'app-movil') {
                //   console.log(`El Usuario es: `, usuario._id, " : ", usuario.datosPersonales.apellido, " ", usuario.datosPersonales.nombres)
           } else {
                let encontro = 0;
@@ -44,7 +44,7 @@ export const getRecalculando = async (req: Request, res: Response) => {
                          if (usuarioVoto.votos === 0) {
                               promedio = 0;
                          } else {
-                              promedio = Math.trunc(usuarioVoto.afiliado * 100 / usuarioVoto.votos);
+                              promedio = Math.trunc((usuarioVoto.afiliado * 100) / usuarioVoto.votos);
                          }
 
                          data.push({
@@ -83,7 +83,7 @@ export const getRecalculando = async (req: Request, res: Response) => {
      });
 }; */
 export const getCalculoEleccion = async (req: Request, res: Response) => {
-     console.log(`req.body`, req.body)
+     console.log(`req.body`, req.body);
      let usuariosTot: any;
      let totalCoord: any;
      let votosCoord = 0;
@@ -98,39 +98,52 @@ export const getCalculoEleccion = async (req: Request, res: Response) => {
      let porcentaje = 0;
      /* let id: any = { id: '6113d7f18b3c1e0fec1154dd' }; */
      if (req.body.usuario === 'user-sys' || req.body.usuario === 'user-calc') {
-
-          usuariosTot = await usuarios.find({ role: "user-coord" }, { "datosPersonales.foto": 0 }).lean();
-          console.log(`usuariosTot`, usuariosTot)
+          usuariosTot = await usuarios.find({ role: 'user-coord' }, { 'datosPersonales.foto': 0 }).lean();
+          console.log(`usuariosTot`, usuariosTot);
      } else {
-          totalCoord = await votoAdh.find({
-               "resPlanilla.idCoordinador": req.body.id,
-          }).lean();
+          totalCoord = await votoAdh
+               .find({
+                    'resPlanilla.idCoordinador': req.body.id,
+               })
+               .lean();
           for (let dato of totalCoord) {
                for (let res of dato.resPlanilla) {
-
-                    if (res.idCoordinador === req.body.id && res.idReferente === "" && res.idResPlanilla === "") {
+                    if (res.idCoordinador === req.body.id && res.idReferente === '' && res.idResPlanilla === '') {
                          votosCoord++;
-                         if (dato.afiliado === "Es afiliado al MPN") { totalafiliados++ } else { totalnoafiliados++; }
-                         if (dato.realizoVoto === "si") {
-                              votaron++; votaronA++;
-                              if (dato.genero === "F") { votaronF++ } else { votaronM++ }
-                              if (dato.afiliado === "Es afiliado al MPN") { votaronA++ } else { votaronNA++ }
+                         if (dato.afiliado === 'Es afiliado al MPN') {
+                              totalafiliados++;
+                         } else {
+                              totalnoafiliados++;
+                         }
+                         if (dato.realizoVoto === 'si') {
+                              votaron++;
+                              votaronA++;
+                              if (dato.genero === 'F') {
+                                   votaronF++;
+                              } else {
+                                   votaronM++;
+                              }
+                              if (dato.afiliado === 'Es afiliado al MPN') {
+                                   votaronA++;
+                              } else {
+                                   votaronNA++;
+                              }
                          }
                     }
                }
           }
-          let usuario: any = await usuarios.findOne({ _id: req.body.id }, { "datosPersonales.foto": 0 }).lean();
-          console.log(`Usuario `, usuario)
+          let usuario: any = await usuarios.findOne({ _id: req.body.id }, { 'datosPersonales.foto': 0 }).lean();
+          console.log(`Usuario `, usuario);
           let porcentaje;
           if (totalCoord.votos === 0) {
                porcentaje = 0;
           } else {
-               porcentaje = Number((totalCoord.votaron * 100 / totalCoord.votos).toFixed(2));
+               porcentaje = Number(((totalCoord.votaron * 100) / totalCoord.votos).toFixed(2));
           }
           let dataTemp = {
                organizacion: usuario.datosPersonales.areaResponsable,
                nombrecompleto: usuario.datosPersonales.apellido + ' ' + usuario.datosPersonales.nombres,
-               coordinador: "",
+               coordinador: '',
                role: usuario.role,
                totalafiliados: totalafiliados,
                totalnoafiliados: totalnoafiliados,
@@ -142,11 +155,10 @@ export const getCalculoEleccion = async (req: Request, res: Response) => {
                votaronM: votaronM,
                porcentaje: porcentaje,
                id: totalCoord.idUsuario,
-          }
+          };
           await data.push(dataTemp);
-          console.log(`data`, data)
-          usuariosTot = await usuarios.find({ idCoordinador: req.body.id }, { "datosPersonales.foto": 0 }).lean();
-
+          console.log(`data`, data);
+          usuariosTot = await usuarios.find({ idCoordinador: req.body.id }, { 'datosPersonales.foto': 0 }).lean();
      }
      let totales: any = await votosGraf.find({}).lean();
      let total: any = await votoAdh.find({}, { role: 1 }).lean();
@@ -164,7 +176,7 @@ export const getCalculoEleccion = async (req: Request, res: Response) => {
                          if (usuarioVoto.votos === 0) {
                               porcentaje = 0;
                          } else {
-                              porcentaje = Number((usuarioVoto.votaron * 100 / usuarioVoto.votos).toFixed(2));
+                              porcentaje = Number(((usuarioVoto.votaron * 100) / usuarioVoto.votos).toFixed(2));
                          }
                          await data.push({
                               organizacion: usuario.datosPersonales.areaResponsable,
@@ -196,7 +208,6 @@ export const getCalculoEleccion = async (req: Request, res: Response) => {
                          id: id,
                     });
                }
-
           } else {
                let encontro = 0;
                for (let usuarioVoto of totales) {
@@ -208,8 +219,7 @@ export const getCalculoEleccion = async (req: Request, res: Response) => {
                          if (usuarioVoto.votos === 0) {
                               porcentaje = 0;
                          } else {
-
-                              porcentaje = Number((usuarioVoto.votaron * 100 / usuarioVoto.votos).toFixed(2));
+                              porcentaje = Number(((usuarioVoto.votaron * 100) / usuarioVoto.votos).toFixed(2));
                          }
 
                          await data.push({
@@ -449,21 +459,20 @@ export const getvotosGraficaEleccion = async (req: Request, res: Response) => {
           coordinadores = await (await usuarios.find({ role: 'user-coord' }, { role: 1 }).lean()).length; */
           //  console.log(`coordinadores`, coordinadores);
           votosTotal = await (await votoAdh.find({}, { role: 1 }).lean()).length;
-          votaron = await (await votoAdh.find({ realizoVoto: "si" }, { role: 1 }).lean()).length;
+          votaron = await (await votoAdh.find({ realizoVoto: 'si' }, { role: 1 }).lean()).length;
 
           if (votaron === null) {
                votaron = 0;
                porcentaje = 0;
           } else {
-               porcentaje = Number((votaron * 100 / votosTotal).toFixed(2));
-          };
+               porcentaje = Number(((votaron * 100) / votosTotal).toFixed(2));
+          }
           res.status(200).json({
                ok: true,
                votosTotal,
                votaron,
-               porcentaje
+               porcentaje,
           });
-
      } else {
           await votosGraf.find({ coordinador: req.body.id }, async (err, ref: any) => {
                let votos: any;
@@ -481,27 +490,25 @@ export const getvotosGraficaEleccion = async (req: Request, res: Response) => {
                     votaron = 0;
                     porcentaje = 0;
                } else {
-                    porcentaje = Number((votaron * 100 / votosTotal).toFixed(2));
-               };
+                    porcentaje = Number(((votaron * 100) / votosTotal).toFixed(2));
+               }
 
                res.status(200).json({
                     ok: true,
                     votosTotal,
                     votaron,
-                    porcentaje
+                    porcentaje,
                });
-
-          })
+          });
      }
 };
 const devolverVotoRef = async (data: any, id: any, role: any) => {
      let voto = 0;
 
      for (let dato of data) {
-          if (dato.realizoVoto === "si") {
+          if (dato.realizoVoto === 'si') {
                voto++;
           }
      }
      return voto;
-
 };
