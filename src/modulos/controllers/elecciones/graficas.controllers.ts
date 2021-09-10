@@ -5,8 +5,6 @@ import { votosGraf } from '../../models/elecciones/totalVotos';
 import { usuarios } from '../../../Auth/models/authUsers.model';
 import { buscarDatos } from '../../../util/funcionesGetRecalc';
 import { votoAdh } from '../../models/elecciones/votoAdhesion';
-import { ObjectId } from 'mongoose';
-import { read } from 'fs';
 
 export const getRecalculando = async (req: Request, res: Response) => {
      let votos = await votoAdh.find().lean();
@@ -83,7 +81,7 @@ export const getRecalculando = async (req: Request, res: Response) => {
      });
 }; */
 export const getCalculoEleccion = async (req: Request, res: Response) => {
-     console.log(`req.body`, req.body);
+     //console.log(`req.body`, req.body)
      let usuariosTot: any;
      let totalCoord: any;
      let votosCoord = 0;
@@ -99,7 +97,7 @@ export const getCalculoEleccion = async (req: Request, res: Response) => {
      /* let id: any = { id: '6113d7f18b3c1e0fec1154dd' }; */
      if (req.body.usuario === 'user-sys' || req.body.usuario === 'user-calc') {
           usuariosTot = await usuarios.find({ role: 'user-coord' }, { 'datosPersonales.foto': 0 }).lean();
-          console.log(`usuariosTot`, usuariosTot);
+          //console.log(`usuariosTot`, usuariosTot)
      } else {
           totalCoord = await votoAdh
                .find({
@@ -133,7 +131,7 @@ export const getCalculoEleccion = async (req: Request, res: Response) => {
                }
           }
           let usuario: any = await usuarios.findOne({ _id: req.body.id }, { 'datosPersonales.foto': 0 }).lean();
-          console.log(`Usuario `, usuario);
+          //console.log(`Usuario `, usuario)
           let porcentaje;
           if (totalCoord.votos === 0) {
                porcentaje = 0;
@@ -157,7 +155,7 @@ export const getCalculoEleccion = async (req: Request, res: Response) => {
                id: totalCoord.idUsuario,
           };
           await data.push(dataTemp);
-          console.log(`data`, data);
+          //console.log(`data`, data)
           usuariosTot = await usuarios.find({ idCoordinador: req.body.id }, { 'datosPersonales.foto': 0 }).lean();
      }
      let totales: any = await votosGraf.find({}).lean();
@@ -261,6 +259,7 @@ export const getCalculoEleccion = async (req: Request, res: Response) => {
           totalDNI,
      });
 };
+
 export const getCalculoTotalCoord = async (req: Request, res: Response) => {
      //  console.log(req.body.usr);
      let usuariosTot;
