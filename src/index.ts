@@ -42,7 +42,7 @@ class ServerSPS {
      }
 
      async listen() {
-          await dbArsat.dbArsat(); // Base de datos!!!
+          await dbArsat.infoTec(); // Base de datos!!!
           //Servidor Express
           /*  https
          .createServer(

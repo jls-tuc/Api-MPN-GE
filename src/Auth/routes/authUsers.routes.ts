@@ -18,7 +18,7 @@ const route = Router();
 
 route.post('/auth/registro', registro);
 route.post('/auth/login', login);
-route.get('/auth/renew', validateLogin, renewToken);
+route.post('/auth/renewToken', validateLogin, renewToken);
 route.get('/auth/usuarios', validateLogin, getUsuarios);
 route.get('/estadistica/graficagral', validateLogin, getUsuariosGraf);
 route.get('/auth/usuario', validateLogin, getUserByID);

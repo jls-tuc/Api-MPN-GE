@@ -23,13 +23,13 @@ export const getMenu = (role) => {
                          //{ name: 'Ver Total Votos', state: 'elecciones/verPlanillas' },
                     ],
                },
-               {
+               /* {
                     name: 'Estadisticas',
                     type: 'link',
                     tooltip: 'Charts',
                     icon: 'show_chart',
                     state: 'elecciones/indicadores',
-               },
+               }, */
                {
                     name: 'Padrones',
                     type: 'link',
@@ -42,8 +42,8 @@ export const getMenu = (role) => {
                     type: 'dropDown',
                     tooltip: 'Documentation',
                     icon: 'person',
-                    sub: [{ name: 'Ver', state: 'elecciones/calculototal' },
-                    { name: 'Elecciones', state: 'elecciones/graficaeleccion' }],
+                    sub: [/* { name: 'Ver', state: 'elecciones/calculototal' } */
+                         { name: 'Elecciones', state: 'elecciones/graficaeleccion' }],
                },
           ];
           return menu;
@@ -142,7 +142,8 @@ export const getMenu = (role) => {
                     tooltip: 'Documentation',
                     icon: 'person',
                     sub: [{ name: 'Ver', state: 'elecciones/calculototal' },
-                    { name: 'Elecciones', state: 'elecciones/graficaeleccion' }],
+                    { name: 'Elecciones', state: 'elecciones/graficaeleccion' },
+                    { name: 'Localidades', state: 'elecciones/localidades' }],
                },
           ];
           return menu;
@@ -216,7 +217,8 @@ export const getMenu = (role) => {
                     tooltip: 'Documentation',
                     icon: 'person',
                     sub: [{ name: 'Ver', state: 'elecciones/calculototal' },
-                    { name: 'Elecciones', state: 'elecciones/graficaeleccion' }],
+                    { name: 'Elecciones', state: 'elecciones/graficaeleccion' },
+                    { name: 'Localidades', state: 'elecciones/localidades' }],
                },
           ];
           return menu;
