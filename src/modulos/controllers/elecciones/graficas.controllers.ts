@@ -21,7 +21,7 @@ export const getRecalculando = async (req: Request, res: Response) => {
 };
 ////////////Consutlas de graficas//////////////////////////
 export const getCalculoTotal = async (req: Request, res: Response) => {
-     console.log(`req`, req);
+     //  console.log(`req`, req);
      let totales: any = await votosGraf.find().lean();
      let usuariosTot = await usuarios.find().lean();
      let total = await votoAdh.find({}, { role: 1 }).lean();
@@ -29,7 +29,7 @@ export const getCalculoTotal = async (req: Request, res: Response) => {
 
      let data: any = [];
      for (let usuario of usuariosTot) {
-          if (usuario.role === 'user-sys' || usuario.role === 'user-calc') {
+          if (usuario.role === 'user-sys' || usuario.role === 'user-calc' || usuario.role === 'app-movil') {
                //   console.log(`El Usuario es: `, usuario._id, " : ", usuario.datosPersonales.apellido, " ", usuario.datosPersonales.nombres)
           } else {
                let encontro = 0;
@@ -42,7 +42,7 @@ export const getCalculoTotal = async (req: Request, res: Response) => {
                          if (usuarioVoto.votos === 0) {
                               promedio = 0;
                          } else {
-                              promedio = Math.trunc(usuarioVoto.afiliado * 100 / usuarioVoto.votos);
+                              promedio = Math.trunc((usuarioVoto.afiliado * 100) / usuarioVoto.votos);
                          }
 
                          data.push({

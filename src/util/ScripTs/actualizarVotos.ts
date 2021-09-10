@@ -12,6 +12,9 @@ import { votoAdh } from '../../modulos/models/elecciones/votoAdhesion';
 import { votoNQN } from '../../modulos/models/comunes/votoNqn';
 import { usrAppMovil } from '../usuariosApp';
 import moment from 'moment';
+import { afiliado } from '../../modulos/models/elecciones/afiliadosMpn';
+import { escuelas } from '../../modulos/models/comunes/establecimientos';
+import { AnySoaRecord } from 'dns';
 
 ///////actualiza los datos en el array de votos, le asigna a los votos del IdCoordinador
 export const actualizarVoto = async (req: Request, res: Response) => {
@@ -292,6 +295,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 1,
                                                                  femenino: 1,
                                                                  masculino: 0,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
                                                             const nPersona = new votoPersona(datos);
                                                             await nPersona.save();
@@ -307,6 +313,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 1,
                                                                  femenino: 0,
                                                                  masculino: 1,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
 
                                                             const nPersona = new votoPersona(datos);
@@ -325,6 +334,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 0,
                                                                  femenino: 1,
                                                                  masculino: 0,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
                                                             const nPersona = new votoPersona(datos);
                                                             await nPersona.save();
@@ -340,6 +352,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 0,
                                                                  femenino: 0,
                                                                  masculino: 1,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
 
                                                             const nPersona = new votoPersona(datos);
@@ -363,6 +378,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                         afiliado: 0,
                                         femenino: 0,
                                         masculino: 0,
+                                        votaron: 0,
+                                        votaronA: 0,
+                                        votaronF: 0,
                                    };
 
                                    const nPersona = new votoPersona(datos);
@@ -379,6 +397,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                         afiliado: 0,
                                         femenino: 0,
                                         masculino: 0,
+                                        votaron: 0,
+                                        votaronA: 0,
+                                        votaronF: 0,
                                    };
 
                                    const nPersona = new votoPersona(datos);
@@ -423,6 +444,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 1,
                                                                  femenino: 1,
                                                                  masculino: 0,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
                                                             const nPersona = new votoPersona(datos);
                                                             await nPersona.save();
@@ -438,6 +462,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 1,
                                                                  femenino: 0,
                                                                  masculino: 1,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
 
                                                             const nPersona = new votoPersona(datos);
@@ -456,6 +483,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 0,
                                                                  femenino: 1,
                                                                  masculino: 0,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
                                                             const nPersona = new votoPersona(datos);
                                                             await nPersona.save();
@@ -471,6 +501,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 0,
                                                                  femenino: 0,
                                                                  masculino: 1,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
 
                                                             const nPersona = new votoPersona(datos);
@@ -494,6 +527,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                         afiliado: 0,
                                         femenino: 0,
                                         masculino: 0,
+                                        votaron: 0,
+                                        votaronA: 0,
+                                        votaronF: 0,
                                    };
 
                                    const nPersona = new votoPersona(datos);
@@ -510,6 +546,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                         afiliado: 0,
                                         femenino: 0,
                                         masculino: 0,
+                                        votaron: 0,
+                                        votaronA: 0,
+                                        votaronF: 0,
                                    };
 
                                    const nPersona = new votoPersona(datos);
@@ -550,6 +589,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 1,
                                                                  femenino: 1,
                                                                  masculino: 0,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
                                                             const nPersona = new votoPersona(datos);
                                                             await nPersona.save();
@@ -565,6 +607,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 1,
                                                                  femenino: 0,
                                                                  masculino: 1,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
 
                                                             const nPersona = new votoPersona(datos);
@@ -583,6 +628,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 0,
                                                                  femenino: 1,
                                                                  masculino: 0,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
                                                             const nPersona = new votoPersona(datos);
                                                             await nPersona.save();
@@ -598,6 +646,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 0,
                                                                  femenino: 0,
                                                                  masculino: 1,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
 
                                                             const nPersona = new votoPersona(datos);
@@ -621,6 +672,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                         afiliado: 0,
                                         femenino: 0,
                                         masculino: 0,
+                                        votaron: 0,
+                                        votaronA: 0,
+                                        votaronF: 0,
                                    };
 
                                    const nPersona = new votoPersona(datos);
@@ -637,6 +691,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                         afiliado: 0,
                                         femenino: 0,
                                         masculino: 0,
+                                        votaron: 0,
+                                        votaronA: 0,
+                                        votaronF: 0,
                                    };
 
                                    const nPersona = new votoPersona(datos);
@@ -680,6 +737,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 1,
                                                                  femenino: 1,
                                                                  masculino: 0,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
                                                             const nPersona = new votoPersona(datos);
                                                             await nPersona.save();
@@ -695,6 +755,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 1,
                                                                  femenino: 0,
                                                                  masculino: 1,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
 
                                                             const nPersona = new votoPersona(datos);
@@ -713,6 +776,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 0,
                                                                  femenino: 1,
                                                                  masculino: 0,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
                                                             const nPersona = new votoPersona(datos);
                                                             await nPersona.save();
@@ -728,6 +794,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 0,
                                                                  femenino: 0,
                                                                  masculino: 1,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
 
                                                             const nPersona = new votoPersona(datos);
@@ -750,6 +819,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                    afiliado: 0,
                                    femenino: 0,
                                    masculino: 0,
+                                   votaron: 0,
+                                   votaronA: 0,
+                                   votaronF: 0,
                               };
 
                               const nPersona = new votoPersona(datos);
@@ -792,6 +864,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 1,
                                                                  femenino: 1,
                                                                  masculino: 0,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
                                                             const nPersona = new votoPersona(datos);
                                                             await nPersona.save();
@@ -807,6 +882,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 1,
                                                                  femenino: 0,
                                                                  masculino: 1,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
 
                                                             const nPersona = new votoPersona(datos);
@@ -825,6 +903,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 0,
                                                                  femenino: 1,
                                                                  masculino: 0,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
                                                             const nPersona = new votoPersona(datos);
                                                             await nPersona.save();
@@ -840,6 +921,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 0,
                                                                  femenino: 0,
                                                                  masculino: 1,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
 
                                                             const nPersona = new votoPersona(datos);
@@ -862,6 +946,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                    afiliado: 0,
                                    femenino: 0,
                                    masculino: 0,
+                                   votaron: 0,
+                                   votaronA: 0,
+                                   votaronF: 0,
                               };
 
                               const nPersona = new votoPersona(datos);
@@ -901,6 +988,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 1,
                                                                  femenino: 1,
                                                                  masculino: 0,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
                                                             const nPersona = new votoPersona(datos);
                                                             await nPersona.save();
@@ -916,6 +1006,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 1,
                                                                  femenino: 0,
                                                                  masculino: 1,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
 
                                                             const nPersona = new votoPersona(datos);
@@ -934,6 +1027,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 0,
                                                                  femenino: 1,
                                                                  masculino: 0,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
                                                             const nPersona = new votoPersona(datos);
                                                             await nPersona.save();
@@ -949,6 +1045,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                                                  afiliado: 0,
                                                                  femenino: 0,
                                                                  masculino: 1,
+                                                                 votaron: 0,
+                                                                 votaronA: 0,
+                                                                 votaronF: 0,
                                                             };
 
                                                             const nPersona = new votoPersona(datos);
@@ -971,6 +1070,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                                    afiliado: 0,
                                    femenino: 0,
                                    masculino: 0,
+                                   votaron: 0,
+                                   votaronA: 0,
+                                   votaronF: 0,
                               };
 
                               const nPersona = new votoPersona(datos);
@@ -997,84 +1099,100 @@ export const geoVoto = async (req: Request, res: Response) => {
                { documento: voto.dni },
                { genero: 1, mesa: 1, establecimiento: 1, localidad: 1, lat: 1, lon: 1 }
           );
-          //console.log(datos);
-          if (datos !== null) {
-               //TODO:busco el establecimiento en el geoEscuela schema
+          let coord: any = await escuelas.findOne({ establecimiento: voto.establecimiento }, { lat: 1, lon: 1 });
 
-               let esc: any = await geoEscuela.findOne({ mesaNro: datos.mesa });
-               if (esc !== null) {
-                    voto.afiliado === 'Es afiliado al MPN' ? esc.afiliado++ : console.log('no es afiliado');
-                    datos.genero === 'F' ? esc.femenino++ : esc.masculino++;
-                    esc.votosMesa++;
-                    await esc.save();
-               } else {
-                    if (voto.afiliado === 'Es afiliado al MPN') {
-                         if (datos.genero === 'F') {
-                              let esc = {
-                                   mesaNro: datos.mesa,
-                                   establecimiento: datos.establecimiento,
-                                   localidad: datos.localidad,
-                                   votosMesa: 1,
-                                   masculino: 0,
-                                   femenino: 1,
-                                   afiliado: 1,
-                                   typeGeo: 'Point',
-                                   lon: datos.lon,
-                                   lat: datos.lat,
-                              };
+          if (coord !== null) {
+               //console.log(datos);
+               if (datos !== null) {
+                    //TODO:busco el establecimiento en el geoEscuela schema
 
-                              let nuevaEsc = new geoEscuela(esc);
-                              await nuevaEsc.save();
-                         } else {
-                              let esc = {
-                                   mesaNro: datos.mesa,
-                                   establecimiento: datos.establecimiento,
-                                   localidad: datos.localidad,
-                                   votosMesa: 1,
-                                   masculino: 1,
-                                   femenino: 0,
-                                   afiliado: 1,
-                                   typeGeo: 'Point',
-                                   lon: datos.lon,
-                                   lat: datos.lat,
-                              };
-
-                              let nuevaEsc = new geoEscuela(esc);
-                              await nuevaEsc.save();
-                         }
+                    let escu: any = await geoEscuela.findOne({ mesaNro: datos.mesa });
+                    if (escu !== null) {
+                         voto.afiliado === 'Es afiliado al MPN' ? escu.afiliado++ : console.log('no es afiliado');
+                         datos.genero === 'F' ? escu.femenino++ : escu.masculino++;
+                         escu.votosMesa++;
+                         await escu.save();
                     } else {
-                         if (datos.genero === 'F') {
-                              let esc = {
-                                   mesaNro: datos.mesa,
-                                   establecimiento: datos.establecimiento,
-                                   localidad: datos.localidad,
-                                   votosMesa: 1,
-                                   masculino: 0,
-                                   femenino: 1,
-                                   afiliado: 0,
-                                   typeGeo: 'Point',
-                                   lon: datos.lon,
-                                   lat: datos.lat,
-                              };
+                         if (voto.afiliado === 'Es afiliado al MPN') {
+                              if (datos.genero === 'F') {
+                                   let esc = {
+                                        mesaNro: datos.mesa,
+                                        establecimiento: datos.establecimiento,
+                                        localidad: datos.localidad,
+                                        votosMesa: 1,
+                                        masculino: 0,
+                                        femenino: 1,
+                                        afiliado: 1,
+                                        votaron: 0,
+                                        votaronA: 0,
+                                        votaronF: 0,
+                                        typeGeo: 'Point',
+                                        lon: coord.lon,
+                                        lat: coord.lat,
+                                   };
 
-                              let nuevaEsc = new geoEscuela(esc);
-                              await nuevaEsc.save();
+                                   let nuevaEsc = new geoEscuela(esc);
+                                   await nuevaEsc.save();
+                              } else {
+                                   let esc = {
+                                        mesaNro: datos.mesa,
+                                        establecimiento: datos.establecimiento,
+                                        localidad: datos.localidad,
+                                        votosMesa: 1,
+                                        masculino: 1,
+                                        femenino: 0,
+                                        afiliado: 1,
+                                        votaron: 0,
+                                        votaronA: 0,
+                                        votaronF: 0,
+                                        typeGeo: 'Point',
+                                        lon: coord.lon,
+                                        lat: coord.lat,
+                                   };
+
+                                   let nuevaEsc = new geoEscuela(esc);
+                                   await nuevaEsc.save();
+                              }
                          } else {
-                              let esc = {
-                                   mesaNro: datos.mesa,
-                                   establecimiento: datos.establecimiento,
-                                   localidad: datos.localidad,
-                                   votosMesa: 1,
-                                   masculino: 1,
-                                   femenino: 0,
-                                   afiliado: 0,
-                                   typeGeo: 'Point',
-                                   lon: datos.lon,
-                                   lat: datos.lat,
-                              };
+                              if (datos.genero === 'F') {
+                                   let esc = {
+                                        mesaNro: datos.mesa,
+                                        establecimiento: datos.establecimiento,
+                                        localidad: datos.localidad,
+                                        votosMesa: 1,
+                                        masculino: 0,
+                                        femenino: 1,
+                                        afiliado: 0,
+                                        votaron: 0,
+                                        votaronA: 0,
+                                        votaronF: 0,
+                                        typeGeo: 'Point',
+                                        lon: coord.lon,
+                                        lat: coord.lat,
+                                   };
 
-                              let nuevaEsc = new geoEscuela(esc);
-                              await nuevaEsc.save();
+                                   let nuevaEsc = new geoEscuela(esc);
+                                   await nuevaEsc.save();
+                              } else {
+                                   let esc = {
+                                        mesaNro: datos.mesa,
+                                        establecimiento: datos.establecimiento,
+                                        localidad: datos.localidad,
+                                        votosMesa: 1,
+                                        masculino: 1,
+                                        femenino: 0,
+                                        afiliado: 0,
+                                        votaron: 0,
+                                        votaronA: 0,
+                                        votaronF: 0,
+                                        typeGeo: 'Point',
+                                        lon: coord.lon,
+                                        lat: coord.lat,
+                                   };
+
+                                   let nuevaEsc = new geoEscuela(esc);
+                                   await nuevaEsc.save();
+                              }
                          }
                     }
                }
@@ -1413,6 +1531,54 @@ export const usuariosAppM = async (req: Request, res: Response) => {
      });
 }; */
 
+export const migrarNqn = async (req: Request, res: Response) => {
+     console.log('Entro');
+
+     let votosNuevos = await votoNQN.find().lean();
+     let total = 0;
+     for (let votoNuevo of votosNuevos) {
+          let voto = await votoAdh.findOne({ dni: votoNuevo.DNI });
+
+          if (voto === null) {
+               let datosPadron: any = await padron.findOne(
+                    { documento: votoNuevo.DNI },
+                    { lat: 0, lon: 0, circuito: 0, ejemplar: 0, _id: 0 }
+               );
+               let padronAfi = await afiliado.findOne({ dni: votoNuevo.DNI });
+
+               let guardarData: any = {};
+
+               if (padronAfi !== null) {
+                    guardarData.afiliado = 'Es afiliado al MPN';
+               } else {
+                    guardarData.afiliado = '';
+               }
+               guardarData.dni = votoNuevo.DNI;
+               guardarData.sexo = datosPadron.genero;
+               guardarData.nombreCompleto = datosPadron.nombre;
+               guardarData.clase = datosPadron.clase;
+               guardarData.genero = datosPadron.genero;
+               guardarData.telefono = '';
+               guardarData.tipo_voto = 'Voto Adhesion';
+               guardarData.localidad = datosPadron.localidad;
+               guardarData.dom_establecimiento = datosPadron.dom_establecimiento;
+               guardarData.establecimiento = datosPadron.establecimiento;
+               guardarData.mesa = datosPadron.mesa;
+               guardarData.orden = datosPadron.orden;
+               (guardarData.realizoVoto = ''),
+                    (guardarData.resPlanilla = {
+                         idCoordinador: '6112cd081b7e004260bada04',
+                         idReferente: '',
+                         idResPlanilla: '',
+                    });
+
+               let gVoto = new votoAdh(guardarData);
+               await gVoto.save();
+               console.log(total++);
+          }
+     }
+};
+
 const countLocalidad = async (localidades) => {
      let data = localidades;
      let locRepetidas = {};
@@ -1422,4 +1588,30 @@ const countLocalidad = async (localidades) => {
      });
 
      return locRepetidas;
+};
+
+export const sinLoc = async (req: Request, res: Response) => {
+     let sinLoc: any = await votoAdh.find({}, { dni: 1, establecimiento: 1, dom_establecimiento: 1, localidad: 1 });
+
+     let totalsincambio = 0;
+     let totalcambios = 0;
+
+     for (let votos of sinLoc) {
+          let data: any = await padron.findOne(
+               { documento: votos.dni },
+               { establecimiento: 1, dom_establecimiento: 1, localidad: 1 }
+          );
+
+          if (data !== null) {
+               if (votos.establecimiento !== data.establecimiento) {
+                    votos.establecimiento = data.establecimiento;
+                    votos.dom_establecimiento = data.dom_establecimiento;
+                    votos.localidad = data.localidad;
+                    await votos.save();
+                    console.log('cambioss', totalcambios++);
+               } else {
+                    console.log(totalsincambio++);
+               }
+          }
+     }
 };

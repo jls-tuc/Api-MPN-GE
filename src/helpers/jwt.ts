@@ -63,6 +63,7 @@ export class AuthMovil {
                localidad,
                menu,
                role: user.role,
+               usuario: user.usuario,
           };
 
           return jwt.sign(payload, `${APPTOKEN}`, {
