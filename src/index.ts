@@ -26,6 +26,7 @@ import geoRoute from './modulos/routes/elecciones/geo/votosXEsc.route';
 
 //Votos12
 import votos12 from './modulos/routes/elecciones/voto-12/json-app.route';
+import orden from './modulos/routes/elecciones/voto-12/infoAppMovil.route';
 
 class ServerSPS {
      private app: Application;
@@ -42,7 +43,7 @@ class ServerSPS {
      }
 
      async listen() {
-          await dbArsat.dbArsat(); // Base de datos!!!
+          await dbArsat.local(); // Base de datos!!!
           //Servidor Express
           /*  https
          .createServer(
@@ -106,6 +107,7 @@ class ServerSPS {
           this.app.use(this.apiPath, appMovil);
           ///votos12
           this.app.use(this.apiPath, votos12);
+          this.app.use(this.apiPath, orden);
           //// scriptss
           this.app.use(this.apiPath, scriptRoute);
      }
