@@ -90,7 +90,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
 export const renewToken = async (req: Request, res: Response) => {
      //  console.log('req', req.user);
      let user: any = await usuarios.findById(req.body.id.id);
-     console.log(`req.body`, req.body)
+     //console.log(`req.body`, req.body)
      if (user !== null) {
           user.lastLogin = moment().format('YYYY/MM/DD;HH:MM');
           await user.save();

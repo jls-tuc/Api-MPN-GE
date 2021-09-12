@@ -12,11 +12,11 @@ import { geoEscuela } from '../../models/elecciones/geo/votosXEsc';
 
 export const getRecalculando = async (req: Request, res: Response) => {
      let votos = await votoAdh.find().lean();
-     console.log(`Ya traje el los Votos`);
+     //console.log(`Ya traje el los Votos`);
      let afiliados = await afiliado.find().lean();
-     console.log(`Ya traje el los Afiliados`);
+     //console.log(`Ya traje el los Afiliados`);
      let votosG: any;
-     console.log(`Empiezo Rutina`);
+     // console.log(`Empiezo Rutina`);
      let data = buscarDatos(votos, afiliados);
 
      return res.status(200).json({
@@ -78,11 +78,10 @@ export const getCalculoEleccion = async (req: Request, res: Response) => {
           let usuario: any = await usuarios.findOne({ _id: req.body.id }, { 'datosPersonales.foto': 0 }).lean();
           //console.log(`Usuario `, usuario)
           let porcentaje;
-          if (totalCoord === 0) {
+          if (votosCoord === 0) {
                porcentaje = 0;
           } else {
-               porcentaje = Number(((totalCoord.votaron * 100) / totalCoord.votos).toFixed(2));
-
+               porcentaje = Number((votaron * 100 / votosCoord).toFixed(2));
           }
           let dataTemp = {
                organizacion: usuario.datosPersonales.areaResponsable,
@@ -102,7 +101,8 @@ export const getCalculoEleccion = async (req: Request, res: Response) => {
           };
           await data.push(dataTemp);
           //console.log(`data`, data)
-          usuariosTot = await usuarios.find({ idCoordinador: req.body.id }, { 'datosPersonales.foto': 0 }).lean();
+          usuariosTot = await usuarios.find({ idCoordinador: req.body.id }, { "datosPersonales.foto": 0 }).lean();
+
      }
      let totales: any = await votosGraf.find({}).lean();
      let total: any = await votoAdh.find({}, { role: 1 }).lean();
@@ -198,7 +198,7 @@ export const getCalculoEleccion = async (req: Request, res: Response) => {
                }
           }
      }
-     console.log(`Ya esta Terminamos!!!`, data)
+     // console.log(`Ya esta Terminamos!!!`, data)
      res.status(200).json({
           ok: true,
           data,
@@ -455,7 +455,7 @@ const devolverVotoRef = async (data: any, id: any, role: any) => {
 
 };
 export const getLocEleccion = async (req: Request, res: Response) => {
-     console.log(`req.body`, req)
+     //console.log(`req.body`, req)
      let geo: any = await geoEscuela.find({}, { localidad: 1, votosMesa: 1, votaron: 1 }).lean().sort({ localidad: 1 });
      let data: any = [];
      let labels: any = [];
@@ -498,7 +498,7 @@ export const getLocEleccion = async (req: Request, res: Response) => {
                     await votaronAdh.push(votaron);
                     await labels.push(localidadTemp); */
                }
-               console.log(`locTemp`, locTemp)
+               //console.log(`locTemp`, locTemp)
                data.sort(function (a, b) {
                     if (a.votosMesa < b.votosMesa) {
                          return 1;
@@ -518,7 +518,7 @@ export const getLocEleccion = async (req: Request, res: Response) => {
           }
 
      }
-     console.log(`data`, data)
+     //console.log(`data`, data)
      for (let loc of data) {
 
           await votosAdh.push(loc.votosMesa);

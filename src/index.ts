@@ -40,7 +40,6 @@ class ServerSPS {
           //cargar rutas
           this.routes();
      }
-
      async listen() {
           await dbArsat.infoTec(); // Base de datos!!!
           //Servidor Express

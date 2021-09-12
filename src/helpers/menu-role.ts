@@ -20,6 +20,7 @@ export const getMenu = (role) => {
                     sub: [
                          { name: 'Agregar', state: 'elecciones/planilla' },
                          { name: 'Ver mi Planilla', state: 'elecciones/verPlanilla' },
+                         { name: 'Ver Eleccion', state: 'elecciones/verPlanillaEleccion' },
                          //{ name: 'Ver Total Votos', state: 'elecciones/verPlanillas' },
                     ],
                },
@@ -68,6 +69,7 @@ export const getMenu = (role) => {
                     sub: [
                          { name: 'Agregar', state: 'elecciones/planilla' },
                          { name: 'Ver mi Planilla', state: 'elecciones/verPlanilla' },
+                         { name: 'Ver Eleccion', state: 'elecciones/verPlanillaEleccion' },
                          //{ name: 'Ver Total Votos', state: 'elecciones/verPlanillas' },
                     ],
                },
@@ -94,7 +96,8 @@ export const getMenu = (role) => {
                     type: 'dropDown',
                     tooltip: 'Dialogs',
                     icon: 'filter_none',
-                    sub: [{ name: 'Ver', state: 'elecciones/referentes' }],
+                    sub: [{ name: 'Ver', state: 'elecciones/referentes' },
+                    { name: 'Ver Eleccion', state: 'elecciones/verPlanillaEleccion' },],
                },
 
                {
