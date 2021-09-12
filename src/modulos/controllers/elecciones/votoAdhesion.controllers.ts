@@ -38,7 +38,7 @@ export const guardarVoto = async (req: Request, res: Response) => {
 };
 
 export const getvotos = async (req: Request, res: Response) => {
-     console.log(req.query);
+     //console.log(req.query);
      let votos: any;
      let votosRef: any;
      if (req.query.consulta === 'Referente') {
@@ -61,6 +61,42 @@ export const getvotos = async (req: Request, res: Response) => {
                msg: 'Faltan datos para la busqueda',
           });
      }
+     if (votos === null) {
+          res.status(200).json({
+               ok: false,
+               msg: 'Algo esta mal',
+          });
+     } else {
+          const votosUnicos = await Array.from(new Set(votos));
+          let totalV = votosUnicos.length;
+          res.status(200).json({
+               ok: true,
+               votosUnicos,
+               totalV,
+          });
+     }
+};
+export const getvotosFaltan = async (req: Request, res: Response) => {
+     // console.log(req.query);
+     let votos: any;
+     let votosRef: any;
+     if (req.query.consulta === "Coord") {
+
+          let datosRef = await votoAdh.find({ 'resPlanilla.idCoordinador': req.query.valor }).lean();
+
+          if (datosRef.length) {
+               votos = await devolverVotos(datosRef, req.query.valor, req.query.consulta);
+          }
+     }
+     if (req.query.consulta === "Referente") {
+
+          let datosRef = await votoAdh.find({ 'resPlanilla.idReferente': req.query.valor }).lean();
+
+          if (datosRef.length) {
+               votos = await devolverVotos(datosRef, req.query.valor, req.query.consulta);
+          }
+     }
+
      if (votos === null) {
           res.status(200).json({
                ok: false,
@@ -195,7 +231,7 @@ export const getCalculoTotal = async (req: Request, res: Response) => {
                // console.log(`Usuario no Existe: `, calc.idUsuario);
           }
      }
-     console.log(`Ya esta!!!`, data);
+     //console.log(`Ya esta!!!`, data);
      res.status(200).json({
           ok: true,
           data,
@@ -206,7 +242,7 @@ export const getCalculoTotal = async (req: Request, res: Response) => {
 export const getvotosGrafica = async (req: Request, res: Response) => {
      //  console.log('estoy');
      await votoAdh.find((err, data: any) => {
-          console.log(err);
+          //console.log(err);
           if (err) {
                res.status(200).json({
                     ok: false,
@@ -254,6 +290,113 @@ const devolverVotoRef = async (data: any, id: any, role: any) => {
                     ) {
                          //console.log(dato);
                          voto.push(dato);
+                    }
+               }
+          }
+          return voto;
+     }
+};
+
+export const getReferentes = async (req: Request, res: Response) => {
+     let referentes: any = await usuarios.find({ role: "user-ref", idCoordinador: req.body.idCoord }, { _id: 1, "datosPersonales.nombres": 1, "datosPersonales.apellido": 1 }).lean();
+     return referentes;
+};
+
+const devolverVotos = async (data: any, id: any, role: any) => {
+     let voto: any = [];
+
+     if (role === 'Resplanilla') {
+          for (let dato of data) {
+               for (let idRef of dato.resPlanilla) {
+                    if (idRef.idReferente === id.toString()) {
+                         //console.log(dato);
+                         if (dato.realizoVoto !== "si") {
+                              voto.push(dato);
+                         }
+                    }
+               }
+          }
+          return voto;
+     }
+     if (role === 'Referente') {
+          for (let dato of data) {
+               for (let idRef of dato.resPlanilla) {
+                    if (idRef.idReferente === id.toString()) {
+                         //console.log("Dato", idRef);
+
+                         if (dato.realizoVoto !== "si") {
+                              if (idRef.idResPlanilla !== "") {
+                                   let usuario = await usuarios.findById(
+                                        (idRef.idResPlanilla),
+                                        { 'datosPersonales.apellido': 1, 'datosPersonales.nombres': 1, _id: 0 });
+                                   let datos = {
+                                        dato: dato,
+                                        res: `${usuario.datosPersonales.apellido} ${usuario.datosPersonales.nombres}`,
+                                   }
+                                   voto.push(datos);
+                              } else {
+
+                                   let usuario = await usuarios.findById(
+                                        (idRef.idReferente),
+                                        { 'datosPersonales.apellido': 1, 'datosPersonales.nombres': 1, _id: 0 });
+                                   //console.log(`usuario`, usuario)
+                                   let datos = {
+                                        dato: dato,
+                                        res: `${usuario.datosPersonales.apellido} ${usuario.datosPersonales.nombres}`,
+                                   }
+                                   //console.log(`datos.res`, datos.res)
+                                   voto.push(datos);
+                              }
+                         }
+                    }
+               }
+          }
+          return voto;
+     }
+     if (role === 'Coord') {
+          for (let dato of data) {
+               for (let idCoord of dato.resPlanilla) {
+                    if (
+                         idCoord.idCoordinador === id.toString()
+                    ) {
+
+                         if (dato.realizoVoto !== "si") {
+
+                              if (idCoord.idReferente !== "" && idCoord.idResPlanilla !== "") {
+                                   let usuarioRef = await usuarios.findById(
+                                        (idCoord.idReferente),
+                                        { 'datosPersonales.apellido': 1, 'datosPersonales.nombres': 1, _id: 0 });
+                                   let usuarioRes = await usuarios.findById(
+                                        (idCoord.idResPlanilla),
+                                        { 'datosPersonales.apellido': 1, 'datosPersonales.nombres': 1, _id: 0 });
+                                   if (usuarioRef !== null && usuarioRes !== null) {
+                                        let datos = {
+                                             dato: dato,
+                                             ref: `${usuarioRef.datosPersonales.apellido} ${usuarioRef.datosPersonales.nombres}`,
+                                             res: `${usuarioRes.datosPersonales.apellido} ${usuarioRes.datosPersonales.nombres}`,
+                                        }
+
+                                        voto.push(datos);
+                                   }
+                              }
+                              if (idCoord.idReferente !== "" && idCoord.idResPlanilla === "" && idCoord.idReferente !== idCoord.idResPlanilla) {
+                                   let usuarioRef = await usuarios.findById(
+                                        (idCoord.idReferente),
+                                        { 'datosPersonales.apellido': 1, 'datosPersonales.nombres': 1, _id: 0 });
+
+                                   if (usuarioRef !== null) {
+                                        let datos = {
+                                             dato: dato,
+                                             ref: `${usuarioRef.datosPersonales.apellido} ${usuarioRef.datosPersonales.nombres}`,
+                                             res: "",
+                                        }
+
+                                        voto.push(datos);
+                                   }
+
+                              }
+
+                         }
                     }
                }
           }

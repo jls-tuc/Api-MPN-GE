@@ -87,8 +87,23 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
      });
 };
 
-export const renewToken = async (req, res: Response) => {
+export const renewToken = async (req: Request, res: Response) => {
      //  console.log('req', req.user);
+     let user: any = await usuarios.findById(req.body.id.id);
+     //console.log(`req.body`, req.body)
+     if (user !== null) {
+          user.lastLogin = moment().format('YYYY/MM/DD;HH:MM');
+          await user.save();
+          const menu = await getMenu(user.role);
+          return res.status(200).json({
+               ok: true,
+               token: AuthMovil.tokenAPP(user, menu),
+          });
+     } else {
+          return res.status(200).json({
+               ok: false,
+          });
+     }
 };
 
 export const getUsuarios = async (req: Request, res: Response) => {
