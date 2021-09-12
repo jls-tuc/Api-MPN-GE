@@ -7,9 +7,9 @@ export const getMenu = (role) => {
                     tooltip: 'Documentation',
                     icon: 'person',
                     sub: [
-                         { name: 'Agregar', state: 'elecciones/referente' },
+                         /* { name: 'Agregar', state: 'elecciones/referente' }, */
                          { name: 'Ver', state: 'elecciones/referentes' },
-                         { name: 'Estadisticas', state: 'elecciones/calculototalref' },
+                         /*   { name: 'Estadisticas', state: 'elecciones/calculototalref' }, */
                     ],
                },
                {
@@ -18,7 +18,7 @@ export const getMenu = (role) => {
                     tooltip: 'Charts',
                     icon: 'description',
                     sub: [
-                         { name: 'Agregar', state: 'elecciones/planilla' },
+                         /* { name: 'Agregar', state: 'elecciones/planilla' }, */
                          { name: 'Ver mi Planilla', state: 'elecciones/verPlanilla' },
                          { name: 'Ver Eleccion', state: 'elecciones/verPlanillaEleccion' },
                          //{ name: 'Ver Total Votos', state: 'elecciones/verPlanillas' },
