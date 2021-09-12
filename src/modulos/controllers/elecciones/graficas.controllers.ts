@@ -6,13 +6,17 @@ import { usuarios } from '../../../Auth/models/authUsers.model';
 import { buscarDatos } from '../../../util/funcionesGetRecalc';
 import { votoAdh } from '../../models/elecciones/votoAdhesion';
 
+import { ObjectId } from 'mongoose';
+import { read } from 'fs';
+import { geoEscuela } from '../../models/elecciones/geo/votosXEsc';
+
 export const getRecalculando = async (req: Request, res: Response) => {
      let votos = await votoAdh.find().lean();
-     console.log(`Ya traje el los Votos`);
+     //console.log(`Ya traje el los Votos`);
      let afiliados = await afiliado.find().lean();
-     console.log(`Ya traje el los Afiliados`);
+     //console.log(`Ya traje el los Afiliados`);
      let votosG: any;
-     console.log(`Empiezo Rutina`);
+     // console.log(`Empiezo Rutina`);
      let data = buscarDatos(votos, afiliados);
 
      return res.status(200).json({
@@ -20,66 +24,7 @@ export const getRecalculando = async (req: Request, res: Response) => {
      });
 };
 ////////////Consutlas de graficas//////////////////////////
-/* export const getCalculoTotal = async (req: Request, res: Response) => {
-     console.log(`req`, req);
-     let totales: any = await votosGraf.find().lean();
-     let usuariosTot = await usuarios.find().lean();
-     let total = await votoAdh.find({}, { role: 1 }).lean();
-     let totalDNI = total.length;
 
-     let data: any = [];
-     for (let usuario of usuariosTot) {
-          if (usuario.role === 'user-sys' || usuario.role === 'user-calc' || usuario.role === 'app-movil') {
-               //   console.log(`El Usuario es: `, usuario._id, " : ", usuario.datosPersonales.apellido, " ", usuario.datosPersonales.nombres)
-          } else {
-               let encontro = 0;
-               for (let usuarioVoto of totales) {
-                    let id = usuario._id.toString();
-                    if (id === usuarioVoto.idUsuario) {
-                         encontro++;
-                         let totalnoafiliados = usuarioVoto.votos - usuarioVoto.afiliado;
-                         let promedio;
-                         if (usuarioVoto.votos === 0) {
-                              promedio = 0;
-                         } else {
-                              promedio = Math.trunc((usuarioVoto.afiliado * 100) / usuarioVoto.votos);
-                         }
-
-                         data.push({
-                              organizacion: usuario.datosPersonales.areaResponsable,
-                              nombrecompleto: usuario.datosPersonales.apellido + ' ' + usuario.datosPersonales.nombres,
-                              coordinador: usuarioVoto.coordinador,
-                              role: usuarioVoto.role,
-                              totalafiliados: usuarioVoto.afiliado,
-                              totalnoafiliados: totalnoafiliados,
-                              totalvotos: usuarioVoto.votos,
-                              votaron: promedio,
-                              id: usuarioVoto.idUsuario,
-                         });
-                    }
-               }
-               if (encontro === 0) {
-                    let id = usuario._id.toString();
-                    data.push({
-                         organizacion: usuario.datosPersonales.areaResponsable,
-                         nombrecompleto: usuario.datosPersonales.apellido + ' ' + usuario.datosPersonales.nombres,
-
-                         role: usuario.role,
-                         totalafiliados: 0,
-                         totalnoafiliados: 0,
-                         totalvotos: 0,
-                         id: id,
-                    });
-               }
-          }
-     }
-     //console.log(`Ya esta Terminamos!!!`)
-     res.status(200).json({
-          ok: true,
-          data,
-          totalDNI,
-     });
-}; */
 export const getCalculoEleccion = async (req: Request, res: Response) => {
      //console.log(`req.body`, req.body)
      let usuariosTot: any;
@@ -133,10 +78,10 @@ export const getCalculoEleccion = async (req: Request, res: Response) => {
           let usuario: any = await usuarios.findOne({ _id: req.body.id }, { 'datosPersonales.foto': 0 }).lean();
           //console.log(`Usuario `, usuario)
           let porcentaje;
-          if (totalCoord.votos === 0) {
+          if (votosCoord === 0) {
                porcentaje = 0;
           } else {
-               porcentaje = Number(((totalCoord.votaron * 100) / totalCoord.votos).toFixed(2));
+               porcentaje = Number((votaron * 100 / votosCoord).toFixed(2));
           }
           let dataTemp = {
                organizacion: usuario.datosPersonales.areaResponsable,
@@ -156,7 +101,8 @@ export const getCalculoEleccion = async (req: Request, res: Response) => {
           };
           await data.push(dataTemp);
           //console.log(`data`, data)
-          usuariosTot = await usuarios.find({ idCoordinador: req.body.id }, { 'datosPersonales.foto': 0 }).lean();
+          usuariosTot = await usuarios.find({ idCoordinador: req.body.id }, { "datosPersonales.foto": 0 }).lean();
+
      }
      let totales: any = await votosGraf.find({}).lean();
      let total: any = await votoAdh.find({}, { role: 1 }).lean();
@@ -252,7 +198,7 @@ export const getCalculoEleccion = async (req: Request, res: Response) => {
                }
           }
      }
-     //console.log(`Ya esta Terminamos!!!`)
+     // console.log(`Ya esta Terminamos!!!`, data)
      res.status(200).json({
           ok: true,
           data,
@@ -370,7 +316,7 @@ export const getvotosGrafica = async (req: Request, res: Response) => {
      let coordinadores = 0;
      let responsables = 0;
      let id;
-     if (req.body.role === 'user-sys' || req.body.role === 'user-calc') {
+     if (req.body.role === 'user-sys' || req.body.role === 'user-calc' || req.body.role === 'user-app') {
           referentes = (await usuarios.find({ role: 'user-ref' }, { role: 1 }).lean()).length;
           responsables = (await usuarios.find({ role: 'user-resp' }, { role: 1 }).lean()).length;
           coordinadores = (await usuarios.find({ role: 'user-coord' }, { role: 1 }).lean()).length;
@@ -453,10 +399,6 @@ export const getvotosGraficaEleccion = async (req: Request, res: Response) => {
      let porTemp = 0;
      let id;
      if (req.body.role === 'user-sys' || req.body.role === 'user-calc') {
-          /* referentes = await (await usuarios.find({ role: 'user-ref' }, { role: 1 }).lean()).length;
-          responsables = await (await usuarios.find({ role: 'user-resp' }, { role: 1 }).lean()).length;
-          coordinadores = await (await usuarios.find({ role: 'user-coord' }, { role: 1 }).lean()).length; */
-          //  console.log(`coordinadores`, coordinadores);
           votosTotal = await (await votoAdh.find({}, { role: 1 }).lean()).length;
           votaron = await (await votoAdh.find({ realizoVoto: 'si' }, { role: 1 }).lean()).length;
 
@@ -510,4 +452,87 @@ const devolverVotoRef = async (data: any, id: any, role: any) => {
           }
      }
      return voto;
+
+};
+export const getLocEleccion = async (req: Request, res: Response) => {
+     //console.log(`req.body`, req)
+     let geo: any = await geoEscuela.find({}, { localidad: 1, votosMesa: 1, votaron: 1 }).lean().sort({ localidad: 1 });
+     let data: any = [];
+     let labels: any = [];
+     let votosAdh: any = [];
+     let votaronAdh: any = [];
+     let labelsNqn: any = [];
+     let votosAdhNqn: any = [];
+     let votaronAdhNqn: any = [];
+     let locTemp: any;
+     let cont = 0;
+     let localidad = "";
+     let localidadTemp = geo[0].localidad;
+     let votosMesa = 0;
+     let votaron = 0;
+     for (let loc of geo) {
+          if (localidadTemp === loc.localidad) {
+               localidad = loc.localidad;
+               votosMesa = votosMesa + loc.votosMesa;
+               votaron = votaron + loc.votaron;
+          } else {
+               if (votaron === null) {
+                    votaron = 0
+               }
+               /*  locTemp = {
+                     votosMesa: votosMesa,
+                     votaron: votaron,
+                } */
+               if (localidadTemp === "NEUQUEN") {
+                    await votosAdhNqn.push(votosMesa);
+                    await votaronAdhNqn.push(votaron);
+                    await labelsNqn.push(localidadTemp);
+               } else {
+                    let dataTemp = {
+                         votosMesa: votosMesa,
+                         votaronAdh: votaron,
+                         labels: localidadTemp,
+                    }
+                    await data.push(dataTemp);
+                    /* await votosAdh.push(votosMesa);
+                    await votaronAdh.push(votaron);
+                    await labels.push(localidadTemp); */
+               }
+               //console.log(`locTemp`, locTemp)
+               data.sort(function (a, b) {
+                    if (a.votosMesa < b.votosMesa) {
+                         return 1;
+                    }
+                    if (a.votosMesa > b.votosMesa) {
+                         return -1;
+                    }
+                    // a must be equal to b
+                    return 0;
+               });
+
+               localidadTemp = loc.localidad;
+               votosMesa = 0;
+               votaron = 0;
+               votosMesa = votosMesa + loc.votosMesa;
+               votaron = votaron + loc.votaron;
+          }
+
+     }
+     //console.log(`data`, data)
+     for (let loc of data) {
+
+          await votosAdh.push(loc.votosMesa);
+          await votaronAdh.push(loc.votaronAdh);
+          await labels.push(loc.labels);
+     }
+
+     res.status(200).json({
+          ok: true,
+          votosAdh,
+          votaronAdh,
+          labels,
+          votosAdhNqn,
+          votaronAdhNqn,
+          labelsNqn
+     });
 };

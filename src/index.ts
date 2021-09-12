@@ -41,9 +41,10 @@ class ServerSPS {
           //cargar rutas
           this.routes();
      }
-
      async listen() {
+
           await dbArsat.local(); // Base de datos!!!
+
           //Servidor Express
           /*  https
          .createServer(
