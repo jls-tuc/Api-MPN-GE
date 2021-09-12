@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { validateAppMovilLogin } from '../../../../middlewares/passport-jwt';
+import { validateAppMovilLogin, validateLogin } from '../../../../middlewares/passport-jwt';
 import { getMesa, votosNqn } from '../../../controllers/elecciones/votos-12/infoAppMovil.controllers';
 
 const router = Router();

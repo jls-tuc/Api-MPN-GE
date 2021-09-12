@@ -9,6 +9,10 @@ import { votoAdh } from '../../models/elecciones/votoAdhesion';
 import { ObjectId } from 'mongoose';
 import { read } from 'fs';
 import { geoEscuela } from '../../models/elecciones/geo/votosXEsc';
+import { infoAppMovil } from '../../models/elecciones/votos-12/infoAppMovil';
+import { escuelas } from '../../models/comunes/establecimientos';
+import { padron } from '../../models/elecciones/padronNeuquen';
+import datosPersonalesSchema from '../../models/comunes/datosPersonales';
 
 export const getRecalculando = async (req: Request, res: Response) => {
      let votos = await votoAdh.find().lean();
@@ -459,8 +463,8 @@ export const getLocEleccion = async (req: Request, res: Response) => {
      let geo: any = await geoEscuela.find({}, { localidad: 1, votosMesa: 1, votaron: 1 }).lean().sort({ localidad: 1 });
      let data: any = [];
      let labels: any = [];
-     let votosAdh: any = [];
-     let votaronAdh: any = [];
+     let votosNqn: any = [];
+     let votaronNqn: any = [];
      let labelsNqn: any = [];
      let votosAdhNqn: any = [];
      let votaronAdhNqn: any = [];
@@ -490,12 +494,12 @@ export const getLocEleccion = async (req: Request, res: Response) => {
                } else {
                     let dataTemp = {
                          votosMesa: votosMesa,
-                         votaronAdh: votaron,
+                         votaronNqn: votaron,
                          labels: localidadTemp,
                     }
                     await data.push(dataTemp);
-                    /* await votosAdh.push(votosMesa);
-                    await votaronAdh.push(votaron);
+                    /* await votosNqn.push(votosMesa);
+                    await votaronNqn.push(votaron);
                     await labels.push(localidadTemp); */
                }
                //console.log(`locTemp`, locTemp)
@@ -518,21 +522,80 @@ export const getLocEleccion = async (req: Request, res: Response) => {
           }
 
      }
+
      //console.log(`data`, data)
      for (let loc of data) {
 
-          await votosAdh.push(loc.votosMesa);
-          await votaronAdh.push(loc.votaronAdh);
+          await votosNqn.push(loc.votosMesa);
+          await votaronNqn.push(loc.votaronNqn);
           await labels.push(loc.labels);
      }
+     let totalVotaron = 0;
+     let voto = await votoAdh.find({ localidad: "NEUQUEN", realizoVoto: "si" }).lean();
 
+     totalVotaron = voto.length;
+     let est: any = await escuelas.find({ localidad: "NEUQUEN" }, { establecimiento: 1 }).lean();
+     let totalVotaronNqn = 0;
+     let datos: any[] = [];
+     console.log(`Empezo Rutina`)
+     let cont1 = 0;
+     for (let esc of est) {
+
+          let votos: any = await infoAppMovil.findOne({ establecimiento: esc.establecimiento }).lean();
+
+          if (votos !== null) {
+
+               for (let m of votos.mesa) {
+                    totalVotaronNqn = totalVotaronNqn + m.orden.length;
+               }
+
+          }
+
+     }
      res.status(200).json({
           ok: true,
-          votosAdh,
-          votaronAdh,
+          votosNqn,
+          votaronNqn,
           labels,
           votosAdhNqn,
           votaronAdhNqn,
-          labelsNqn
+          labelsNqn,
+          totalVotaron,
+          totalVotaronNqn
+     });
+};
+export const getVotosTotales = async (req: Request, res: Response) => {
+     let est: any = await escuelas.find({}, { establecimiento: 1 }).lean();
+     let totalVotaron = 0;
+     let datos: any[] = [];
+     console.log(`Empezo Rutina`)
+     let cont = 0;
+     for (let esc of est) {
+
+          let votos: any = await infoAppMovil.findOne({ establecimiento: esc.establecimiento }).lean();
+
+          if (votos !== null) {
+
+               for (let m of votos.mesa) {
+                    for (let o of m.orden) {
+
+                         let voto: any = await padron.findOne({ mesa: m.mesa, orden: o.orden }, { documento: 1 }).lean();
+
+                         if (voto !== null) {
+                              console.log(`voto.documento`, voto.documento)
+                              console.log(`cont`, cont)
+                              await datos.push(voto.documento)
+                              cont++;
+                         }
+                    }
+               }
+
+          }
+
+     }
+     console.log(`datos`, datos)
+     res.status(200).json({
+          ok: true,
+          datos,
      });
 };
