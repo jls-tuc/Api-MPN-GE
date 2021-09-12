@@ -70,8 +70,7 @@ export const cargarVotoXEsc = async (esc: Iesc, geom?) => {
 ////manda info para cargar en el mapaaa
 export const getDonas = async (req: Request, res: Response) => {
      let dataGeo: any = {
-          type: 'geoVotoXEsc',
-          crs: { type: 'name', properties: { name: 'Votos x escuelas' } },
+          type: 'FeatureCollection',
           features: [],
      };
 
@@ -87,6 +86,9 @@ export const getDonas = async (req: Request, res: Response) => {
                dataGeo.features[busqueda].properties.totalAf += esc.afiliado;
                dataGeo.features[busqueda].properties.totalFem += esc.femenino;
                dataGeo.features[busqueda].properties.totalMasc += esc.masculino;
+               dataGeo.features[busqueda].properties.votaron += esc.votaron;
+               dataGeo.features[busqueda].properties.votaronA += esc.votaronA;
+               dataGeo.features[busqueda].properties.votaronF += esc.votaronF;
           } else {
                let data = {
                     type: 'Feature',
@@ -96,6 +98,9 @@ export const getDonas = async (req: Request, res: Response) => {
                          totalAf: esc.afiliado,
                          totalFem: esc.femenino,
                          totalMasc: esc.masculino,
+                         votaron: esc.votaron,
+                         votaronA: esc.votaronA,
+                         votaronF: esc.votaronF,
                     },
                     geometry: { type: 'Point', coordinates: [esc.lon, esc.lat, 100] },
                };
