@@ -56,9 +56,9 @@ export const getMenu = (role) => {
                     tooltip: 'Dialogs',
                     icon: 'filter_none',
                     sub: [
-                         { name: 'Agregar', state: 'elecciones/referente' },
+                         /* { name: 'Agregar', state: 'elecciones/referente' }, */
                          { name: 'Ver', state: 'elecciones/referentes' },
-                         { name: 'Estadisticas', state: 'elecciones/calculototalresp' },
+                         /*  { name: 'Estadisticas', state: 'elecciones/calculototalresp' }, */
                     ],
                },
                {
@@ -67,19 +67,19 @@ export const getMenu = (role) => {
                     tooltip: 'Charts',
                     icon: 'description',
                     sub: [
-                         { name: 'Agregar', state: 'elecciones/planilla' },
+                         /* { name: 'Agregar', state: 'elecciones/planilla' }, */
                          { name: 'Ver mi Planilla', state: 'elecciones/verPlanilla' },
                          { name: 'Ver Eleccion', state: 'elecciones/verPlanillaEleccion' },
                          //{ name: 'Ver Total Votos', state: 'elecciones/verPlanillas' },
                     ],
                },
-               {
+               /* {
                     name: 'Estadisticas',
                     type: 'link',
                     tooltip: 'Charts',
                     icon: 'show_chart',
                     state: 'elecciones/indicadores',
-               },
+               }, */
                {
                     name: 'Padrones',
                     type: 'link',
@@ -100,13 +100,13 @@ export const getMenu = (role) => {
                     { name: 'Ver Eleccion', state: 'elecciones/verPlanillaEleccion' },],
                },
 
-               {
+               /* {
                     name: 'Estadisticas',
                     type: 'link',
                     tooltip: 'Charts',
                     icon: 'show_chart',
                     state: 'elecciones/indicadores',
-               },
+               }, */
                {
                     name: 'Padrones',
                     type: 'link',
@@ -118,20 +118,20 @@ export const getMenu = (role) => {
           return menu;
      } else if (role === 'user-calc') {
           const menu = [
-               {
+               /* {
                     name: 'Estadisticas',
                     type: 'link',
                     tooltip: 'Charts',
                     icon: 'show_chart',
                     state: 'elecciones/indicadores',
-               },
-               {
+               }, */
+               /* {
                     name: 'Calculos Totales',
                     type: 'dropDown',
                     tooltip: 'Documentation',
                     icon: 'person',
                     sub: [{ name: 'Ver', state: 'elecciones/calculototal' }],
-               },
+               }, */
                {
                     name: 'Mapa',
                     type: 'link',
@@ -144,9 +144,9 @@ export const getMenu = (role) => {
                     type: 'dropDown',
                     tooltip: 'Documentation',
                     icon: 'person',
-                    sub: [{ name: 'Ver', state: 'elecciones/calculototal' },
-                    { name: 'Elecciones', state: 'elecciones/graficaeleccion' },
-                    { name: 'Localidades', state: 'elecciones/localidades' }],
+                    sub: [/* { name: 'Ver', state: 'elecciones/calculototal' }, */
+                         { name: 'Elecciones', state: 'elecciones/graficaeleccion' },
+                         { name: 'Localidades', state: 'elecciones/localidades' }],
                },
           ];
           return menu;
@@ -193,13 +193,13 @@ export const getMenu = (role) => {
                          { name: 'Ver', state: 'elecciones/referentes' },
                     ],
                },
-               {
+               /* {
                     name: 'Estadisticas',
                     type: 'link',
                     tooltip: 'Charts',
                     icon: 'show_chart',
                     state: 'elecciones/indicadores',
-               },
+               }, */
                /* {
                     name: 'Padrones',
                     type: 'link',
@@ -219,9 +219,9 @@ export const getMenu = (role) => {
                     type: 'dropDown',
                     tooltip: 'Documentation',
                     icon: 'person',
-                    sub: [{ name: 'Ver', state: 'elecciones/calculototal' },
-                    { name: 'Elecciones', state: 'elecciones/graficaeleccion' },
-                    { name: 'Localidades', state: 'elecciones/localidades' }],
+                    sub: [/* { name: 'Ver', state: 'elecciones/calculototal' }, */
+                         { name: 'Elecciones', state: 'elecciones/graficaeleccion' },
+                         { name: 'Localidades', state: 'elecciones/localidades' }],
                },
           ];
           return menu;
