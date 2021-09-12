@@ -240,7 +240,7 @@ export const actualizarVoto = async (req: Request, res: Response) => {
 export const usrConVotos = async (req: Request, res: Response) => {
      console.log('entra');
 
-     // console.log(totalVotos);
+     let totalNull = 0;
 
      let user = await usuarios
           .find(
@@ -257,416 +257,575 @@ export const usrConVotos = async (req: Request, res: Response) => {
           .lean();
      if (user !== null) {
           for (let usr of user) {
-               let datoEmp = await planta.findOne({ dni: usr.datosPersonales.dni });
-               if (datoEmp !== null) {
-                    if (usr.role === 'user-ref') {
-                         let votosReF = await votoAdh.find({
-                              'resPlanilla.idReferente': usr._id,
-                         });
+               if (usr.datosPersonales.dni !== undefined) {
+                    let datoEmp = await planta.findOne({ dni: usr.datosPersonales.dni });
+                    if (datoEmp !== null) {
+                         if (usr.role === 'user-ref') {
+                              let votosReF = await votoAdh.find({
+                                   'resPlanilla.idReferente': usr._id,
+                              });
 
-                         if (votosReF.length) {
-                              for (let vRef of votosReF) {
-                                   for (let data of vRef.resPlanilla) {
-                                        // console.log(data);
-                                        let idRef = usr._id.toString();
-                                        if (data.idResPlanilla === '' && data.idReferente === idRef) {
-                                             let total: any = await votoPersona.find({ dni: usr.datosPersonales.dni });
-                                             // console.log(total);
-                                             if (total.length) {
-                                                  vRef.genero === 'F' ? total[0].femenino++ : total[0].masculino++;
-                                                  vRef.afiliado === 'Es afiliado al MPN'
-                                                       ? total[0].afiliado++
-                                                       : console.log('no es Afiliado');
-                                                  total[0].votos++;
-                                                  // console.log('antes-ref', total);
-                                                  await total[0].save();
-                                             } else {
-                                                  if (vRef.afiliado === 'Es afiliado al MPN') {
-                                                       if (vRef.genero === 'F') {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: datoEmp.legajo,
-                                                                 servicio: datoEmp.servicio,
-                                                                 votos: 1,
-                                                                 afiliado: 1,
-                                                                 femenino: 1,
-                                                                 masculino: 0,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       } else {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: datoEmp.legajo,
-                                                                 servicio: datoEmp.servicio,
-                                                                 votos: 1,
-                                                                 afiliado: 1,
-                                                                 femenino: 0,
-                                                                 masculino: 1,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
-
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       }
+                              if (votosReF.length) {
+                                   for (let vRef of votosReF) {
+                                        for (let data of vRef.resPlanilla) {
+                                             // console.log(data);
+                                             let idRef = usr._id.toString();
+                                             if (data.idResPlanilla === '' && data.idReferente === idRef) {
+                                                  let total: any = await votoPersona.find({
+                                                       dni: usr.datosPersonales.dni,
+                                                  });
+                                                  // console.log(total);
+                                                  if (total.length) {
+                                                       vRef.genero === 'F' ? total[0].femenino++ : total[0].masculino++;
+                                                       vRef.afiliado === 'Es afiliado al MPN'
+                                                            ? total[0].afiliado++
+                                                            : console.log('no es Afiliado');
+                                                       total[0].votos++;
+                                                       // console.log('antes-ref', total);
+                                                       await total[0].save();
                                                   } else {
-                                                       if (vRef.genero === 'F') {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: datoEmp.legajo,
-                                                                 servicio: datoEmp.servicio,
-                                                                 votos: 1,
-                                                                 afiliado: 0,
-                                                                 femenino: 1,
-                                                                 masculino: 0,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       } else {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: datoEmp.legajo,
-                                                                 servicio: datoEmp.servicio,
-                                                                 votos: 1,
-                                                                 afiliado: 0,
-                                                                 femenino: 0,
-                                                                 masculino: 1,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
+                                                       if (vRef.afiliado === 'Es afiliado al MPN') {
+                                                            if (vRef.genero === 'F') {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: datoEmp.legajo,
+                                                                      servicio: datoEmp.servicio,
+                                                                      votos: 1,
+                                                                      afiliado: 1,
+                                                                      femenino: 1,
+                                                                      masculino: 0,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            } else {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: datoEmp.legajo,
+                                                                      servicio: datoEmp.servicio,
+                                                                      votos: 1,
+                                                                      afiliado: 1,
+                                                                      femenino: 0,
+                                                                      masculino: 1,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
 
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            }
+                                                       } else {
+                                                            if (vRef.genero === 'F') {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: datoEmp.legajo,
+                                                                      servicio: datoEmp.servicio,
+                                                                      votos: 1,
+                                                                      afiliado: 0,
+                                                                      femenino: 1,
+                                                                      masculino: 0,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            } else {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: datoEmp.legajo,
+                                                                      servicio: datoEmp.servicio,
+                                                                      votos: 1,
+                                                                      afiliado: 0,
+                                                                      femenino: 0,
+                                                                      masculino: 1,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
+
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            }
                                                        }
                                                   }
                                              }
                                         }
                                    }
-                              }
-                         } else {
-                              if (datoEmp !== null) {
-                                   let datos: any = {
-                                        dni: usr.datosPersonales.dni,
-                                        apellido: usr.datosPersonales.nombres,
-                                        nombre: usr.datosPersonales.apellido,
-                                        role: usr.role,
-                                        legajo: datoEmp.legajo,
-                                        servicio: datoEmp.servicio,
-                                        votos: 0,
-                                        afiliado: 0,
-                                        femenino: 0,
-                                        masculino: 0,
-                                        votaron: 0,
-                                        votaronA: 0,
-                                        votaronF: 0,
-                                   };
-
-                                   const nPersona = new votoPersona(datos);
-                                   await nPersona.save();
                               } else {
-                                   let datos: any = {
-                                        dni: usr.datosPersonales.dni,
-                                        apellido: usr.datosPersonales.nombres,
-                                        nombre: usr.datosPersonales.apellido,
-                                        role: usr.role,
-                                        legajo: 'Sin datos',
-                                        servicio: 'Sin datos',
-                                        votos: 0,
-                                        afiliado: 0,
-                                        femenino: 0,
-                                        masculino: 0,
-                                        votaron: 0,
-                                        votaronA: 0,
-                                        votaronF: 0,
-                                   };
+                                   if (datoEmp !== null) {
+                                        let datos: any = {
+                                             dni: usr.datosPersonales.dni,
+                                             apellido: usr.datosPersonales.nombres,
+                                             nombre: usr.datosPersonales.apellido,
+                                             role: usr.role,
+                                             legajo: datoEmp.legajo,
+                                             servicio: datoEmp.servicio,
+                                             votos: 0,
+                                             afiliado: 0,
+                                             femenino: 0,
+                                             masculino: 0,
+                                             votaron: 0,
+                                             votaronA: 0,
+                                             votaronF: 0,
+                                        };
 
-                                   const nPersona = new votoPersona(datos);
-                                   await nPersona.save();
+                                        const nPersona = new votoPersona(datos);
+                                        await nPersona.save();
+                                   } else {
+                                        let datos: any = {
+                                             dni: usr.datosPersonales.dni,
+                                             apellido: usr.datosPersonales.nombres,
+                                             nombre: usr.datosPersonales.apellido,
+                                             role: usr.role,
+                                             legajo: 'Sin datos',
+                                             servicio: 'Sin datos',
+                                             votos: 0,
+                                             afiliado: 0,
+                                             femenino: 0,
+                                             masculino: 0,
+                                             votaron: 0,
+                                             votaronA: 0,
+                                             votaronF: 0,
+                                        };
+
+                                        const nPersona = new votoPersona(datos);
+                                        await nPersona.save();
+                                   }
                               }
                          }
-                    } else if (usr.role === 'user-coord') {
-                         console.log('user-Coord');
+                         if (usr.role === 'user-coord') {
+                              console.log('user-Coord');
 
-                         let votosCoord = await votoAdh.find({ 'resPlanilla.idCoordinador': usr._id });
-                         if (votosCoord.length) {
-                              for (let vCoord of votosCoord) {
-                                   //
-                                   for (let data of vCoord.resPlanilla) {
-                                        if (data.idResPlanilla === '' && data.idReferente === '') {
-                                             let total: any = await votoPersona.find({ dni: usr.datosPersonales.dni });
-                                             //console.log(total);
-                                             if (total.length) {
-                                                  //console.log(total[0].femenino);
-                                                  vCoord.genero === 'F'
-                                                       ? // console.log(vCoord);
-                                                         total[0].femenino++
-                                                       : total[0].masculino++;
+                              let votosCoord = await votoAdh.find({ 'resPlanilla.idCoordinador': usr._id });
+                              if (votosCoord.length) {
+                                   for (let vCoord of votosCoord) {
+                                        //
+                                        for (let data of vCoord.resPlanilla) {
+                                             if (data.idResPlanilla === '' && data.idReferente === '') {
+                                                  let total: any = await votoPersona.find({
+                                                       dni: usr.datosPersonales.dni,
+                                                  });
+                                                  //console.log(total);
+                                                  if (total.length) {
+                                                       //console.log(total[0].femenino);
+                                                       vCoord.genero === 'F'
+                                                            ? // console.log(vCoord);
+                                                              total[0].femenino++
+                                                            : total[0].masculino++;
 
-                                                  vCoord.afiliado === 'Es afiliado al MPN'
-                                                       ? total[0].afiliado++
-                                                       : console.log('no es afiliado');
+                                                       vCoord.afiliado === 'Es afiliado al MPN'
+                                                            ? total[0].afiliado++
+                                                            : console.log('no es afiliado');
 
-                                                  total[0].votos++;
-                                                  await total[0].save();
-                                             } else {
-                                                  if (vCoord.afiliado === 'Es afiliado al MPN') {
-                                                       if (vCoord.genero === 'F') {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: datoEmp.legajo,
-                                                                 servicio: datoEmp.servicio,
-                                                                 votos: 1,
-                                                                 afiliado: 1,
-                                                                 femenino: 1,
-                                                                 masculino: 0,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       } else {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: datoEmp.legajo,
-                                                                 servicio: datoEmp.servicio,
-                                                                 votos: 1,
-                                                                 afiliado: 1,
-                                                                 femenino: 0,
-                                                                 masculino: 1,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
-
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       }
+                                                       total[0].votos++;
+                                                       await total[0].save();
                                                   } else {
-                                                       if (vCoord.genero === 'F') {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: datoEmp.legajo,
-                                                                 servicio: datoEmp.servicio,
-                                                                 votos: 1,
-                                                                 afiliado: 0,
-                                                                 femenino: 1,
-                                                                 masculino: 0,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       } else {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: datoEmp.legajo,
-                                                                 servicio: datoEmp.servicio,
-                                                                 votos: 1,
-                                                                 afiliado: 0,
-                                                                 femenino: 0,
-                                                                 masculino: 1,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
+                                                       if (vCoord.afiliado === 'Es afiliado al MPN') {
+                                                            if (vCoord.genero === 'F') {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: datoEmp.legajo,
+                                                                      servicio: datoEmp.servicio,
+                                                                      votos: 1,
+                                                                      afiliado: 1,
+                                                                      femenino: 1,
+                                                                      masculino: 0,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            } else {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: datoEmp.legajo,
+                                                                      servicio: datoEmp.servicio,
+                                                                      votos: 1,
+                                                                      afiliado: 1,
+                                                                      femenino: 0,
+                                                                      masculino: 1,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
 
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            }
+                                                       } else {
+                                                            if (vCoord.genero === 'F') {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: datoEmp.legajo,
+                                                                      servicio: datoEmp.servicio,
+                                                                      votos: 1,
+                                                                      afiliado: 0,
+                                                                      femenino: 1,
+                                                                      masculino: 0,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            } else {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: datoEmp.legajo,
+                                                                      servicio: datoEmp.servicio,
+                                                                      votos: 1,
+                                                                      afiliado: 0,
+                                                                      femenino: 0,
+                                                                      masculino: 1,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
+
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            }
                                                        }
                                                   }
                                              }
                                         }
                                    }
+                              } else {
+                                   if (datoEmp !== null) {
+                                        let datos: any = {
+                                             dni: usr.datosPersonales.dni,
+                                             apellido: usr.datosPersonales.nombres,
+                                             nombre: usr.datosPersonales.apellido,
+                                             role: usr.role,
+                                             legajo: datoEmp.legajo,
+                                             servicio: datoEmp.servicio,
+                                             votos: 0,
+                                             afiliado: 0,
+                                             femenino: 0,
+                                             masculino: 0,
+                                             votaron: 0,
+                                             votaronA: 0,
+                                             votaronF: 0,
+                                        };
+
+                                        const nPersona = new votoPersona(datos);
+                                        await nPersona.save();
+                                   } else {
+                                        let datos: any = {
+                                             dni: usr.datosPersonales.dni,
+                                             apellido: usr.datosPersonales.nombres,
+                                             nombre: usr.datosPersonales.apellido,
+                                             role: usr.role,
+                                             legajo: 'Sin datos',
+                                             servicio: 'Sin datos',
+                                             votos: 0,
+                                             afiliado: 0,
+                                             femenino: 0,
+                                             masculino: 0,
+                                             votaron: 0,
+                                             votaronA: 0,
+                                             votaronF: 0,
+                                        };
+
+                                        const nPersona = new votoPersona(datos);
+                                        await nPersona.save();
+                                   }
                               }
                          } else {
-                              if (datoEmp !== null) {
-                                   let datos: any = {
-                                        dni: usr.datosPersonales.dni,
-                                        apellido: usr.datosPersonales.nombres,
-                                        nombre: usr.datosPersonales.apellido,
-                                        role: usr.role,
-                                        legajo: datoEmp.legajo,
-                                        servicio: datoEmp.servicio,
-                                        votos: 0,
-                                        afiliado: 0,
-                                        femenino: 0,
-                                        masculino: 0,
-                                        votaron: 0,
-                                        votaronA: 0,
-                                        votaronF: 0,
-                                   };
+                              console.log('user-resp');
+                              let votosResP = await votoAdh.find({ 'resPlanilla.idResPlanilla': usr._id });
+                              if (votosResP.length) {
+                                   for (let vResP of votosResP) {
+                                        for (let data of vResP.resPlanilla) {
+                                             if (
+                                                  data.idCoordinador === usr.idCoordinador &&
+                                                  data.idReferente === usr.idReferente
+                                             ) {
+                                                  let total: any = await votoPersona.find({
+                                                       dni: usr.datosPersonales.dni,
+                                                  });
+                                                  // console.log(total);
+                                                  if (total.length) {
+                                                       vResP.genero === 'F'
+                                                            ? total[0].femenino++
+                                                            : total[0].masculino++;
+                                                       vResP.afiliado === 'Es afiliado al MPN'
+                                                            ? total[0].afiliado++
+                                                            : console.log('no es Afiliado');
+                                                       total[0].votos++;
+                                                       //console.log('antes de guardar resp', total);
+                                                       await total[0].save();
+                                                  } else {
+                                                       if (vResP.afiliado === 'Es afiliado al MPN') {
+                                                            if (vResP.genero === 'F') {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: datoEmp.legajo,
+                                                                      servicio: datoEmp.servicio,
+                                                                      votos: 1,
+                                                                      afiliado: 1,
+                                                                      femenino: 1,
+                                                                      masculino: 0,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            } else {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: datoEmp.legajo,
+                                                                      servicio: datoEmp.servicio,
+                                                                      votos: 1,
+                                                                      afiliado: 1,
+                                                                      femenino: 0,
+                                                                      masculino: 1,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
 
-                                   const nPersona = new votoPersona(datos);
-                                   await nPersona.save();
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            }
+                                                       } else {
+                                                            if (vResP.genero === 'F') {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: datoEmp.legajo,
+                                                                      servicio: datoEmp.servicio,
+                                                                      votos: 1,
+                                                                      afiliado: 0,
+                                                                      femenino: 1,
+                                                                      masculino: 0,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            } else {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: datoEmp.legajo,
+                                                                      servicio: datoEmp.servicio,
+                                                                      votos: 1,
+                                                                      afiliado: 0,
+                                                                      femenino: 0,
+                                                                      masculino: 1,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
+
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            }
+                                                       }
+                                                  }
+                                             }
+                                        }
+                                   }
                               } else {
-                                   let datos: any = {
-                                        dni: usr.datosPersonales.dni,
-                                        apellido: usr.datosPersonales.nombres,
-                                        nombre: usr.datosPersonales.apellido,
-                                        role: usr.role,
-                                        legajo: 'Sin datos',
-                                        servicio: 'Sin datos',
-                                        votos: 0,
-                                        afiliado: 0,
-                                        femenino: 0,
-                                        masculino: 0,
-                                        votaron: 0,
-                                        votaronA: 0,
-                                        votaronF: 0,
-                                   };
+                                   if (datoEmp !== null) {
+                                        let datos: any = {
+                                             dni: usr.datosPersonales.dni,
+                                             apellido: usr.datosPersonales.nombres,
+                                             nombre: usr.datosPersonales.apellido,
+                                             role: usr.role,
+                                             legajo: datoEmp.legajo,
+                                             servicio: datoEmp.servicio,
+                                             votos: 0,
+                                             afiliado: 0,
+                                             femenino: 0,
+                                             masculino: 0,
+                                             votaron: 0,
+                                             votaronA: 0,
+                                             votaronF: 0,
+                                        };
 
-                                   const nPersona = new votoPersona(datos);
-                                   await nPersona.save();
+                                        const nPersona = new votoPersona(datos);
+                                        await nPersona.save();
+                                   } else {
+                                        let datos: any = {
+                                             dni: usr.datosPersonales.dni,
+                                             apellido: usr.datosPersonales.nombres,
+                                             nombre: usr.datosPersonales.apellido,
+                                             role: usr.role,
+                                             legajo: 'Sin datos',
+                                             servicio: 'Sin datos',
+                                             votos: 0,
+                                             afiliado: 0,
+                                             femenino: 0,
+                                             masculino: 0,
+                                             votaron: 0,
+                                             votaronA: 0,
+                                             votaronF: 0,
+                                        };
+
+                                        const nPersona = new votoPersona(datos);
+                                        await nPersona.save();
+                                   }
                               }
                          }
+                         //console.log(votos);
                     } else {
-                         console.log('user-resp');
-                         let votosResP = await votoAdh.find({ 'resPlanilla.idResPlanilla': usr._id });
-                         if (votosResP.length) {
-                              for (let vResP of votosResP) {
-                                   for (let data of vResP.resPlanilla) {
-                                        if (
-                                             data.idCoordinador === usr.idCoordinador &&
-                                             data.idReferente === usr.idReferente
-                                        ) {
-                                             let total: any = await votoPersona.find({ dni: usr.datosPersonales.dni });
-                                             // console.log(total);
-                                             if (total.length) {
-                                                  vResP.genero === 'F' ? total[0].femenino++ : total[0].masculino++;
-                                                  vResP.afiliado === 'Es afiliado al MPN'
-                                                       ? total[0].afiliado++
-                                                       : console.log('no es Afiliado');
-                                                  total[0].votos++;
-                                                  //console.log('antes de guardar resp', total);
-                                                  await total[0].save();
-                                             } else {
-                                                  if (vResP.afiliado === 'Es afiliado al MPN') {
-                                                       if (vResP.genero === 'F') {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: datoEmp.legajo,
-                                                                 servicio: datoEmp.servicio,
-                                                                 votos: 1,
-                                                                 afiliado: 1,
-                                                                 femenino: 1,
-                                                                 masculino: 0,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       } else {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: datoEmp.legajo,
-                                                                 servicio: datoEmp.servicio,
-                                                                 votos: 1,
-                                                                 afiliado: 1,
-                                                                 femenino: 0,
-                                                                 masculino: 1,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
+                         if (usr.role === 'user-ref') {
+                              console.log('user-ref');
+                              let votosReF = await votoAdh.find({
+                                   'resPlanilla.idReferente': usr._id,
+                              });
 
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       }
+                              if (votosReF.length) {
+                                   for (let vRef of votosReF) {
+                                        for (let data of vRef.resPlanilla) {
+                                             if (data.idResPlanilla === '') {
+                                                  let total: any = await votoPersona.find({
+                                                       dni: usr.datosPersonales.dni,
+                                                  });
+                                                  // console.log(total);
+                                                  if (total.length) {
+                                                       vRef.genero === 'F' ? total[0].femenino++ : total[0].masculino++;
+                                                       vRef.afiliado === 'Es afiliado al MPN'
+                                                            ? total[0].afiliado++
+                                                            : console.log('no es Afiliado');
+                                                       total[0].votos++;
+                                                       // console.log('antes-ref', total);
+                                                       await total[0].save();
                                                   } else {
-                                                       if (vResP.genero === 'F') {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: datoEmp.legajo,
-                                                                 servicio: datoEmp.servicio,
-                                                                 votos: 1,
-                                                                 afiliado: 0,
-                                                                 femenino: 1,
-                                                                 masculino: 0,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       } else {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: datoEmp.legajo,
-                                                                 servicio: datoEmp.servicio,
-                                                                 votos: 1,
-                                                                 afiliado: 0,
-                                                                 femenino: 0,
-                                                                 masculino: 1,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
+                                                       if (vRef.afiliado === 'Es afiliado al MPN') {
+                                                            if (vRef.genero === 'F') {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: 'Sin datos',
+                                                                      servicio: 'Sin datos',
+                                                                      votos: 1,
+                                                                      afiliado: 1,
+                                                                      femenino: 1,
+                                                                      masculino: 0,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            } else {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: 'Sin datos',
+                                                                      servicio: 'Sin datos',
+                                                                      votos: 1,
+                                                                      afiliado: 1,
+                                                                      femenino: 0,
+                                                                      masculino: 1,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
 
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            }
+                                                       } else {
+                                                            if (vRef.genero === 'F') {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: 'Sin datos',
+                                                                      servicio: 'Sin datos',
+                                                                      votos: 1,
+                                                                      afiliado: 0,
+                                                                      femenino: 1,
+                                                                      masculino: 0,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            } else {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: 'Sin datos',
+                                                                      servicio: 'Sin datos',
+                                                                      votos: 1,
+                                                                      afiliado: 0,
+                                                                      femenino: 0,
+                                                                      masculino: 1,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
+
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            }
                                                        }
                                                   }
                                              }
                                         }
                                    }
-                              }
-                         } else {
-                              if (datoEmp !== null) {
+                              } else {
                                    let datos: any = {
                                         dni: usr.datosPersonales.dni,
                                         apellido: usr.datosPersonales.nombres,
                                         nombre: usr.datosPersonales.apellido,
                                         role: usr.role,
-                                        legajo: datoEmp.legajo,
-                                        servicio: datoEmp.servicio,
+                                        legajo: 'Sin datos',
+                                        servicio: 'Sin datos',
                                         votos: 0,
                                         afiliado: 0,
                                         femenino: 0,
@@ -678,6 +837,245 @@ export const usrConVotos = async (req: Request, res: Response) => {
 
                                    const nPersona = new votoPersona(datos);
                                    await nPersona.save();
+                              }
+                         }
+                         if (usr.role === 'user-coord') {
+                              console.log('user-Coord');
+                              let votosCoord = await votoAdh.find({ 'resPlanilla.idCoordinador': usr._id });
+                              if (votosCoord.length) {
+                                   for (let vCoord of votosCoord) {
+                                        //
+                                        for (let data of vCoord.resPlanilla) {
+                                             if (data.idResPlanilla === '' && data.idReferente === '') {
+                                                  let total: any = await votoPersona.find({
+                                                       dni: usr.datosPersonales.dni,
+                                                  });
+                                                  //console.log(total);
+                                                  if (total.length) {
+                                                       //console.log(total[0].femenino);
+                                                       vCoord.genero === 'F'
+                                                            ? // console.log(vCoord);
+                                                              total[0].femenino++
+                                                            : total[0].masculino++;
+
+                                                       vCoord.afiliado === 'Es afiliado al MPN'
+                                                            ? total[0].afiliado++
+                                                            : console.log('no es afiliado');
+
+                                                       total[0].votos++;
+                                                       await total[0].save();
+                                                  } else {
+                                                       if (vCoord.afiliado === 'Es afiliado al MPN') {
+                                                            if (vCoord.genero === 'F') {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: 'Sin datos',
+                                                                      servicio: 'Sin datos',
+                                                                      votos: 1,
+                                                                      afiliado: 1,
+                                                                      femenino: 1,
+                                                                      masculino: 0,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            } else {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: 'Sin datos',
+                                                                      servicio: 'Sin datos',
+                                                                      votos: 1,
+                                                                      afiliado: 1,
+                                                                      femenino: 0,
+                                                                      masculino: 1,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
+
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            }
+                                                       } else {
+                                                            if (vCoord.genero === 'F') {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: 'Sin datos',
+                                                                      servicio: 'Sin datos',
+                                                                      votos: 1,
+                                                                      afiliado: 0,
+                                                                      femenino: 1,
+                                                                      masculino: 0,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            } else {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: 'Sin datos',
+                                                                      servicio: 'Sin datos',
+                                                                      votos: 1,
+                                                                      afiliado: 0,
+                                                                      femenino: 0,
+                                                                      masculino: 1,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
+
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            }
+                                                       }
+                                                  }
+                                             }
+                                        }
+                                   }
+                              } else {
+                                   let datos: any = {
+                                        dni: usr.datosPersonales.dni,
+                                        apellido: usr.datosPersonales.nombres,
+                                        nombre: usr.datosPersonales.apellido,
+                                        role: usr.role,
+                                        legajo: 'Sin datos',
+                                        servicio: 'Sin datos',
+                                        votos: 0,
+                                        afiliado: 0,
+                                        femenino: 0,
+                                        masculino: 0,
+                                        votaron: 0,
+                                        votaronA: 0,
+                                        votaronF: 0,
+                                   };
+
+                                   const nPersona = new votoPersona(datos);
+                                   await nPersona.save();
+                              }
+                         } else {
+                              console.log('user-resp');
+                              let votosResP = await votoAdh.find({ 'resPlanilla.idResPlanilla': usr._id });
+                              if (votosResP.length) {
+                                   for (let vResP of votosResP) {
+                                        for (let data of vResP.resPlanilla) {
+                                             if (
+                                                  data.idCoordinador === usr.idCoordinador &&
+                                                  data.idReferente === usr.idReferente
+                                             ) {
+                                                  let total: any = await votoPersona.find({
+                                                       dni: usr.datosPersonales.dni,
+                                                  });
+                                                  // console.log(total);
+                                                  if (total.length) {
+                                                       vResP.genero === 'F'
+                                                            ? total[0].femenino++
+                                                            : total[0].masculino++;
+                                                       vResP.afiliado === 'Es afiliado al MPN'
+                                                            ? total[0].afiliado++
+                                                            : console.log('no es Afiliado');
+                                                       total[0].votos++;
+                                                       //console.log('antes de guardar resp', total);
+                                                       await total[0].save();
+                                                  } else {
+                                                       if (vResP.afiliado === 'Es afiliado al MPN') {
+                                                            if (vResP.genero === 'F') {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: 'Sin datos',
+                                                                      servicio: 'Sin datos',
+                                                                      votos: 1,
+                                                                      afiliado: 1,
+                                                                      femenino: 1,
+                                                                      masculino: 0,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            } else {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: 'Sin datos',
+                                                                      servicio: 'Sin datos',
+                                                                      votos: 1,
+                                                                      afiliado: 1,
+                                                                      femenino: 0,
+                                                                      masculino: 1,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
+
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            }
+                                                       } else {
+                                                            if (vResP.genero === 'F') {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: 'Sin datos',
+                                                                      servicio: 'Sin datos',
+                                                                      votos: 1,
+                                                                      afiliado: 0,
+                                                                      femenino: 1,
+                                                                      masculino: 0,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            } else {
+                                                                 let datos: any = {
+                                                                      dni: usr.datosPersonales.dni,
+                                                                      apellido: usr.datosPersonales.nombres,
+                                                                      nombre: usr.datosPersonales.apellido,
+                                                                      role: usr.role,
+                                                                      legajo: 'Sin datos',
+                                                                      servicio: 'Sin datos',
+                                                                      votos: 1,
+                                                                      afiliado: 0,
+                                                                      femenino: 0,
+                                                                      masculino: 1,
+                                                                      votaron: 0,
+                                                                      votaronA: 0,
+                                                                      votaronF: 0,
+                                                                 };
+
+                                                                 const nPersona = new votoPersona(datos);
+                                                                 await nPersona.save();
+                                                            }
+                                                       }
+                                                  }
+                                             }
+                                        }
+                                   }
                               } else {
                                    let datos: any = {
                                         dni: usr.datosPersonales.dni,
@@ -700,384 +1098,9 @@ export const usrConVotos = async (req: Request, res: Response) => {
                               }
                          }
                     }
-                    //console.log(votos);
                } else {
-                    if (usr.role === 'user-ref') {
-                         console.log('user-ref');
-                         let votosReF = await votoAdh.find({
-                              'resPlanilla.idReferente': usr._id,
-                         });
-
-                         if (votosReF.length) {
-                              for (let vRef of votosReF) {
-                                   for (let data of vRef.resPlanilla) {
-                                        if (data.idResPlanilla === '') {
-                                             let total: any = await votoPersona.find({ dni: usr.datosPersonales.dni });
-                                             // console.log(total);
-                                             if (total.length) {
-                                                  vRef.genero === 'F' ? total[0].femenino++ : total[0].masculino++;
-                                                  vRef.afiliado === 'Es afiliado al MPN'
-                                                       ? total[0].afiliado++
-                                                       : console.log('no es Afiliado');
-                                                  total[0].votos++;
-                                                  // console.log('antes-ref', total);
-                                                  await total[0].save();
-                                             } else {
-                                                  if (vRef.afiliado === 'Es afiliado al MPN') {
-                                                       if (vRef.genero === 'F') {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: 'Sin datos',
-                                                                 servicio: 'Sin datos',
-                                                                 votos: 1,
-                                                                 afiliado: 1,
-                                                                 femenino: 1,
-                                                                 masculino: 0,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       } else {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: 'Sin datos',
-                                                                 servicio: 'Sin datos',
-                                                                 votos: 1,
-                                                                 afiliado: 1,
-                                                                 femenino: 0,
-                                                                 masculino: 1,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
-
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       }
-                                                  } else {
-                                                       if (vRef.genero === 'F') {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: 'Sin datos',
-                                                                 servicio: 'Sin datos',
-                                                                 votos: 1,
-                                                                 afiliado: 0,
-                                                                 femenino: 1,
-                                                                 masculino: 0,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       } else {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: 'Sin datos',
-                                                                 servicio: 'Sin datos',
-                                                                 votos: 1,
-                                                                 afiliado: 0,
-                                                                 femenino: 0,
-                                                                 masculino: 1,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
-
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       }
-                                                  }
-                                             }
-                                        }
-                                   }
-                              }
-                         } else {
-                              let datos: any = {
-                                   dni: usr.datosPersonales.dni,
-                                   apellido: usr.datosPersonales.nombres,
-                                   nombre: usr.datosPersonales.apellido,
-                                   role: usr.role,
-                                   legajo: 'Sin datos',
-                                   servicio: 'Sin datos',
-                                   votos: 0,
-                                   afiliado: 0,
-                                   femenino: 0,
-                                   masculino: 0,
-                                   votaron: 0,
-                                   votaronA: 0,
-                                   votaronF: 0,
-                              };
-
-                              const nPersona = new votoPersona(datos);
-                              await nPersona.save();
-                         }
-                    } else if (usr.role === 'user-coord') {
-                         console.log('user-Coord');
-                         let votosCoord = await votoAdh.find({ 'resPlanilla.idCoordinador': usr._id });
-                         if (votosCoord.length) {
-                              for (let vCoord of votosCoord) {
-                                   //
-                                   for (let data of vCoord.resPlanilla) {
-                                        if (data.idResPlanilla === '' && data.idReferente === '') {
-                                             let total: any = await votoPersona.find({ dni: usr.datosPersonales.dni });
-                                             //console.log(total);
-                                             if (total.length) {
-                                                  //console.log(total[0].femenino);
-                                                  vCoord.genero === 'F'
-                                                       ? // console.log(vCoord);
-                                                         total[0].femenino++
-                                                       : total[0].masculino++;
-
-                                                  vCoord.afiliado === 'Es afiliado al MPN'
-                                                       ? total[0].afiliado++
-                                                       : console.log('no es afiliado');
-
-                                                  total[0].votos++;
-                                                  await total[0].save();
-                                             } else {
-                                                  if (vCoord.afiliado === 'Es afiliado al MPN') {
-                                                       if (vCoord.genero === 'F') {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: 'Sin datos',
-                                                                 servicio: 'Sin datos',
-                                                                 votos: 1,
-                                                                 afiliado: 1,
-                                                                 femenino: 1,
-                                                                 masculino: 0,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       } else {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: 'Sin datos',
-                                                                 servicio: 'Sin datos',
-                                                                 votos: 1,
-                                                                 afiliado: 1,
-                                                                 femenino: 0,
-                                                                 masculino: 1,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
-
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       }
-                                                  } else {
-                                                       if (vCoord.genero === 'F') {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: 'Sin datos',
-                                                                 servicio: 'Sin datos',
-                                                                 votos: 1,
-                                                                 afiliado: 0,
-                                                                 femenino: 1,
-                                                                 masculino: 0,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       } else {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: 'Sin datos',
-                                                                 servicio: 'Sin datos',
-                                                                 votos: 1,
-                                                                 afiliado: 0,
-                                                                 femenino: 0,
-                                                                 masculino: 1,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
-
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       }
-                                                  }
-                                             }
-                                        }
-                                   }
-                              }
-                         } else {
-                              let datos: any = {
-                                   dni: usr.datosPersonales.dni,
-                                   apellido: usr.datosPersonales.nombres,
-                                   nombre: usr.datosPersonales.apellido,
-                                   role: usr.role,
-                                   legajo: 'Sin datos',
-                                   servicio: 'Sin datos',
-                                   votos: 0,
-                                   afiliado: 0,
-                                   femenino: 0,
-                                   masculino: 0,
-                                   votaron: 0,
-                                   votaronA: 0,
-                                   votaronF: 0,
-                              };
-
-                              const nPersona = new votoPersona(datos);
-                              await nPersona.save();
-                         }
-                    } else {
-                         console.log('user-resp');
-                         let votosResP = await votoAdh.find({ 'resPlanilla.idResPlanilla': usr._id });
-                         if (votosResP.length) {
-                              for (let vResP of votosResP) {
-                                   for (let data of vResP.resPlanilla) {
-                                        if (
-                                             data.idCoordinador === usr.idCoordinador &&
-                                             data.idReferente === usr.idReferente
-                                        ) {
-                                             let total: any = await votoPersona.find({ dni: usr.datosPersonales.dni });
-                                             // console.log(total);
-                                             if (total.length) {
-                                                  vResP.genero === 'F' ? total[0].femenino++ : total[0].masculino++;
-                                                  vResP.afiliado === 'Es afiliado al MPN'
-                                                       ? total[0].afiliado++
-                                                       : console.log('no es Afiliado');
-                                                  total[0].votos++;
-                                                  //console.log('antes de guardar resp', total);
-                                                  await total[0].save();
-                                             } else {
-                                                  if (vResP.afiliado === 'Es afiliado al MPN') {
-                                                       if (vResP.genero === 'F') {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: 'Sin datos',
-                                                                 servicio: 'Sin datos',
-                                                                 votos: 1,
-                                                                 afiliado: 1,
-                                                                 femenino: 1,
-                                                                 masculino: 0,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       } else {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: 'Sin datos',
-                                                                 servicio: 'Sin datos',
-                                                                 votos: 1,
-                                                                 afiliado: 1,
-                                                                 femenino: 0,
-                                                                 masculino: 1,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
-
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       }
-                                                  } else {
-                                                       if (vResP.genero === 'F') {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: 'Sin datos',
-                                                                 servicio: 'Sin datos',
-                                                                 votos: 1,
-                                                                 afiliado: 0,
-                                                                 femenino: 1,
-                                                                 masculino: 0,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       } else {
-                                                            let datos: any = {
-                                                                 dni: usr.datosPersonales.dni,
-                                                                 apellido: usr.datosPersonales.nombres,
-                                                                 nombre: usr.datosPersonales.apellido,
-                                                                 role: usr.role,
-                                                                 legajo: 'Sin datos',
-                                                                 servicio: 'Sin datos',
-                                                                 votos: 1,
-                                                                 afiliado: 0,
-                                                                 femenino: 0,
-                                                                 masculino: 1,
-                                                                 votaron: 0,
-                                                                 votaronA: 0,
-                                                                 votaronF: 0,
-                                                            };
-
-                                                            const nPersona = new votoPersona(datos);
-                                                            await nPersona.save();
-                                                       }
-                                                  }
-                                             }
-                                        }
-                                   }
-                              }
-                         } else {
-                              let datos: any = {
-                                   dni: usr.datosPersonales.dni,
-                                   apellido: usr.datosPersonales.nombres,
-                                   nombre: usr.datosPersonales.apellido,
-                                   role: usr.role,
-                                   legajo: 'Sin datos',
-                                   servicio: 'Sin datos',
-                                   votos: 0,
-                                   afiliado: 0,
-                                   femenino: 0,
-                                   masculino: 0,
-                                   votaron: 0,
-                                   votaronA: 0,
-                                   votaronF: 0,
-                              };
-
-                              const nPersona = new votoPersona(datos);
-                              await nPersona.save();
-                         }
-                    }
+                    console.log(totalNull++);
+                    console.log(usr.datosPersonales.dni);
                }
           }
      }
