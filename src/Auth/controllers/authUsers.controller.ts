@@ -329,3 +329,27 @@ const calcTotales = async (data) => {
 
      return totales;
 };
+
+export const getAllUsr = async (req: Request, res: Response) => {
+     try {
+          let usr = await usuarios.find(
+               {},
+               {
+                    'datosPersonales.apellido': 1,
+                    'datosPersonales.nombres': 1,
+                    'datosPersonales.dni': 1,
+                    'datosPersonales.email': 1,
+                    'datosPersonales.telefono': 1,
+               }
+          );
+          res.status(200).json({
+               ok: true,
+               usr,
+          });
+     } catch (error) {
+          res.status(200).json({
+               ok: false,
+               error,
+          });
+     }
+};
