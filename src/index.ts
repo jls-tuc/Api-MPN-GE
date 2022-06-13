@@ -14,12 +14,14 @@ import serverRoute from './modulos/routes/server';
 import authUserRoute from './Auth/routes/authUsers.routes';
 import personaRoute from './modulos/routes/personas/persona';
 import provLocRoute from './modulos/routes/comunes/provLoc';
+import locaNqnRoute from './modulos/routes/comunes/locaNqn';
 //modulo eleccion
 import padronNqnRoute from './modulos/routes/elecciones/padronNqn.route';
 import afiliadoNqnRoute from './modulos/routes/elecciones/afiliado.route';
 import votoAdhRoute from './modulos/routes/elecciones/votoAdh.route';
 import scriptRoute from './util/ScripTs/Scripts.route';
 import graficaRoute from './modulos/routes/elecciones/grafica.route';
+
 //appMovil
 import appMovil from './modulos/routes/elecciones/appMovil.route';
 import geoRoute from './modulos/routes/elecciones/geo/votosXEsc.route';
@@ -27,6 +29,8 @@ import geoRoute from './modulos/routes/elecciones/geo/votosXEsc.route';
 //Votos12
 import votos12 from './modulos/routes/elecciones/voto-12/json-app.route';
 import orden from './modulos/routes/elecciones/voto-12/infoAppMovil.route';
+//afiliadiones
+import gruposRoute from './modulos/routes/afiliaciones/afiliaciones.route';
 
 class ServerSPS {
      private app: Application;
@@ -35,15 +39,14 @@ class ServerSPS {
 
      constructor() {
           this.app = express();
-          this.port = process.env.PORT || '8001';
+          this.port = process.env.PORTDEV || '8001';
           //incio los Middlewares
           this.middlewares();
           //cargar rutas
           this.routes();
      }
      async listen() {
-
-          await dbArsat.local(); // Base de datos!!!
+          await dbArsat.dbArsat(); // Base de datos!!!
 
           //Servidor Express
           /*  https
@@ -98,12 +101,15 @@ class ServerSPS {
           this.app.use(this.apiPath, authUserRoute);
           this.app.use(this.apiPath, personaRoute);
           this.app.use(this.apiPath, provLocRoute);
+          this.app.use(this.apiPath, locaNqnRoute);
           //modulo Elecciones
           this.app.use(this.apiPath, padronNqnRoute);
           this.app.use(this.apiPath, afiliadoNqnRoute);
           this.app.use(this.apiPath, votoAdhRoute);
           this.app.use(this.apiPath, geoRoute);
           this.app.use(this.apiPath, graficaRoute);
+          //modulos Afiliaciones
+          this.app.use(this.apiPath, gruposRoute);
           /// APP Movil
           this.app.use(this.apiPath, appMovil);
           ///votos12
