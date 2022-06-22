@@ -140,10 +140,17 @@ export const getMenu = (role) => {
                          ],
                     },
                     {
+                         name: 'Planillas',
+                         type: 'link',
+                         tooltip: 'Planillas cargadas en los Lotes',
+                         icon: 'list_alt',
+                         state: 'afiliacion/planillas',
+                    },
+                    {
                          name: 'Padrones',
                          type: 'link',
-                         tooltip: 'Buscar',
-                         icon: 'list_alt',
+                         tooltip: 'Buscar por dni en los padrones',
+                         icon: 'person_search',
                          state: 'elecciones/padrones',
                     },
                ];
@@ -152,21 +159,29 @@ export const getMenu = (role) => {
           case 'user-Adminafilia': {
                let menu = [
                     {
-                         name: 'Lotes afiliacion',
+                         name: 'Admin. de Lotes',
                          type: 'dropDown',
                          tooltip: 'Dialogs',
                          icon: 'filter_none',
                          sub: [
-                              { name: 'Agregar Lote', state: 'afiliacion/lote' },
+                              { name: 'ABM de Lotes', state: 'afiliacion/lote' },
                               { name: 'Ver Lote/Afiliar', state: 'afiliacion/lotes' },
                               /*  { name: 'Estadisticas', state: 'elecciones/calculototalresp' }, */
                          ],
                     },
+
+                    {
+                         name: 'Planillas',
+                         type: 'link',
+                         tooltip: 'Planillas cargadas en los Lotes',
+                         icon: 'list_alt',
+                         state: 'afiliacion/planillas',
+                    },
                     {
                          name: 'Padrones',
                          type: 'link',
-                         tooltip: 'Buscar',
-                         icon: 'list_alt',
+                         tooltip: 'Buscar por dni en los padrones',
+                         icon: 'person_search',
                          state: 'elecciones/padrones',
                     },
                ];
