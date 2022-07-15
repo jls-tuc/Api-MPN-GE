@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { validateLogin } from '../../middlewares/passport-jwt';
 //import /* actualizar, */ // actualizarVoto,//  geoVoto,// nuevoVoto,//usrConVotos,//usuariosAppM,//  votosNQN,'./actualizarVotos';
 import { migrarNqn, sinLoc, geoVoto, usrConVotos } from './actualizarVotos';
+import { dataAfiliado } from './afiliadosMpn';
 import { crearJsonApp, crearJsonUsr } from './app';
 import { crearCapa } from './padronNuevo';
 
@@ -17,5 +18,6 @@ router.post('/script/geoEsc', geoVoto);
 // router.post('/script/usr', usuariosAppM);
 router.post('/script/nvoto', migrarNqn);
 router.post('/script/sinLoc', sinLoc);
+router.post('/script/afiliado', dataAfiliado);
 
 export default router;

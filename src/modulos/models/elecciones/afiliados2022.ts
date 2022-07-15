@@ -7,7 +7,7 @@ export interface Iafiliado extends Document {
      circuito: string;
      cod_circuito: string;
      nro_lote: string;
-     dni?: String;
+     documento: string;
      apellido: string;
      nombre: string;
      genero: string;
@@ -27,7 +27,7 @@ export interface Iafiliado extends Document {
      orden: string;
 }
 
-const afiliadoSchema = new Schema(
+const afiliadoSchema = new Schema<Iafiliado>(
      {
           seccion: { type: String, lowercase: true },
           cod_seccion: { type: String, lowercase: true },
@@ -38,7 +38,7 @@ const afiliadoSchema = new Schema(
           nombre: { type: String, lowercase: true },
           genero: { type: String, lowercase: true },
           tipo_documento: { type: String, lowercase: true },
-          dni: { type: String, lowercase: true },
+          documento: { type: String, lowercase: true },
           fecha_nacimiento: { type: String, lowercase: true },
           clase: { type: String },
           estado_actual_elector: { type: String, lowercase: true },
@@ -58,4 +58,4 @@ const afiliadoSchema = new Schema(
 
 afiliadoSchema.plugin(uniqueValidator);
 
-export const afiliado = model<Iafiliado>('afiliados', afiliadoSchema, 'afiliados');
+export const afiliado2022 = model<Iafiliado>('afiliados2022', afiliadoSchema, 'afiliados2022');
