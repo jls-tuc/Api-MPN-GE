@@ -31,6 +31,7 @@ import votos12 from './modulos/routes/elecciones/voto-12/json-app.route';
 import orden from './modulos/routes/elecciones/voto-12/infoAppMovil.route';
 //afiliadiones
 import gruposRoute from './modulos/routes/afiliaciones/afiliaciones.route';
+import padronRoute from './modulos/routes/afiliaciones/padronmpn.route';
 
 class ServerSPS {
      private app: Application;
@@ -46,7 +47,7 @@ class ServerSPS {
           this.routes();
      }
      async listen() {
-          await dbArsat.dbArsat(); // Base de datos!!!
+          await dbArsat.local(); // Base de datos!!!
 
           //Servidor Express
           /*  https
@@ -105,6 +106,7 @@ class ServerSPS {
           //modulo Elecciones
           this.app.use(this.apiPath, padronNqnRoute);
           this.app.use(this.apiPath, afiliadoNqnRoute);
+          this.app.use(this.apiPath, padronRoute);
           this.app.use(this.apiPath, votoAdhRoute);
           this.app.use(this.apiPath, geoRoute);
           this.app.use(this.apiPath, graficaRoute);

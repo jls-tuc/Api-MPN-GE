@@ -184,6 +184,13 @@ export const getMenu = (role) => {
                          icon: 'person_search',
                          state: 'elecciones/padrones',
                     },
+                    {
+                         name: 'Listados Padron Afiliados',
+                         type: 'link',
+                         tooltip: 'Listados de Empadronados',
+                         icon: 'list_alt',
+                         state: 'afiliacion/listados',
+                    },
                ];
                return menu;
           }
