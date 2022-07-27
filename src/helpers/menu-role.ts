@@ -169,19 +169,23 @@ export const getMenu = (role) => {
                               /*  { name: 'Estadisticas', state: 'elecciones/calculototalresp' }, */
                          ],
                     },
+                    {
+                         name: 'Herramientas',
+                         type: 'dropDown',
+                         tooltip: 'Info Planillas y Junta',
+                         icon: 'list_alt',
+                         sub: [
+                              { name: 'Info Lotes', state: 'afiliacion/planillas' },
+                              { name: 'Info Junta', state: 'afiliacion/junta' },
+                              /*  { name: 'Estadisticas', state: 'elecciones/calculototalresp' }, */
+                         ],
+                    },
 
                     {
-                         name: 'Planillas',
+                         name: 'Donde Vota?',
                          type: 'link',
-                         tooltip: 'Planillas cargadas en los Lotes',
+                         tooltip: 'Buscar',
                          icon: 'list_alt',
-                         state: 'afiliacion/planillas',
-                    },
-                    {
-                         name: 'Padrones',
-                         type: 'link',
-                         tooltip: 'Buscar por dni en los padrones',
-                         icon: 'person_search',
                          state: 'elecciones/padrones',
                     },
                     {
@@ -197,7 +201,7 @@ export const getMenu = (role) => {
           case 'app-movil': {
                const menu = [
                     {
-                         name: 'Cargar Votos',
+                         name: 'Cargar Voto',
                          type: 'link',
                          tooltip: 'Charts',
                          icon: 'show_chart',

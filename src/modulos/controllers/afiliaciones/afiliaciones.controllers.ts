@@ -158,7 +158,7 @@ export const getDataLotes = async (req: Request, res: Response) => {
      let totalLotes = await loteAfiliacion.countDocuments();
 
      res.status(200).json({
-          proxAfiliados: proxAfiliados[0].proxAfilia,
+          // proxAfiliados: proxAfiliados[0].proxAfilia,
           ltePresentados: lotesPresentados.length ? lotesPresentados[0].totalPresnt : 0,
           lteCerrados: lotesCerrados.length ? lotesCerrados[0].totalCerrados : 0,
           totalAfiliados,
