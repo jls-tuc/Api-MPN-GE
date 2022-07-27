@@ -8,13 +8,31 @@ import { afiliado } from '../../models/elecciones/afiliadosMpn';
 import { Ipadron, padron } from '../../models/elecciones/padronNeuquen';
 
 export const getAllGrupos = async (req: Request, res: Response) => {
-     await loteAfiliacion.find({}, (err, data) => {
-          if (err) {
-               res.status(200).json({ ok: false, err });
-          } else {
-               res.status(200).json({ ok: true, data });
-          }
-     });
+     let page = parseInt(req.query.page as string) || 1;
+     let limit = parseInt(req.query.limit as string) || 10;
+     let skip = (page - 1) * 10;
+
+     await loteAfiliacion
+          .find()
+          .skip(skip)
+          .limit(limit)
+
+          .exec((err, data: any) => {
+               if (err) {
+                    res.status(200).json({ ok: false, err });
+               } else {
+                    data.sort(function (a, b) {
+                         if (a.nro > b.nro) {
+                              return 1;
+                         }
+                         if (a.nro < b.nro) {
+                              return -1;
+                         }
+                         return 0;
+                    });
+                    res.status(200).json({ ok: true, data, skip, page });
+               }
+          });
 };
 
 export const saveGrupo = async (req: Request, res: Response) => {
