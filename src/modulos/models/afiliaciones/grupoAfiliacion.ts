@@ -4,8 +4,7 @@ export interface ILoteAfiliacion extends mongoose.Document {
      _id?: string;
      nro: string;
      usuarioResponsable: {
-          apellido: string;
-          nombres: string;
+          nombreCompleto: string;
           dni: string;
           telefono: string;
           email: string;
@@ -71,12 +70,14 @@ export interface ILoteAfiliacion extends mongoose.Document {
      };
 }
 
+
+
 const _SchemaGrupo = new mongoose.Schema<ILoteAfiliacion>(
      {
           nro: { type: String, unique: true, es_indexed: true },
           usuarioResponsable: {
-               apellido: { type: String },
-               nombres: { type: String },
+
+               nombreCompleto: { type: String },
                dni: { type: String },
                telefono: { type: String },
                email: { type: String },

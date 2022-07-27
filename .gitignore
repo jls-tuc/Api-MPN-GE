@@ -46,6 +46,7 @@ dist/
 
 # Dependency directories
 node_modules/
+output/
 jspm_packages/
 .history/
 # Typescript v1 declaration files
@@ -77,3 +78,4 @@ typings/*
 *.txt
 *.jpg
 .xlsx
+.DS_Store

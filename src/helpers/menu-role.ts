@@ -188,6 +188,13 @@ export const getMenu = (role) => {
                          icon: 'list_alt',
                          state: 'elecciones/padrones',
                     },
+                    {
+                         name: 'Listados Padron Afiliados',
+                         type: 'link',
+                         tooltip: 'Listados de Empadronados',
+                         icon: 'list_alt',
+                         state: 'afiliacion/listados',
+                    },
                ];
                return menu;
           }

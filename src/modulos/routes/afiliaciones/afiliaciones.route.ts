@@ -2,9 +2,12 @@ import { Router } from 'express';
 import { validateLogin } from '../../../middlewares/passport-jwt';
 import {
      addAfiliadoGrupo,
+     exportarPlanillasEcxel,
      getAllGrupos,
      getDataLotes,
      getPlanillasLotes,
+     migrarFichas,
+     migrarLotes,
      presentarLteAndCne,
      saveGrupo,
      searchAfiliadoGrupo,
@@ -28,5 +31,9 @@ router.get('/afiliaciones/indica', validateLogin, getDataLotes);
 //planillas
 
 router.post('/afiliaciones/planillas', validateLogin, getPlanillasLotes);
+router.post('/afiliaciones/exportar_excel', exportarPlanillasEcxel);
+// migrar
+router.get('/afiliaciones/migrar_lotes', migrarLotes);
+router.get('/afiliaciones/migrar_fichas', migrarFichas);
 
 export default router;
