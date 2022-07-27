@@ -78,3 +78,4 @@ typings/*
 *.txt
 *.jpg
 .xlsx
+.DS_Store
