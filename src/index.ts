@@ -32,6 +32,8 @@ import orden from './modulos/routes/elecciones/voto-12/infoAppMovil.route';
 //afiliadiones
 import gruposRoute from './modulos/routes/afiliaciones/afiliaciones.route';
 import padronRoute from './modulos/routes/afiliaciones/padronmpn.route';
+import helmet from 'helmet';
+var compression = require('compression');
 
 class ServerSPS {
      private app: Application;
@@ -58,6 +60,7 @@ class ServerSPS {
             },
             this.app
          ) */
+
           this.app.listen(this.port, () => {
                console.info(`Servidor funcionando en: \x1b[32m${this.port}\x1b[0m`);
           });
@@ -76,6 +79,8 @@ class ServerSPS {
           //express
           this.app.use(express.urlencoded({ extended: true }));
           this.app.use(express.json({ limit: '100mb' }));
+          this.app.use(compression());
+          this.app.use(helmet());
 
           this.app.all('*', (req, res, next) => {
                //res.header('Access-Control-Allow-Origin', 'http://localhost:4200');

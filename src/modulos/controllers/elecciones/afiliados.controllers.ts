@@ -36,23 +36,29 @@ export const getSecCir = async (req: Request, res: Response) => {
 
 export const afiliadoFilto = async (req: Request, res: Response) => {
      let query: any = {};
-
+     console.log(req.body.data);
      if (req.body.data.seccion) {
           query.seccion = req.body.data.seccion;
      }
      if (req.body.data.circuito) {
           query.circuito = req.body.data.circuito;
      }
-     if (req.body.data.genero) {
+     if (
+          req.body.data.genero !== '' ||
+          req.body.data.genero === 'M' ||
+          req.body.data.genero === 'F' ||
+          req.body.data.genero === 'X'
+     ) {
           query.genero = req.body.data.genero;
      }
-     if (req.body.data.estado) {
+     if (req.body.data.estado !== '') {
           query.estado_afiliacion = req.body.data.estado;
      }
-     if (req.body.data.profesion) {
+     if (req.body.data.profesion !== '') {
           query.profesion = req.body.data.profesion;
      }
 
+     console.log(query);
      try {
           afiliado.find(query, (err, data) => res.status(200).json({ ok: true, data }));
      } catch (error) {

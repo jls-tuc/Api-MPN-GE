@@ -159,41 +159,37 @@ export const getMenu = (role) => {
           case 'user-Adminafilia': {
                let menu = [
                     {
-                         name: 'Admin. de Lotes',
-                         type: 'dropDown',
-                         tooltip: 'Dialogs',
-                         icon: 'filter_none',
-                         sub: [
-                              { name: 'ABM de Lotes', state: 'afiliacion/lote' },
-                              { name: 'Ver Lote/Afiliar', state: 'afiliacion/lotes' },
-                              /*  { name: 'Estadisticas', state: 'elecciones/calculototalresp' }, */
-                         ],
+                         name: 'Admin. de lotes',
+                         type: 'link',
+                         tooltip: 'Listados de Empadronados',
+                         icon: 'ballot',
+                         state: 'afiliacion/lotes',
                     },
                     {
                          name: 'Herramientas',
                          type: 'dropDown',
                          tooltip: 'Info Planillas y Junta',
-                         icon: 'list_alt',
+                         icon: 'build',
                          sub: [
-                              { name: 'Info Lotes', state: 'afiliacion/planillas' },
                               { name: 'Info Junta', state: 'afiliacion/junta' },
+                              { name: 'Info Padron', state: 'afiliacion/listados' },
                               /*  { name: 'Estadisticas', state: 'elecciones/calculototalresp' }, */
                          ],
                     },
 
-                    {
-                         name: 'Donde Vota?',
-                         type: 'link',
-                         tooltip: 'Buscar',
-                         icon: 'list_alt',
-                         state: 'elecciones/padrones',
-                    },
-                    {
+                    /*  {
                          name: 'Listados Padron Afiliados',
                          type: 'link',
                          tooltip: 'Listados de Empadronados',
                          icon: 'list_alt',
                          state: 'afiliacion/listados',
+                    }, */
+                    {
+                         name: 'Donde Vota?',
+                         type: 'link',
+                         tooltip: 'Buscar',
+                         icon: 'perm_contact_calendar',
+                         state: 'elecciones/padrones',
                     },
                ];
                return menu;

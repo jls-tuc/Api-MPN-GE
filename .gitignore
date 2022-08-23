@@ -46,6 +46,7 @@ dist/
 
 # Dependency directories
 node_modules/
+mongo/
 output/
 jspm_packages/
 .history/

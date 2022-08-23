@@ -1,15 +1,14 @@
 import { Request, Response } from 'express';
 import { getCuilCuit } from '../../../util/calcCuil';
 import { ciudades } from '../../../util/normalizacion';
-import { getServicioRenaper } from '../../../util/webServices/servicioRenaper';
+
 import * as personaSchema from '../../models/personas/persona';
 
 import { savePersona, resizeFoto } from './personaCtrl';
 
 export const getPersonaRenaper = async (req: Request, res: Response) => {
-   // console.log('Query Persona: ', req.query);
-
-   let persona: any = await personaSchema.persona.find({
+     // console.log('Query Persona: ', req.query);
+     /*  let persona: any = await personaSchema.persona.find({
       dni: req.query.dni,
       sexo: req.query.sexo,
    });
@@ -40,5 +39,5 @@ export const getPersonaRenaper = async (req: Request, res: Response) => {
    } else {
       persona[0].foto = await resizeFoto(persona[0].foto);
       res.json(persona[0]);
-   }
+   } */
 };

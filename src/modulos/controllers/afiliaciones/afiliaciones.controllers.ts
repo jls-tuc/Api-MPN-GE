@@ -12,6 +12,8 @@ export const getAllGrupos = async (req: Request, res: Response) => {
      let limit = parseInt(req.query.limit as string) || 10;
      let skip = (page - 1) * 10;
 
+     let totalLote = await loteAfiliacion.count();
+
      await loteAfiliacion
           .find()
           .skip(skip)
@@ -30,7 +32,7 @@ export const getAllGrupos = async (req: Request, res: Response) => {
                          }
                          return 0;
                     });
-                    res.status(200).json({ ok: true, data, skip, page });
+                    res.status(200).json({ ok: true, data, skip, page, totalLote });
                }
           });
 };
@@ -47,7 +49,6 @@ export const saveGrupo = async (req: Request, res: Response) => {
           }
      });
 };
-
 
 export const addAfiliadoGrupo = async (req: Request, res: Response) => {
      await loteAfiliacion.find({ nro: req.params.nroLote }, async (err, data: ILoteAfiliacion) => {
@@ -72,6 +73,24 @@ export const searchAfiliadoGrupo = async (req: Request, res: Response) => {
                data && res.status(200).json({ ok: true, data });
           }
      });
+};
+
+/////
+
+export const getOneLte = async (req: Request, res: Response) => {
+     let nroLote: string = req.query.nroLte.toString();
+
+     try {
+          let loteNro = await loteAfiliacion.find({ nro: nroLote });
+
+          if (loteNro.length) {
+               res.status(200).json({ ok: true, loteNro });
+          } else {
+               res.status(200).json({ ok: false, msg: 'El lote solicitado no existe.' });
+          }
+     } catch (error) {
+          res.status(400).json({ ok: false, error });
+     }
 };
 
 //////update Grupo
@@ -700,135 +719,133 @@ return res.status(200).json({
 });
 }; */
 
-
-//TODO: MIGRACION DE DATOS DE MPN 
+//TODO: MIGRACION DE DATOS DE MPN
 
 export const migrarLotes = async (req: Request, res: Response) => {
-     let dataMigrar: any[] = await loteMigracion.find({})
-     console.log('dataMigrar', dataMigrar)
+     let dataMigrar: any[] = await loteMigracion.find({});
+     console.log('dataMigrar', dataMigrar);
      dataMigrar.map(async (lote: loteImportar) => {
-
           let dataTemp: any = {
                nro: lote.numero,
                usuarioResponsable: {
                     nombreCompleto: lote.referente,
-                    dni: "",
-                    telefono: "",
-                    email: "",
+                    dni: '',
+                    telefono: '',
+                    email: '',
                },
                lugarAfiliacion: {
-                    localidad: "",
-                    nombreEdificio: "",
-                    calle: "",
-                    numero: "",
-                    telefono: "",
+                    localidad: '',
+                    nombreEdificio: '',
+                    calle: '',
+                    numero: '',
+                    telefono: '',
                },
                fechaInicioAfiliacion: lote.fechaCreacion,
-               fechaFinAfiliacion: "",
-               estadoAfiliacion: "",
+               fechaFinAfiliacion: '',
+               estadoAfiliacion: '',
                datosJusElc: {
                     fechaIngresoJunta: lote.fechaPres,
-                    fechaRespuestaJunta: "",
-                    estadoJunta: "",
-                    obserJunta: "",
-               }
-          }
+                    fechaRespuestaJunta: '',
+                    estadoJunta: '',
+                    obserJunta: '',
+               },
+          };
           let data = new loteAfiliacion(dataTemp);
-          console.log('dataTemp', data)
-          await data.save()
-
-     })
-     res.status(200).json({ ok: true, data: dataMigrar })
+          console.log('dataTemp', data);
+          await data.save();
+     });
+     res.status(200).json({ ok: true, data: dataMigrar });
 };
 
-
-
-
 export const migrarFichas = async (req: Request, res: Response) => {
-     console.log('Comenzo la rutina de migrar las Fichas ...........')
-     let migrados: any = []
-     let noLote: any = []
+     console.log('Comenzo la rutina de migrar las Fichas ...........');
+     let migrados: any = [];
+     let noLote: any = [];
      await fichaMigracion.find({}).then(async (fichas: any[]) => {
           /* let personas: any = await MPNPadron.find({})
           let personasPadron: any = await padron.find({}) */
-          let i = fichas.length
+          let i = fichas.length;
           for await (const ficha of fichas) {
+               i--;
+               let persona: any = await MPNPadron.findOne({ matricula: ficha.documento });
 
-               i--
-               let persona: any = await MPNPadron.findOne({ 'matricula': ficha.documento })
-
-               let personaPadron: any = await padron.findOne({ 'documento': ficha.documento })
-               let baja = ""
+               let personaPadron: any = await padron.findOne({ documento: ficha.documento });
+               let baja = '';
                if (persona === null && personaPadron === null) {
-                    baja = "Baja"
+                    baja = 'Baja';
                }
                if (persona !== null && personaPadron) {
-                    baja = "Activo en Padron Oficial"
+                    baja = 'Activo en Padron Oficial';
                }
 
                let dataTemp: any = {
-                    nombre: persona ? persona.nombre : (personaPadron ? personaPadron.nombre : ""),
-                    apellido: persona ? persona.apellido : (personaPadron ? personaPadron.apellido : ficha.Nombre),
+                    nombre: persona ? persona.nombre : personaPadron ? personaPadron.nombre : '',
+                    apellido: persona ? persona.apellido : personaPadron ? personaPadron.apellido : ficha.Nombre,
                     documento: ficha.documento,
-                    dm: "",
-                    rg: "",
-                    clase: persona ? persona.clase : (personaPadron ? personaPadron.clase : ""),
-                    genero: persona ? persona.genero : (personaPadron ? personaPadron.genero : ""),
-                    fechaNacimiento: persona ? persona.fechaNacimiento : moment(new Date(ficha.fechaNac)).format("DD/MM/YYYY").toString(),
+                    dm: '',
+                    rg: '',
+                    clase: persona ? persona.clase : personaPadron ? personaPadron.clase : '',
+                    genero: persona ? persona.genero : personaPadron ? personaPadron.genero : '',
+                    fechaNacimiento: persona
+                         ? persona.fechaNacimiento
+                         : moment(new Date(ficha.fechaNac)).format('DD/MM/YYYY').toString(),
                     lugar: ficha.lugarNac,
-                    profOficio: persona ? persona.profesion : (ficha.ocupacion ? ficha.ocupacion : ""),
-                    estadoCivil: ficha.EstadoCivil ? ficha.EstadoCivil : "",
+                    profOficio: persona ? persona.profesion : ficha.ocupacion ? ficha.ocupacion : '',
+                    estadoCivil: ficha.EstadoCivil ? ficha.EstadoCivil : '',
                     ultDomicilio: {
-                         distritoElec: "",
-                         partidoDepto: persona ? persona.seccion : (ficha.circuito ? ficha.circuito : ""),
-                         cuartelPedania: "",
-                         localidad: persona ? persona.circuito : (personaPadron ? personaPadron.localidad : (ficha.circuito ? ficha.circuito : "")),
-                         calle: persona ? persona.domicilio : (ficha.Direccion ? ficha.Direccion : ""),
-                         nro: "",
-                         piso: "",
-                         dep: "",
+                         distritoElec: '',
+                         partidoDepto: persona ? persona.seccion : ficha.circuito ? ficha.circuito : '',
+                         cuartelPedania: '',
+                         localidad: persona
+                              ? persona.circuito
+                              : personaPadron
+                              ? personaPadron.localidad
+                              : ficha.circuito
+                              ? ficha.circuito
+                              : '',
+                         calle: persona ? persona.domicilio : ficha.Direccion ? ficha.Direccion : '',
+                         nro: '',
+                         piso: '',
+                         dep: '',
                     },
                     domicilioPostal: {
-                         barrio: "",
-                         circuito: "",
-                         localidad: "",
-                         calle: "",
-                         nro: "",
-                         piso: "",
-                         dep: "",
-                         telPar: "",
-                         telTrab: "",
-                         contacto: "",
-                         observaciones: "",
+                         barrio: '',
+                         circuito: '',
+                         localidad: '',
+                         calle: '',
+                         nro: '',
+                         piso: '',
+                         dep: '',
+                         telPar: '',
+                         telTrab: '',
+                         contacto: '',
+                         observaciones: '',
                     },
                     estadoAf: persona ? persona.estadoAfiliacion : baja,
-                    fechaAfilia: persona ? persona.fechaAfiliacion : (ficha.FechaAfil ? ficha.FechaAfil : ""),
-                    fechaBaja: "",
-                    obserBaja: ficha.Observaciones ? ficha.Observaciones : "",
-               }
+                    fechaAfilia: persona ? persona.fechaAfiliacion : ficha.FechaAfil ? ficha.FechaAfil : '',
+                    fechaBaja: '',
+                    obserBaja: ficha.Observaciones ? ficha.Observaciones : '',
+               };
 
-
-               let lote: ILoteAfiliacion = await loteAfiliacion.findOne({ nro: ficha.lote })
+               let lote: ILoteAfiliacion = await loteAfiliacion.findOne({ nro: ficha.lote });
                /* console.log('lote', lote)
                console.log('ficha.lote', ficha.lote) */
                if (lote) {
-                    lote.planillas.push(dataTemp)
-                    let data = new loteAfiliacion(lote)
-                    await data.save()
+                    lote.planillas.push(dataTemp);
+                    let data = new loteAfiliacion(lote);
+                    await data.save();
                } else {
-                    console.log('No existe el lote', ficha)
-                    noLote.push(ficha)
+                    console.log('No existe el lote', ficha);
+                    noLote.push(ficha);
                }
 
-               await migrados.push(dataTemp)
+               await migrados.push(dataTemp);
           }
-
-
-     })
+     });
      /* console.log('migrados', migrados) */
      /* let data = new loteAfiliacion(dataTemp);
      console.log('dataTemp', data)
      await data.save()  */
-     console.log('Finalizó la rutina de migrar las Fichas ...........')
-     res.status(200).json({ ok: true, migrados, noLote })
+     console.log('Finalizó la rutina de migrar las Fichas ...........');
+     res.status(200).json({ ok: true, migrados, noLote });
 };

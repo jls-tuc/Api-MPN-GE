@@ -70,13 +70,10 @@ export interface ILoteAfiliacion extends mongoose.Document {
      };
 }
 
-
-
 const _SchemaGrupo = new mongoose.Schema<ILoteAfiliacion>(
      {
           nro: { type: String, unique: true, es_indexed: true },
           usuarioResponsable: {
-
                nombreCompleto: { type: String },
                dni: { type: String },
                telefono: { type: String },

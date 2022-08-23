@@ -1,10 +1,11 @@
 import { Router } from 'express';
+import cache from '../../../middlewares/cache';
 import { validateLogin } from '../../../middlewares/passport-jwt';
 import {
      addAfiliadoGrupo,
-     exportarPlanillasEcxel,
      getAllGrupos,
      getDataLotes,
+     getOneLte,
      getPlanillasLotes,
      migrarFichas,
      migrarLotes,
@@ -18,7 +19,9 @@ import {
 const router = Router();
 
 router.get('/afiliaciones/grupos', validateLogin, getAllGrupos);
-
+//getOneLote
+router.get('/afiliaciones/grupo', validateLogin, getOneLte);
+//
 router.post('/afiliaciones/grupo', validateLogin, saveGrupo);
 router.post('/afiliaciones/afilia/:nroLote', validateLogin, addAfiliadoGrupo);
 router.post('/afiliaciones/grupo/dni', validateLogin, searchAfiliadoGrupo);
@@ -31,9 +34,9 @@ router.get('/afiliaciones/indica', validateLogin, getDataLotes);
 //planillas
 
 router.post('/afiliaciones/planillas', validateLogin, getPlanillasLotes);
-router.post('/afiliaciones/exportar_excel', exportarPlanillasEcxel);
+//router.post('/afiliaciones/exportar_excel', exportarPlanillasEcxel);
 // migrar
-router.get('/afiliaciones/migrar_lotes', migrarLotes);
-router.get('/afiliaciones/migrar_fichas', migrarFichas);
+router.get('/afiliaciones/migrar_lotes', validateLogin, migrarLotes);
+router.get('/afiliaciones/migrar_fichas', validateLogin, migrarFichas);
 
 export default router;

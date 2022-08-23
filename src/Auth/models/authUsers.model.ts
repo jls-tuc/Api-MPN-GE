@@ -1,7 +1,7 @@
 import { Schema, model, Document } from 'mongoose';
 import { constantes } from '../../util/constantes';
 const uniqueValidator = require('mongoose-unique-validator');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 export interface Iusuario extends Document {
      usuario: string;

@@ -4,6 +4,6 @@ import { getServerSPS } from '../controllers/server';
 
 const router = Router();
 
-router.get('', validateLogin, getServerSPS);
+router.get('', getServerSPS);
 
 export default router;

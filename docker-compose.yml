@@ -1,0 +1,26 @@
+version: '3'
+services:
+     api:
+          container_name: api-mpn2022
+          restart: always
+          build: .
+          ports:
+               - 3001:3001
+          volumes:
+               - .:/app
+          links:
+               - mongodb
+
+     mongodb:
+          container_name: mongo-db
+          image: mongo:5.0
+          restart: always
+          ports:
+               - 27017:27017
+          environment:
+               MONGODB_DATABASE: elecciones
+
+          logging:
+               driver: none
+          volumes:
+               - ./mongo:/data/db
