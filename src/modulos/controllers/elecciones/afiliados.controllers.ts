@@ -35,13 +35,26 @@ export const getSecCir = async (req: Request, res: Response) => {
 };
 
 export const afiliadoFilto = async (req: Request, res: Response) => {
-     let query: any = {};
+     let queryOr: any = [];
+     let queryAnd: any = {};
+
      console.log(req.body.data);
+
+     if (req.body.data.seccional) {
+          queryAnd.seccional = req.body.data.seccional;
+     }
+     if (req.body.data.localidad.length) {
+          req.body.data.localidad.forEach((element) => {
+               let circuito: any = {};
+               circuito.circuito = element;
+               queryOr.push(circuito);
+          });
+     }
      if (req.body.data.seccion) {
-          query.seccion = req.body.data.seccion;
+          queryAnd.seccion = req.body.data.seccion;
      }
      if (req.body.data.circuito) {
-          query.circuito = req.body.data.circuito;
+          queryAnd.circuito = req.body.data.circuito;
      }
      if (
           req.body.data.genero !== '' ||
@@ -49,18 +62,27 @@ export const afiliadoFilto = async (req: Request, res: Response) => {
           req.body.data.genero === 'F' ||
           req.body.data.genero === 'X'
      ) {
-          query.genero = req.body.data.genero;
+          queryAnd.genero = req.body.data.genero;
      }
      if (req.body.data.estado !== '') {
-          query.estado_afiliacion = req.body.data.estado;
+          queryAnd.estado_afiliacion = req.body.data.estado;
      }
      if (req.body.data.profesion !== '') {
-          query.profesion = req.body.data.profesion;
+          queryAnd.profesion = req.body.data.profesion;
      }
 
-     console.log(query);
      try {
-          afiliado.find(query, (err, data) => res.status(200).json({ ok: true, data }));
+          afiliado.find(
+               {
+                    $and: [
+                         {
+                              $or: queryOr,
+                         },
+                         queryAnd,
+                    ],
+               },
+               (err, data) => res.status(200).json({ ok: true, data })
+          );
      } catch (error) {
           res.status(200).json({ ok: false, error });
      }

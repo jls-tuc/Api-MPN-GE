@@ -7,8 +7,7 @@ const router = Router();
 
 router.get('/afiliaciones/afiliadosMPN', validateLogin, cache, getAfiliados);
 router.get('/afiliaciones/migrar_archivo', validateLogin, cache, getMigrarArchivo);
-//router.get('/afiliaciones/migrar_archivo2', getMigrarArchivoPadron);
-//router.get('/afiliaciones/migrar_archivo2', getMigrarArchivoPadron);
+
 router.get('/afiliaciones/listados_afiliados', validateLogin, cache, getListados);
 
 export default router;

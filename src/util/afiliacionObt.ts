@@ -1,0 +1,27 @@
+import { Iafiliado } from '../modulos/models/elecciones/afiliados2022';
+
+export const formAf = {
+     seccion: '',
+     cod_seccion: '',
+     circuito: '',
+     cod_circuito: '',
+     nro_lote: '',
+     documento: '',
+     apellido: '',
+     nombre: '',
+     genero: '',
+     tipo_documento: '',
+     fecha_nacimiento: '',
+     clase: '',
+     estado_actual_elector: '',
+     estado_afiliacion: '',
+     fecha_afiliacion: '',
+     analfabeto: '',
+     profesion: '',
+     fecha_domicilio: '',
+     domicilio: '',
+     establecimiento: '',
+     dom_establecimiento: '',
+     mesa: '',
+     orden: '',
+};

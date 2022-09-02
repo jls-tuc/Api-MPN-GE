@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 
 export interface ILoteAfiliacion extends mongoose.Document {
      _id?: string;
-     nro: string;
+     numero: string;
      usuarioResponsable: {
           nombreCompleto: string;
           dni: string;
@@ -72,7 +72,7 @@ export interface ILoteAfiliacion extends mongoose.Document {
 
 const _SchemaGrupo = new mongoose.Schema<ILoteAfiliacion>(
      {
-          nro: { type: String, unique: true, es_indexed: true },
+          numero: { type: String, unique: true, es_indexed: true },
           usuarioResponsable: {
                nombreCompleto: { type: String },
                dni: { type: String },

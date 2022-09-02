@@ -3,10 +3,9 @@ import moment from 'moment';
 import { loteAfiliacion, ILoteAfiliacion } from '../../models/afiliaciones/grupoAfiliacion';
 import { fichaImportar, fichaMigracion, loteImportar, loteMigracion } from '../../models/afiliaciones/migracion';
 import { MPNPadron, padronmpn } from '../../models/afiliaciones/padronmpn';
-import { clone } from '../../models/comunes/datosPersonales';
 import { afiliado } from '../../models/elecciones/afiliadosMpn';
 import { Ipadron, padron } from '../../models/elecciones/padronNeuquen';
-
+const ObjectID = require('bson-objectid');
 export const getAllGrupos = async (req: Request, res: Response) => {
      let page = parseInt(req.query.page as string) || 1;
      let limit = parseInt(req.query.limit as string) || 10;
@@ -24,10 +23,10 @@ export const getAllGrupos = async (req: Request, res: Response) => {
                     res.status(200).json({ ok: false, err });
                } else {
                     data.sort(function (a, b) {
-                         if (a.nro > b.nro) {
+                         if (a.numero > b.numero) {
                               return 1;
                          }
-                         if (a.nro < b.nro) {
+                         if (a.numero < b.numero) {
                               return -1;
                          }
                          return 0;
@@ -51,7 +50,7 @@ export const saveGrupo = async (req: Request, res: Response) => {
 };
 
 export const addAfiliadoGrupo = async (req: Request, res: Response) => {
-     await loteAfiliacion.find({ nro: req.params.nroLote }, async (err, data: ILoteAfiliacion) => {
+     await loteAfiliacion.find({ numero: req.params.nroLote }, async (err, data: ILoteAfiliacion) => {
           if (err) {
                res.status(200).json({ ok: false, err });
           } else {
@@ -78,13 +77,13 @@ export const searchAfiliadoGrupo = async (req: Request, res: Response) => {
 /////
 
 export const getOneLte = async (req: Request, res: Response) => {
-     let nroLote: string = req.query.nroLte.toString();
+     let numeroLote: string = req.query.nroLte.toString();
 
      try {
-          let loteNro = await loteAfiliacion.find({ nro: nroLote });
+          let lotenumero = await loteAfiliacion.find({ numero: numeroLote });
 
-          if (loteNro.length) {
-               res.status(200).json({ ok: true, loteNro });
+          if (lotenumero.length) {
+               res.status(200).json({ ok: true, lotenumero });
           } else {
                res.status(200).json({ ok: false, msg: 'El lote solicitado no existe.' });
           }
@@ -120,8 +119,7 @@ export const updGrupo = (req: Request, res: Response) => {
 
 ///presentacion de lte
 
-export const presentarLteAndCne = (req: Request, res: Response) => {
-     console.log(req.body);
+export const presentarLteAndCne = async (req: Request, res: Response) => {
      let updPre: any = {
           estadoAfiliacion: req.body.upd.estadoAfiliacion,
           datosJusElc: {
@@ -142,13 +140,74 @@ export const presentarLteAndCne = (req: Request, res: Response) => {
      switch (req.body.op) {
           case 'presentar':
                try {
-                    loteAfiliacion.findByIdAndUpdate(req.params._id, updPre, options, (err, data) => {
+                    /// actualizamos los datos de los afiliados antes de enviar el lote
+
+                    let lote = await loteAfiliacion.find(
+                         { _id: ObjectID(req.params._id) },
+                         { planillas: 1, numero: 1 }
+                    );
+
+                    lote.forEach((element) => {
+                         element.planillas.forEach((proxAfilia) => {
+                              afiliado.findOne({ dni: proxAfilia.documento }, (err, data) => {
+                                   if (err) {
+                                        res.status(200).json({
+                                             ok: false,
+                                             err,
+                                             msg: 'error al buscar afiliado, al momento de presentar lote',
+                                        });
+                                   } else {
+                                        if (data) {
+                                             (data.numero_lote = element.numero),
+                                                  (data.estado_afiliacion = 'pendiente'),
+                                                  (data.fecha_afiliacion = '');
+                                             data.save();
+                                        } else {
+                                             const formAf = {
+                                                  seccion: proxAfilia.ultDomicilio.partidoDepto,
+                                                  cod_seccion: '',
+                                                  circuito: proxAfilia.ultDomicilio.localidad,
+                                                  cod_circuito: '',
+                                                  numero_lote: element.numero,
+                                                  documento: proxAfilia.documento,
+                                                  apellido: proxAfilia.apellido,
+                                                  nombre: proxAfilia.nombre,
+                                                  genero: proxAfilia.genero,
+                                                  tipo_documento: '',
+                                                  fecha_nacimiento: proxAfilia.fechaNacimiento,
+                                                  clase: proxAfilia.clase,
+                                                  estado_actual_elector: '',
+                                                  estado_afiliacion: 'pendiente',
+                                                  fecha_afiliacion: '',
+                                                  fecha_pendiente: req.body.upd.fechaIngresoJunta,
+                                                  fecha_baja: '',
+                                                  fecha_verificacion: '',
+                                                  analfabeto: '',
+                                                  profesion: proxAfilia.profOficio,
+                                                  fecha_domicilio: '',
+                                                  domicilio: `${proxAfilia.ultDomicilio.calle} ${proxAfilia.ultDomicilio.nro}`,
+                                                  establecimiento: '',
+                                                  dom_establecimiento: '',
+                                                  mesa: '',
+                                                  orden: '',
+                                                  observacion:
+                                                       'La persona se encuentra en proceso de afiliación, para más información sobre el estado del trámite, se deberán contactar con el encargado de la administración de la junta partidaria. ',
+                                             };
+                                             let nuevoAf = new afiliado(formAf);
+                                             nuevoAf.save();
+                                        }
+                                   }
+                              });
+                         });
+                    });
+
+                    /*  loteAfiliacion.findByIdAndUpdate(req.params._id, updPre, options, (err, data) => {
                          if (data) {
                               loteAfiliacion.find((err, data) => {
                                    res.status(200).json({ ok: true, data });
                               });
                          }
-                    });
+                    }); */
                } catch (error) {
                     res.status(200).json({ ok: false, error });
                }
@@ -212,7 +271,7 @@ export const updPlanilla = async (req: Request, res: Response) => {
      upd.obserBaja = req.body.upd.obserBaja;
 
      try {
-          loteAfiliacion.findOne({ nro: req.params._nroLte }, (err, data: ILoteAfiliacion) => {
+          loteAfiliacion.findOne({ numero: req.params._numeroLte }, (err, data: ILoteAfiliacion) => {
                if (data) {
                     let indx = data.planillas.findIndex((elemento) => elemento.documento === req.body.upd.documento);
                     (data.planillas[indx].estadoAf = upd.estadoAf),
@@ -254,7 +313,7 @@ export const getPlanillasLotes = async (req: Request, res: Response) => {
 
      let planillas: any = [];
 
-     /* let data: any = await loteAfiliacion.find(query, { _id: 0, nro: 1, planillas: 1 }); */
+     /* let data: any = await loteAfiliacion.find(query, { _id: 0, numero: 1, planillas: 1 }); */
 
      if (query.genero === 't' && query.estadoAf === 'todos') {
           let data: any = await loteAfiliacion.aggregate([
@@ -269,7 +328,7 @@ export const getPlanillasLotes = async (req: Request, res: Response) => {
                },
                {
                     $project: {
-                         nro: 1,
+                         numero: 1,
                          _id: 0,
                          planillas: {
                               $filter: {
@@ -286,7 +345,7 @@ export const getPlanillasLotes = async (req: Request, res: Response) => {
           for (let item of data) {
                item.planillas.forEach((element: any) => {
                     let aflia: any = {
-                         nroLte: item.nro,
+                         numeroLte: item.numero,
                          nombre: element.nombre,
                          apellido: element.apellido,
                          documento: element.documento,
@@ -302,7 +361,7 @@ export const getPlanillasLotes = async (req: Request, res: Response) => {
                               partidoDepto: element.ultDomicilio.partidoDepto,
                               localidad: element.ultDomicilio.localidad,
                               calle: element.ultDomicilio.calle,
-                              nro: element.ultDomicilio.nro,
+                              numero: element.ultDomicilio.numero,
                               piso: element.ultDomicilio.piso,
                               dep: element.ultDomicilio.dep,
                          },
@@ -311,7 +370,7 @@ export const getPlanillasLotes = async (req: Request, res: Response) => {
                               circuito: { type: String },
                               localidad: { type: String },
                               calle: { type: String },
-                              nro: { type: String },
+                              numero: { type: String },
                               piso: { type: String },
                               dep: { type: String },
                               telPar: { type: String },
@@ -338,7 +397,7 @@ export const getPlanillasLotes = async (req: Request, res: Response) => {
                },
                {
                     $project: {
-                         nro: 1,
+                         numero: 1,
                          _id: 0,
                          planillas: {
                               $filter: {
@@ -358,7 +417,7 @@ export const getPlanillasLotes = async (req: Request, res: Response) => {
           for (let item of data) {
                item.planillas.forEach((element: any) => {
                     let aflia: any = {
-                         nroLte: item.nro,
+                         numeroLte: item.numero,
                          nombre: element.nombre,
                          apellido: element.apellido,
                          documento: element.documento,
@@ -374,7 +433,7 @@ export const getPlanillasLotes = async (req: Request, res: Response) => {
                               partidoDepto: element.ultDomicilio.partidoDepto,
                               localidad: element.ultDomicilio.localidad,
                               calle: element.ultDomicilio.calle,
-                              nro: element.ultDomicilio.nro,
+                              numero: element.ultDomicilio.numero,
                               piso: element.ultDomicilio.piso,
                               dep: element.ultDomicilio.dep,
                          },
@@ -383,7 +442,7 @@ export const getPlanillasLotes = async (req: Request, res: Response) => {
                               circuito: { type: String },
                               localidad: { type: String },
                               calle: { type: String },
-                              nro: { type: String },
+                              numero: { type: String },
                               piso: { type: String },
                               dep: { type: String },
                               telPar: { type: String },
@@ -410,7 +469,7 @@ export const getPlanillasLotes = async (req: Request, res: Response) => {
                },
                {
                     $project: {
-                         nro: 1,
+                         numero: 1,
                          _id: 0,
                          planillas: {
                               $filter: {
@@ -430,7 +489,7 @@ export const getPlanillasLotes = async (req: Request, res: Response) => {
           for (let item of data) {
                item.planillas.forEach((element: any) => {
                     let aflia: any = {
-                         nroLte: item.nro,
+                         numeroLte: item.numero,
                          nombre: element.nombre,
                          apellido: element.apellido,
                          documento: element.documento,
@@ -446,7 +505,7 @@ export const getPlanillasLotes = async (req: Request, res: Response) => {
                               partidoDepto: element.ultDomicilio.partidoDepto,
                               localidad: element.ultDomicilio.localidad,
                               calle: element.ultDomicilio.calle,
-                              nro: element.ultDomicilio.nro,
+                              numero: element.ultDomicilio.numero,
                               piso: element.ultDomicilio.piso,
                               dep: element.ultDomicilio.dep,
                          },
@@ -455,7 +514,7 @@ export const getPlanillasLotes = async (req: Request, res: Response) => {
                               circuito: { type: String },
                               localidad: { type: String },
                               calle: { type: String },
-                              nro: { type: String },
+                              numero: { type: String },
                               piso: { type: String },
                               dep: { type: String },
                               telPar: { type: String },
@@ -481,7 +540,7 @@ export const getPlanillasLotes = async (req: Request, res: Response) => {
                },
                {
                     $project: {
-                         nro: 1,
+                         numero: 1,
                          _id: 0,
                          planillas: {
                               $filter: {
@@ -502,7 +561,7 @@ export const getPlanillasLotes = async (req: Request, res: Response) => {
           for (let item of data) {
                item.planillas.forEach((element: any) => {
                     let aflia: any = {
-                         nroLte: item.nro,
+                         numeroLte: item.numero,
                          nombre: element.nombre,
                          apellido: element.apellido,
                          documento: element.documento,
@@ -518,7 +577,7 @@ export const getPlanillasLotes = async (req: Request, res: Response) => {
                               partidoDepto: element.ultDomicilio.partidoDepto,
                               localidad: element.ultDomicilio.localidad,
                               calle: element.ultDomicilio.calle,
-                              nro: element.ultDomicilio.nro,
+                              numero: element.ultDomicilio.numero,
                               piso: element.ultDomicilio.piso,
                               dep: element.ultDomicilio.dep,
                          },
@@ -527,7 +586,7 @@ export const getPlanillasLotes = async (req: Request, res: Response) => {
                          circuito: { type: String },
                          localidad: { type: String },
                          calle: { type: String },
-                         nro: { type: String },
+                         numero: { type: String },
                          piso: { type: String },
                          dep: { type: String },
                          telPar: { type: String },
@@ -726,7 +785,7 @@ export const migrarLotes = async (req: Request, res: Response) => {
      console.log('dataMigrar', dataMigrar);
      dataMigrar.map(async (lote: loteImportar) => {
           let dataTemp: any = {
-               nro: lote.numero,
+               numero: lote.numero,
                usuarioResponsable: {
                     nombreCompleto: lote.referente,
                     dni: '',
@@ -804,7 +863,7 @@ export const migrarFichas = async (req: Request, res: Response) => {
                               ? ficha.circuito
                               : '',
                          calle: persona ? persona.domicilio : ficha.Direccion ? ficha.Direccion : '',
-                         nro: '',
+                         numero: '',
                          piso: '',
                          dep: '',
                     },
@@ -813,7 +872,7 @@ export const migrarFichas = async (req: Request, res: Response) => {
                          circuito: '',
                          localidad: '',
                          calle: '',
-                         nro: '',
+                         numero: '',
                          piso: '',
                          dep: '',
                          telPar: '',
@@ -827,7 +886,7 @@ export const migrarFichas = async (req: Request, res: Response) => {
                     obserBaja: ficha.Observaciones ? ficha.Observaciones : '',
                };
 
-               let lote: ILoteAfiliacion = await loteAfiliacion.findOne({ nro: ficha.lote });
+               let lote: ILoteAfiliacion = await loteAfiliacion.findOne({ numero: ficha.lote });
                /* console.log('lote', lote)
                console.log('ficha.lote', ficha.lote) */
                if (lote) {
@@ -849,3 +908,5 @@ export const migrarFichas = async (req: Request, res: Response) => {
      console.log('Finalizó la rutina de migrar las Fichas ...........');
      res.status(200).json({ ok: true, migrados, noLote });
 };
+
+/// migrar seccionales a afiliados

@@ -15,6 +15,7 @@ import authUserRoute from './Auth/routes/authUsers.routes';
 import personaRoute from './modulos/routes/personas/persona';
 import provLocRoute from './modulos/routes/comunes/provLoc';
 import locaNqnRoute from './modulos/routes/comunes/locaNqn';
+import seccionalesRoute from './modulos/routes/comunes/seccionales.routes';
 //modulo eleccion
 import padronNqnRoute from './modulos/routes/elecciones/padronNqn.route';
 import afiliadoNqnRoute from './modulos/routes/elecciones/afiliado.route';
@@ -108,6 +109,8 @@ class ServerSPS {
           this.app.use(this.apiPath, personaRoute);
           this.app.use(this.apiPath, provLocRoute);
           this.app.use(this.apiPath, locaNqnRoute);
+          this.app.use(this.apiPath, seccionalesRoute);
+
           //modulo Elecciones
           this.app.use(this.apiPath, padronNqnRoute);
           this.app.use(this.apiPath, afiliadoNqnRoute);
