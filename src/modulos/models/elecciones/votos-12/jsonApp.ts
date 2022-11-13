@@ -1,41 +1,84 @@
 import { Schema, model, Document } from 'mongoose';
 
+interface Ilistas {
+     lista: string;
+     resultado: number;
+}
+interface Imesas {
+     mesa: string;
+     ordenTotal: number;
+     actaCargada: boolean;
+     resultadosMesa: {
+          listas: Ilistas[];
+          votosNulos: number;
+          votosRecurridos: number;
+          votosBlanco: number;
+          votosImpugnados: number;
+          totalVotos: number;
+          electoresVotaron: number;
+          sobresUrna: number;
+          diferencia: number;
+     };
+}
 export interface IjsonApp extends Document {
      establecimiento: string;
      localidad: string;
-     usuario: any;
-     mesa: [
-          {
-               mesa: string;
-               orden: [
-                    {
-                         orden: string;
-                         genero: string;
-                         obs1: string;
-                         obs2: string;
-                    }
-               ];
-          }
-     ];
+     resultadosGral: {
+          listas: Ilistas[];
+          votosNulos: number;
+          votosRecurridos: number;
+          votosBlanco: number;
+          votosImpugnados: number;
+          totalVotos: number;
+          electoresVotaron: number;
+          sobresUrnas: number;
+          diferencia: number;
+     };
+     mesas: Imesas[];
 }
 
 const _Schema = new Schema<IjsonApp>({
      establecimiento: { type: String, unique: true },
-     localidad: { type: String },
-     usuario: { type: String },
-     mesa: [
+     localidad: { type: String, lowercase: true },
+     resultadosGral: {
+          listas: [
+               {
+                    lista: { type: String, lowercase: true },
+                    resultado: { type: Number },
+               },
+          ],
+          votosNulos: { type: Number },
+          votosRecurridos: { type: Number },
+          votosBlanco: { type: Number },
+          votosImpugnados: { type: Number },
+          totalVotos: { type: Number },
+          electoresVotaron: { type: Number },
+          sobresUrnas: { type: Number },
+          diferencia: { type: Number },
+     },
+     mesas: [
           {
                mesa: { type: String },
-               orden: [
-                    {
-                         orden: { type: String },
-                         genero: { type: String },
-                         obs1: { type: String },
-                         obs2: { type: String },
-                    },
-               ],
+               ordenTotal: { type: Number },
+               actaCargada: { type: Boolean },
+               resultadoMesa: {
+                    listas: [
+                         {
+                              lista: { type: String, lowercase: true },
+                              resultado: { type: Number },
+                         },
+                    ],
+                    votosNulos: { type: Number },
+                    votosRecurridos: { type: Number },
+                    votosBlanco: { type: Number },
+                    votosImpugnados: { type: Number },
+                    totalVotos: { type: Number },
+                    electoresVotaron: { type: Number },
+                    sobresUrna: { type: Number },
+                    diferencia: { type: Number },
+               },
           },
      ],
 });
 
-export const jsonAPP = model<IjsonApp>('jsonApp', _Schema, 'jsonApp');
+export const actasEscrutinio = model<IjsonApp>('actasEscrutinio', _Schema, 'actasEscrutinio');

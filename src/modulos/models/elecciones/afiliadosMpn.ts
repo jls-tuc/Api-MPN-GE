@@ -32,7 +32,7 @@ export interface Iafiliado extends Document {
      observacion: string;
 }
 
-const afiliadoSchema = new Schema(
+const afiliadoSchema = new Schema<Iafiliado>(
      {
           seccional: { type: String, lowercase: true },
           seccion: { type: String, lowercase: true },

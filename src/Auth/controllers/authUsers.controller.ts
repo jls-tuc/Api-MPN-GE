@@ -7,9 +7,9 @@ import { votoPersona } from '../../util/votosPersonas';
 const moment = require('moment');
 
 export const registro = async (req: Request, res: Response, next) => {
-     req.body.fechaAltaUsuario = moment().format('YYYY/MM/DD');
+     req.body.fechaAltaUsuario = moment().locale('es').format('L');
 
-     const userExist: any = await usuarios.findOne({ usuario: req.body.usuario });
+     let userExist: any = await usuarios.findOne({ usuario: req.body.usuario });
      if (userExist) {
           //pregunto si ya existe un idreferente en el array
           if (userExist.role === 'user-ref') {
@@ -351,5 +351,18 @@ export const getAllUsr = async (req: Request, res: Response) => {
                ok: false,
                error,
           });
+     }
+};
+
+export const getOneUsrByDni = async (req: Request, res: Response) => {
+     try {
+          let usr: string = (req.query.dni as string) || '';
+
+          usuarios.findOne({ usuario: usr }, (err, data) => {
+               data && res.status(200).json({ ok: true, msg: 'usr exist' });
+               !data && res.status(200).json({ ok: false, msg: 'usr no, exist' });
+          });
+     } catch (error) {
+          res.status(200).json({ ok: false, error });
      }
 };

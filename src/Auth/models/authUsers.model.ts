@@ -13,6 +13,7 @@ export interface Iusuario extends Document {
      role: string;
      idCoordinador: any;
      idReferente: any;
+     seccional?: string;
      datosPersonales: {
           nombres: string;
           apellido: string;
@@ -56,6 +57,7 @@ const userSchema = new Schema<Iusuario>(
           role: { type: String, lowercase: true },
           idCoordinador: { type: String, lowercase: true },
           idReferente: { type: String },
+          seccional: { type: String, lowercase: true },
           datosPersonales: {
                nombres: { type: String, lowercase: true },
                apellido: { type: String, lowercase: true },

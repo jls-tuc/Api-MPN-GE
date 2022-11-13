@@ -15,6 +15,7 @@ import {
      updGrupo,
      updPlanilla,
 } from '../../controllers/afiliaciones/afiliaciones.controllers';
+import { actPadronAf } from '../../controllers/elecciones/afiliados.controllers';
 
 const router = Router();
 
@@ -38,5 +39,7 @@ router.post('/afiliaciones/planillas', validateLogin, getPlanillasLotes);
 // migrar
 router.get('/afiliaciones/migrar_lotes', validateLogin, migrarLotes);
 router.get('/afiliaciones/migrar_fichas', validateLogin, migrarFichas);
+//actualizar padron afiliados 13-09-2022
+router.get('/actAfiliado', actPadronAf);
 
 export default router;

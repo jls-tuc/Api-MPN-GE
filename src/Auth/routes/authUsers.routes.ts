@@ -13,6 +13,7 @@ import {
      getUserResP,
      getUserPlanillero,
      getAllUsr,
+     getOneUsrByDni,
 } from '../controllers/authUsers.controller';
 
 const route = Router();
@@ -24,7 +25,7 @@ route.get('/auth/usuarios', validateLogin, cache, getUsuarios);
 route.get('/auth/usr', validateLogin, cache, getAllUsr);
 route.get('/estadistica/graficagral', validateLogin, getUsuariosGraf);
 route.get('/auth/usuario', validateLogin, getUserByID);
-
+route.get('/auth/getUsr', validateLogin, getOneUsrByDni);
 /////////router CardddReff
 route.get('/cards/ref', validateLogin, getUserRef);
 route.get('/cards/resp', validateLogin, getUserResP);

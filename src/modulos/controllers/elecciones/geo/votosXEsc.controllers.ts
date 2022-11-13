@@ -1,4 +1,6 @@
 import { Request, Response } from 'express';
+import { geoCircuitos } from '../../../models/comunes/circuitoElectoralPoligono';
+import { geoEscuelaElec } from '../../../models/elecciones/geo/geoEscuelas';
 import { geoEscuela, IgeoEscuela } from '../../../models/elecciones/geo/votosXEsc';
 
 import { padron, Ipadron } from '../../../models/elecciones/padronNeuquen';
@@ -73,42 +75,60 @@ export const getDonas = async (req: Request, res: Response) => {
           type: 'FeatureCollection',
           features: [],
      };
+     let poligono = {
+          type: 'FeatureCollection',
+          totalFeatures: 0,
+          features: [],
+          crs: {
+               type: 'name',
+               properties: {
+                    name: 'urn:ogc:def:crs:EPSG::4326',
+               },
+          },
+     };
 
-     let escuelas = await geoEscuela.find({}, { localidad: 0, _id: 0 }).lean().sort({ establecimiento: 1 });
+     let escuelas = await geoEscuelaElec.find({}, { _id: 0 }).lean().sort({ establecimiento: 1 });
      // console.log(escuelas.length);
-
+     let circuito = await geoCircuitos.find({}).lean();
+     poligono = {
+          type: 'FeatureCollection',
+          totalFeatures: circuito.length,
+          features: circuito,
+          crs: {
+               type: 'name',
+               properties: {
+                    name: 'urn:ogc:def:crs:EPSG::4326',
+               },
+          },
+     };
      for (let esc of escuelas) {
-          let busqueda = dataGeo.features.findIndex((data) => data.properties.establecimiento === esc.establecimiento);
-          //console.log(busqueda);
+          let data = {
+               type: 'Feature',
+               properties: {
+                    establecimiento: esc.establecimiento,
+                    elecciones: esc.elecciones,
+                    localidad: esc.localidad,
+               },
+               geometry: { type: 'Point', coordinates: [esc.lon, esc.lat, 100] },
+          };
+          dataGeo.features.push(data);
+          /*   let busqueda = dataGeo.features.findIndex((data) => data.properties.establecimiento === esc.establecimiento);
+      
 
           if (busqueda !== -1) {
-               dataGeo.features[busqueda].properties.total += esc.votosMesa;
-               dataGeo.features[busqueda].properties.totalAf += esc.afiliado;
-               dataGeo.features[busqueda].properties.totalFem += esc.femenino;
-               dataGeo.features[busqueda].properties.totalMasc += esc.masculino;
-               dataGeo.features[busqueda].properties.votaron += esc.votaron;
-               dataGeo.features[busqueda].properties.votaronA += esc.votaronA;
-               dataGeo.features[busqueda].properties.votaronF += esc.votaronF;
+
+               let 
+
+               dataGeo.features[busqueda].properties.elecciones = esc.elecciones;
+             
           } else {
-               let data = {
-                    type: 'Feature',
-                    properties: {
-                         establecimiento: esc.establecimiento,
-                         total: esc.votosMesa,
-                         totalAf: esc.afiliado,
-                         totalFem: esc.femenino,
-                         totalMasc: esc.masculino,
-                         votaron: esc.votaron,
-                         votaronA: esc.votaronA,
-                         votaronF: esc.votaronF,
-                    },
-                    geometry: { type: 'Point', coordinates: [esc.lon, esc.lat, 100] },
-               };
-               dataGeo.features.push(data);
-          }
+              
+          } */
      }
+
      res.status(200).json({
           ok: true,
           dataGeo,
+          poligono,
      });
 };

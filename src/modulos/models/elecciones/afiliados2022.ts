@@ -6,7 +6,6 @@ export interface Iafiliado extends Document {
      cod_seccion: string;
      circuito: string;
      cod_circuito: string;
-     nro_lote: string;
      documento: string;
      apellido: string;
      nombre: string;
@@ -21,19 +20,18 @@ export interface Iafiliado extends Document {
      profesion: string;
      fecha_domicilio: string;
      domicilio: string;
-     establecimiento: string;
-     dom_establecimiento: string;
-     mesa: string;
-     orden: string;
+     establecimiento?: string;
+     dom_establecimiento?: string;
+     mesa?: string;
+     orden?: string;
 }
 
 const afiliadoSchema = new Schema<Iafiliado>(
      {
           seccion: { type: String, lowercase: true },
           cod_seccion: { type: String, lowercase: true },
-          circuito: { type: String, lowercase: true },
+          circuito: { type: String },
           cod_circuito: { type: String, lowercase: true },
-          nro_lote: { type: String, lowercase: true },
           apellido: { type: String, lowercase: true },
           nombre: { type: String, lowercase: true },
           genero: { type: String, lowercase: true },

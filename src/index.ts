@@ -16,6 +16,7 @@ import personaRoute from './modulos/routes/personas/persona';
 import provLocRoute from './modulos/routes/comunes/provLoc';
 import locaNqnRoute from './modulos/routes/comunes/locaNqn';
 import seccionalesRoute from './modulos/routes/comunes/seccionales.routes';
+import circuitosElectores from './modulos/routes/comunes/circuitosElectorales.routes';
 //modulo eleccion
 import padronNqnRoute from './modulos/routes/elecciones/padronNqn.route';
 import afiliadoNqnRoute from './modulos/routes/elecciones/afiliado.route';
@@ -30,6 +31,7 @@ import geoRoute from './modulos/routes/elecciones/geo/votosXEsc.route';
 //Votos12
 import votos12 from './modulos/routes/elecciones/voto-12/json-app.route';
 import orden from './modulos/routes/elecciones/voto-12/infoAppMovil.route';
+import actasEsc from './modulos/routes/elecciones/voto-12/actasEscrutinio.route';
 //afiliadiones
 import gruposRoute from './modulos/routes/afiliaciones/afiliaciones.route';
 import padronRoute from './modulos/routes/afiliaciones/padronmpn.route';
@@ -50,7 +52,7 @@ class ServerSPS {
           this.routes();
      }
      async listen() {
-          await dbArsat.local(); // Base de datos!!!
+          await dbArsat.dbArsat(); // Base de datos!!!
 
           //Servidor Express
           /*  https
@@ -118,6 +120,7 @@ class ServerSPS {
           this.app.use(this.apiPath, votoAdhRoute);
           this.app.use(this.apiPath, geoRoute);
           this.app.use(this.apiPath, graficaRoute);
+          this.app.use(this.apiPath, circuitosElectores);
           //modulos Afiliaciones
           this.app.use(this.apiPath, gruposRoute);
           /// APP Movil
@@ -125,6 +128,8 @@ class ServerSPS {
           ///votos12
           this.app.use(this.apiPath, votos12);
           this.app.use(this.apiPath, orden);
+          this.app.use(this.apiPath, actasEsc);
+
           //// scriptss
           this.app.use(this.apiPath, scriptRoute);
      }

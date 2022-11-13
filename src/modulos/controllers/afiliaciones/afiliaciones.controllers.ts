@@ -6,6 +6,7 @@ import { MPNPadron, padronmpn } from '../../models/afiliaciones/padronmpn';
 import { afiliado } from '../../models/elecciones/afiliadosMpn';
 import { Ipadron, padron } from '../../models/elecciones/padronNeuquen';
 const ObjectID = require('bson-objectid');
+
 export const getAllGrupos = async (req: Request, res: Response) => {
      let page = parseInt(req.query.page as string) || 1;
      let limit = parseInt(req.query.limit as string) || 10;
@@ -249,6 +250,11 @@ export const getDataLotes = async (req: Request, res: Response) => {
           { $group: { _id: '$_id', count: { $sum: 1 } } },
           { $group: { _id: null, totalCerrados: { $sum: '$count' } } },
      ]);
+     let lotesPendientes = await loteAfiliacion.aggregate([
+          { $match: { estadoAfiliacion: 'activo' } },
+          { $group: { _id: '$_id', count: { $sum: 1 } } },
+          { $group: { _id: null, totalPendientes: { $sum: '$count' } } },
+     ]);
 
      let totalAfiliados = await afiliado.countDocuments();
      let totalLotes = await loteAfiliacion.countDocuments();
@@ -257,6 +263,7 @@ export const getDataLotes = async (req: Request, res: Response) => {
           // proxAfiliados: proxAfiliados[0].proxAfilia,
           ltePresentados: lotesPresentados.length ? lotesPresentados[0].totalPresnt : 0,
           lteCerrados: lotesCerrados.length ? lotesCerrados[0].totalCerrados : 0,
+          ltePendientes: lotesPendientes.length ? lotesPendientes[0].totalPendientes : 0,
           totalAfiliados,
           totalLotes,
      });
@@ -264,6 +271,7 @@ export const getDataLotes = async (req: Request, res: Response) => {
 
 //updatePlanilla
 export const updPlanilla = async (req: Request, res: Response) => {
+     console.log(req.body.upd);
      let upd: any = {};
      upd.estadoAf = req.body.upd.estadoAf;
      upd.fechaAfilia = req.body.upd.fechaAfilia;

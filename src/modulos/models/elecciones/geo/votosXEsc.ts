@@ -20,8 +20,8 @@ export interface IgeoEscuela extends Document {
 
 const geoSchema = new Schema<IgeoEscuela>(
      {
-          mesaNro: { type: String, unique: true, lowecase: true },
-          establecimiento: { type: String, lowecase: true },
+          mesaNro: { type: String, unique: true, lowercase: true },
+          establecimiento: { type: String, lowercase: true },
           localidad: { type: String },
           votosMesa: { type: Number },
           masculino: { type: Number },
