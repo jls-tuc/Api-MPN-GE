@@ -65,6 +65,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
           //console.log(isMatch);
           if (user.role === 'app-movil') {
                user.lastLogin = moment().format('YYYY/MM/DD;HH:MM');
+
                await user.save();
                const menu = await getMenu(user.role);
                return res.status(200).json({
@@ -74,7 +75,9 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
           } else {
                user.lastLogin = moment().format('YYYY/MM/DD;HH:MM');
                await user.save();
+
                const menu = await getMenu(user.role);
+               console.log(menu);
                return res.status(200).json({
                     ok: true,
                     foto: user.datosPersonales.foto,

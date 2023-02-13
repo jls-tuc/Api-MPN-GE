@@ -7,7 +7,7 @@ import { geoEscuelaElec } from '../../modulos/models/elecciones/geo/geoEscuelas'
 import { geoCircuitos } from '../../modulos/models/comunes/circuitoElectoralPoligono';
 import { padronIndepAf2022 } from '../../modulos/models/comunes/padronIndpAfi2022';
 import { padronEscOk } from '../../modulos/models/comunes/padronEscOk';
-import { afiliado } from '../../../.history/src/modulos/models/elecciones/afiliadosMpn_20220830214450';
+import { padron2023 } from '../../modulos/models/elecciones/padronInterna2022';
 
 export const crearCapa = async (req: Request, res: Response) => {
      let votos: any = await votoProv.find({}, { dni: 1 }).lean();
@@ -598,4 +598,37 @@ export const votosEsc2022 = async (req: Request, res: Response) => {
      }
 
      res.status(200).json({ ok: true, escuelas });
+};
+
+export const actSeccDisc = async (req: Request, res: Response) => {
+     let codSecciones = await padron2023.find({}, { circuito: 1 });
+
+     let resultados = await [...new Set(codSecciones.map((element) => element.circuito))];
+
+     for (let circuito of resultados) {
+          let cod = await padron2023.findOne(
+               { circuito: circuito },
+               { seccion: 1, codSeccion: 1, circuito: 1, codCircuito: 1, _id: 0 }
+          );
+
+          padron.updateMany(
+               { circuito: cod.circuito },
+               {
+                    $set: {
+                         codSeccion: cod.codSeccion,
+                         codCircuito: cod.codCircuito,
+                    },
+               },
+               { multi: true },
+               (err, writeResult) => {
+                    if (err) {
+                         console.log(err);
+                    } else {
+                         console.log(writeResult);
+                    }
+               }
+          );
+     }
+
+     res.status(200).json({});
 };

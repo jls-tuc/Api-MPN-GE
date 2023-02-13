@@ -1,4 +1,5 @@
 export const getMenu = (role) => {
+     console.log(role);
      switch (role) {
           case 'admin': {
                let menu = [
@@ -141,13 +142,15 @@ export const getMenu = (role) => {
                let menu = [
                     {
                          name: 'Lotes afiliacion',
-                         type: 'dropDown',
+                         type: 'link',
                          tooltip: 'Dialogs',
                          icon: 'filter_none',
-                         sub: [
+                         state: 'afiliacion/lotes',
+                         /* sub: [
                               { name: 'Ver Lote/Afiliar', state: 'afiliacion/lotes' },
-                              /*  { name: 'Estadisticas', state: 'elecciones/calculototalresp' }, */
-                         ],
+                                { name: 'Estadisticas', state: 'elecciones/calculototalresp' }, 
+                         ] 
+                         */
                     },
                     {
                          name: 'Planillas',
@@ -166,7 +169,7 @@ export const getMenu = (role) => {
                ];
                return menu;
           }
-          case 'user-Adminafilia': {
+          case 'user-adminafilia': {
                let menu = [
                     {
                          name: 'Admin. de lotes',
@@ -186,47 +189,12 @@ export const getMenu = (role) => {
                               /*  { name: 'Estadisticas', state: 'elecciones/calculototalresp' }, */
                          ],
                     },
-
-                    /*  {
-                         name: 'Listados Padron Afiliados',
-                         type: 'link',
-                         tooltip: 'Listados de Empadronados',
-                         icon: 'list_alt',
-                         state: 'afiliacion/listados',
-                    }, */
                     {
                          name: 'Donde Vota?',
                          type: 'link',
                          tooltip: 'Buscar',
                          icon: 'perm_contact_calendar',
                          state: 'elecciones/padrones',
-                    },
-                    {
-                         name: 'Mapa',
-                         type: 'link',
-                         tooltip: 'Charts',
-                         icon: 'person_pin_circle',
-                         state: 'elecciones/mapa',
-                    },
-                    {
-                         name: 'Resultados Electorales',
-                         type: 'dropDown',
-                         tooltip: 'inventory',
-                         icon: 'show_chart',
-                         sub: [
-                              { name: 'Resultados', state: 'elecciones/graficosEscrutinio' },
-                              { name: 'Cargar acta', state: 'elecciones/cargarActa' },
-                         ],
-                    },
-                    {
-                         name: 'Actividad electoral',
-                         type: 'dropDown',
-                         tooltip: 'inventory',
-                         icon: 'how_to_reg',
-                         sub: [
-                              { name: 'Indicador', state: 'elecciones/indicadoresPart' },
-                              { name: 'Cargar chasqui', state: 'elecciones/cargarChasqui' },
-                         ],
                     },
                ];
                return menu;
@@ -312,3 +280,35 @@ export const getMenu = (role) => {
           }
      }
 };
+
+/* 
+ {
+                         name: 'Mapa',
+                         type: 'link',
+                         tooltip: 'Charts',
+                         icon: 'person_pin_circle',
+                         state: 'elecciones/mapa',
+                    },
+
+
+
+{
+     name: 'Resultados Electorales',
+     type: 'dropDown',
+     tooltip: 'inventory',
+     icon: 'show_chart',
+     sub: [
+          { name: 'Resultados', state: 'elecciones/graficosEscrutinio' },
+          { name: 'Cargar acta', state: 'elecciones/cargarActa' },
+     ],
+},
+{
+     name: 'Actividad electoral',
+     type: 'dropDown',
+     tooltip: 'inventory',
+     icon: 'how_to_reg',
+     sub: [
+          { name: 'Indicador', state: 'elecciones/indicadoresPart' },
+          { name: 'Cargar chasqui', state: 'elecciones/cargarChasqui' },
+     ],
+}, */

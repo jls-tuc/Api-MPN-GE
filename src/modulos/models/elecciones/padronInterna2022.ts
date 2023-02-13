@@ -1,8 +1,8 @@
 import { Schema, model, Document } from 'mongoose';
 const uniqueValidator = require('mongoose-unique-validator');
 
-export interface Ipadron extends Document {
-     documento: string;
+export interface Ipadron2022 extends Document {
+     matricula: string;
      clase: string;
      apellido: string;
      nombre: string;
@@ -22,9 +22,9 @@ export interface Ipadron extends Document {
      lon: string;
 }
 
-const padronSchema = new Schema(
+const padronSchema1 = new Schema<Ipadron2022>(
      {
-          documento: { type: String },
+          matricula: { type: String },
           clase: { type: String },
           apellido: { type: String },
           nombre: { type: String },
@@ -34,9 +34,9 @@ const padronSchema = new Schema(
           mesa: { type: String },
           orden: { type: String },
           seccion: { type: String },
+          codSeccion: { type: String },
           circuito: { type: String },
           codCircuito: { type: String },
-          codSeccion: { type: String },
           establecimiento: { type: String },
           dom_establecimiento: { type: String },
           localidad: { type: String },
@@ -46,4 +46,4 @@ const padronSchema = new Schema(
      { timestamps: true }
 );
 
-export const padron = model('padronOficial', padronSchema, 'padronOficial');
+export const padron2023 = model<Ipadron2022>('padron2023', padronSchema1, 'padron2023');

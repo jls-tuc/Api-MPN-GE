@@ -14,6 +14,7 @@ import { usrAppMovil } from '../usuariosApp';
 import moment from 'moment';
 import { afiliado } from '../../modulos/models/elecciones/afiliadosMpn';
 import { escuelas } from '../../modulos/models/comunes/establecimientos';
+import { actasEscrutinio } from '../../modulos/models/elecciones/votos-12/jsonApp';
 
 ///////actualiza los datos en el array de votos, le asigna a los votos del IdCoordinador
 export const actualizarVoto = async (req: Request, res: Response) => {
@@ -1683,4 +1684,116 @@ export const sinLoc = async (req: Request, res: Response) => {
                }
           }
      }
+};
+
+export const totales = async (req: Request, res: Response) => {
+     let totales = await actasEscrutinio.find({}).lean().sort({ localidad: 1 });
+
+     let localidades: any = [...new Set(totales.map((element) => element.localidad))];
+
+     let datosLocalidad: any = [];
+
+     let totalLocEsc: any = [];
+
+     for (let localidad of localidades) {
+          let locaSelecc = totales.filter((element) => element.localidad === localidad);
+
+          for (let loc of locaSelecc) {
+               let locIndx = datosLocalidad.findIndex((loc) => loc.localidad === localidad);
+
+               if (locIndx === -1) {
+                    let info = {
+                         localidad: loc.localidad,
+                         votosNulos: loc.resultadosGral.votosNulos,
+                         votosRecurridos: loc.resultadosGral.votosRecurridos,
+                         votosBlanco: loc.resultadosGral.votosBlanco,
+                         votosImpugnados: loc.resultadosGral.votosImpugnados,
+                         totalVotos: loc.resultadosGral.totalVotos,
+                         electoresVotaron: loc.resultadosGral.electoresVotaron,
+                         sobresUrnas: loc.resultadosGral.sobresUrnas,
+                         diferencia: loc.resultadosGral.diferencia,
+                    };
+
+                    loc.resultadosGral.listas.map((data, indx) => {
+                         info[`lista_${data.lista}`] = data.lista;
+                         info[`resultado_${data.lista}`] = data.resultado;
+                    });
+                    datosLocalidad.push(info);
+               } else {
+                    (datosLocalidad[locIndx].votosNulos += loc.resultadosGral.votosNulos),
+                         (datosLocalidad[locIndx].votosRecurridos += loc.resultadosGral.votosRecurridos),
+                         (datosLocalidad[locIndx].votosBlanco += loc.resultadosGral.votosBlanco),
+                         (datosLocalidad[locIndx].votosImpugnados += loc.resultadosGral.votosImpugnados),
+                         (datosLocalidad[locIndx].totalVotos += loc.resultadosGral.totalVotos),
+                         (datosLocalidad[locIndx].electoresVotaron += loc.resultadosGral.electoresVotaron),
+                         (datosLocalidad[locIndx].sobresUrnas += loc.resultadosGral.sobresUrnas),
+                         (datosLocalidad[locIndx].diferencia += loc.resultadosGral.diferencia);
+                    loc.resultadosGral.listas.map((data, indx) => {
+                         let mesaIndx = datosLocalidad.findIndex((item) => item[`lista_${data.lista}`] === data.lista);
+
+                         if (mesaIndx === -1) {
+                              datosLocalidad[locIndx][`lista_${data.lista}`] = data.lista;
+                              datosLocalidad[locIndx][`resultado_${data.lista}`] = data.resultado;
+                         } else {
+                              datosLocalidad[locIndx][`resultado_${data.lista}`] += data.resultado;
+                         }
+                    });
+               }
+               let escIndx = totalLocEsc.findIndex((esc) => esc.establecimiento === loc.establecimiento);
+
+               if (escIndx === -1) {
+                    for (let mesaArr of loc.mesas) {
+                         mesaArr.resultadoMesa.listas.map((data, indx) => {
+                              let mesaIndx = totalLocEsc.findIndex((data) => data.mesa === mesaArr.mesa);
+                              if (mesaIndx === -1) {
+                                   totalLocEsc.push({
+                                        localidad: loc.localidad,
+                                        establecimiento: loc.establecimiento,
+                                        mesa: mesaArr.mesa,
+                                        totalElectoresMesa: mesaArr.ordenTotal,
+                                        votosNulos: mesaArr.resultadoMesa.votosNulos,
+                                        votosRecurridos: mesaArr.resultadoMesa.votosRecurridos,
+                                        votosBlanco: mesaArr.resultadoMesa.votosBlanco,
+                                        votosImpugnados: mesaArr.resultadoMesa.votosImpugnados,
+                                        totalVotos: mesaArr.resultadoMesa.totalVotos,
+                                        electoresVotaron: mesaArr.resultadoMesa.electoresVotaron,
+                                        sobresUrnas: mesaArr.resultadoMesa.sobresUrna,
+                                        diferencia: mesaArr.resultadoMesa.diferencia,
+                                        [`lista_${indx}`]: data.lista,
+                                        [`resultado_${indx}`]: data.resultado,
+                                   });
+                              } else {
+                                   totalLocEsc[mesaIndx][`lista_${indx}`] = data.lista;
+                                   totalLocEsc[mesaIndx][`resultado_${indx}`] = data.resultado;
+                              }
+                         });
+                    }
+               } else {
+                    for (let mesaArr of loc.mesas)
+                         mesaArr.resultadoMesa.listas.map((data, indx) => {
+                              let mesaIndx = totalLocEsc.findIndex((data) => data.mesa === mesaArr.mesa);
+                              if (mesaIndx === -1) {
+                                   (totalLocEsc[escIndx].mesa = mesaArr.mesa),
+                                        (totalLocEsc[escIndx].totalElectoresMesa = mesaArr.ordenTotal),
+                                        (totalLocEsc[escIndx].votosNulos = mesaArr.resultadoMesa.votosNulos),
+                                        (totalLocEsc[escIndx].votosRecurridos = mesaArr.resultadoMesa.votosRecurridos),
+                                        (totalLocEsc[escIndx].votosBlanco = mesaArr.resultadoMesa.votosBlanco),
+                                        (totalLocEsc[escIndx].votosImpugnados = mesaArr.resultadoMesa.votosImpugnados),
+                                        (totalLocEsc[escIndx].totalVotos = mesaArr.resultadoMesa.totalVotos),
+                                        (totalLocEsc[escIndx].electoresVotaron =
+                                             mesaArr.resultadoMesa.electoresVotaron),
+                                        (totalLocEsc[escIndx].sobresUrnas = mesaArr.resultadoMesa.sobresUrna),
+                                        (totalLocEsc[escIndx].diferencia = mesaArr.resultadoMesa.diferencia),
+                                        (totalLocEsc[escIndx][`lista_${indx}`] = data.lista);
+                                   totalLocEsc[escIndx][`resultado_${indx}`] = data.resultado;
+                              } else {
+                                   totalLocEsc[escIndx][`lista_${indx}`] = data.lista;
+                                   totalLocEsc[escIndx][`resultado_${indx}`] = data.resultado;
+                              }
+                         });
+               }
+          }
+     }
+
+     res.status(200).json({ datosLocalidad, totalLocEsc });
 };

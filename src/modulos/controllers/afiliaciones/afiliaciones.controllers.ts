@@ -38,13 +38,17 @@ export const getAllGrupos = async (req: Request, res: Response) => {
 };
 
 export const saveGrupo = async (req: Request, res: Response) => {
-     const data = new loteAfiliacion(req.body.data);
-     await data.save((err, data) => {
+     let nrolte = await loteAfiliacion.count();
+     req.body.data.numero = nrolte + 1;
+
+     const loteNuevo: any = new loteAfiliacion(req.body.data);
+
+     await loteNuevo.save((err, data) => {
           if (err) {
                res.status(200).json({ ok: false, err });
           } else {
                loteAfiliacion.find((err, data) => {
-                    res.status(200).json({ ok: true, data });
+                    res.status(200).json({ ok: true, data, loteNro: loteNuevo.numero });
                });
           }
      });

@@ -8,7 +8,7 @@ interface Imesas {
      mesa: string;
      ordenTotal: number;
      actaCargada: boolean;
-     resultadosMesa: {
+     resultadoMesa: {
           listas: Ilistas[];
           votosNulos: number;
           votosRecurridos: number;
