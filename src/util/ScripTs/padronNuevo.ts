@@ -600,23 +600,26 @@ export const votosEsc2022 = async (req: Request, res: Response) => {
      res.status(200).json({ ok: true, escuelas });
 };
 
+//TODO:Script para agregar codSeccion y codCircuito al padron
 export const actSeccDisc = async (req: Request, res: Response) => {
-     let codSecciones = await padron2023.find({}, { circuito: 1 });
+     let codSecciones = await padron2023.find({}, { codCircuito: 1 });
 
-     let resultados = await [...new Set(codSecciones.map((element) => element.circuito))];
+     let resultados = await [...new Set(codSecciones.map((element) => element.codCircuito))];
 
      for (let circuito of resultados) {
           let cod = await padron2023.findOne(
-               { circuito: circuito },
+               { codCircuito: circuito },
                { seccion: 1, codSeccion: 1, circuito: 1, codCircuito: 1, _id: 0 }
           );
 
           padron.updateMany(
-               { circuito: cod.circuito },
+               { circuito: cod.codCircuito },
                {
                     $set: {
+                         seccion: cod.seccion,
                          codSeccion: cod.codSeccion,
                          codCircuito: cod.codCircuito,
+                         circuito: cod.circuito,
                     },
                },
                { multi: true },
